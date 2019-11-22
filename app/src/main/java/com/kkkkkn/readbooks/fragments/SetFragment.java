@@ -17,7 +17,7 @@ public class SetFragment extends Fragment {
     private TextView tv;
 
     public static SetFragment newInstance(String name) {
-
+        Log.i(TAG, "newInstance: ");
         Bundle args = new Bundle();
         args.putString("name", name);
         SetFragment fragment = new SetFragment();
@@ -29,6 +29,7 @@ public class SetFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_set, container, false);
+        Log.i(TAG, "onCreateView: ");
         return view;
     }
 
@@ -43,6 +44,7 @@ public class SetFragment extends Fragment {
             String name = bundle.get("name").toString();
             tv.setText(name);
         }
+        //相关布局创建
 
     }
 }

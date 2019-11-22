@@ -22,6 +22,7 @@ public class MainFragment extends Fragment  {
         args.putString("name", name);
         MainFragment fragment = new MainFragment();
         fragment.setArguments(args);
+        Log.i(TAG, "newInstance: ");
         return fragment;
     }
 
@@ -29,6 +30,7 @@ public class MainFragment extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+        Log.i(TAG, "onCreateView: ");
         return view;
     }
 
@@ -36,6 +38,7 @@ public class MainFragment extends Fragment  {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.i(TAG, "onViewCreated: ");
+        //绑定相关控件
         tv = (TextView) view.findViewById(R.id.fragment_test_tv);
 
         Bundle bundle = getArguments();

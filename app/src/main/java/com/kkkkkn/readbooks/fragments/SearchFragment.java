@@ -17,7 +17,7 @@ public class SearchFragment extends Fragment {
     private TextView tv;
 
     public static SearchFragment newInstance(String name) {
-
+        Log.i(TAG, "newInstance: ");
         Bundle args = new Bundle();
         args.putString("name", name);
         SearchFragment fragment = new SearchFragment();
@@ -29,6 +29,7 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+        Log.i(TAG, "onCreateView: ");
         return view;
     }
 
