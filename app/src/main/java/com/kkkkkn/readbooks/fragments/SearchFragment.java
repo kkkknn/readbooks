@@ -8,20 +8,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 import com.kkkkkn.readbooks.R;
 
 public class SearchFragment extends Fragment {
     private static final String TAG = "搜索页面" ;
+    private SearchView searchView;
     private TextView tv;
 
-    public static SearchFragment newInstance(String name) {
+    public static SearchFragment newInstance() {
         Log.i(TAG, "newInstance: ");
-        Bundle args = new Bundle();
-        args.putString("name", name);
         SearchFragment fragment = new SearchFragment();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -37,13 +36,23 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.i(TAG, "onViewCreated: ");
-        tv = (TextView) view.findViewById(R.id.fragment_search);
+        //控件绑定
+        searchView=(SearchView) view.findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                System.out.println("文字提交");
+                return false;
+            }
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            String name = bundle.get("name").toString();
-            tv.setText(name);
-        }
-
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                System.out.println("文字改变");
+                return false;
+            }
+        });
+        //触摸焦点
+        searchView.setIconifiedByDefault(false);
     }
+
 }

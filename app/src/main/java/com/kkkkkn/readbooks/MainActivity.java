@@ -1,12 +1,14 @@
 package com.kkkkkn.readbooks;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kkkkkn.readbooks.adapter.ViewPagerAdapter;
@@ -27,7 +29,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //隐藏导航栏
+        ActionBar bar=getSupportActionBar();
+        if(bar!=null){
+            bar.hide();
+        }
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         //BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
@@ -58,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(viewPagerAdapter);
         List<Fragment> list = new ArrayList<>();
         list.add(MainFragment.newInstance("首页"));
-        list.add(SearchFragment.newInstance("钱包"));
+        list.add(SearchFragment.newInstance());
         list.add(SetFragment.newInstance("卡片"));
         viewPagerAdapter.setList(list);
     }
