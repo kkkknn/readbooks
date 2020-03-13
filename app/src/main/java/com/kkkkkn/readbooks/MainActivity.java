@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private final String TAG="主界面";
     private BottomNavigationView bottomNavigationView;
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewPager;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         //隐藏导航栏
         ActionBar bar=getSupportActionBar();
         if(bar!=null){
@@ -41,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                //滑动时调用
+                Log.i(TAG, "onPageScrolled: 滑动了。");
             }
 
             @Override

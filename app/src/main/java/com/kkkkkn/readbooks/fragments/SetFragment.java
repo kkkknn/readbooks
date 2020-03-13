@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.kkkkkn.readbooks.R;
 
 public class SetFragment extends Fragment {
-    private static final String TAG = "设置页面" ;
+    private static final String TAG = "设置界面" ;
     private TextView tv;
 
     public static SetFragment newInstance(String name) {

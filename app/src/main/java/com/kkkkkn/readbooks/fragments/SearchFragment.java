@@ -53,6 +53,7 @@ public class SearchFragment extends Fragment {
         });
         //触摸焦点
         searchView.setIconifiedByDefault(false);
+        searchView.setFocusable(false);
     }
 
 }
