@@ -9,7 +9,9 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kkkkkn.readbooks.adapter.ViewPagerAdapter;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 //滑动时调用
                 Log.i(TAG, "onPageScrolled: 滑动了。");
+                hideInput();
+
             }
 
             @Override
@@ -92,4 +96,13 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    private void hideInput(){
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        View v = getWindow().peekDecorView();
+        if (null != v) {
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+    }
+
 }
