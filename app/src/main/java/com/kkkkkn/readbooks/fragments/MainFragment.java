@@ -31,13 +31,6 @@ public class MainFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         Log.i(TAG, "onCreateView: ");
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.i(TAG, "onViewCreated: ");
         //绑定相关控件
         tv = (TextView) view.findViewById(R.id.fragment_test_tv);
 
@@ -46,6 +39,14 @@ public class MainFragment extends Fragment  {
             String name = bundle.get("name").toString();
             tv.setText(name);
         }
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.i(TAG, "onViewCreated: ");
+
 
     }
 

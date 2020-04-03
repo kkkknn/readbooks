@@ -30,13 +30,6 @@ public class SetFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_set, container, false);
         Log.i(TAG, "onCreateView: ");
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.i(TAG, "onViewCreated: ");
         tv = (TextView) view.findViewById(R.id.fragment_set);
 
         Bundle bundle = getArguments();
@@ -45,6 +38,15 @@ public class SetFragment extends Fragment {
             tv.setText(name);
         }
         //相关布局创建
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.i(TAG, "onViewCreated: ");
+
 
     }
 }
