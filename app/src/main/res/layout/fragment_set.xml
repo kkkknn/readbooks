@@ -4,6 +4,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_marginVertical="40dp"
+        android:layout_marginHorizontal="20dp"
+        android:background="@drawable/user_img_shape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.kkkkkn.readbooks.view.RoundImageView
+            android:src="@drawable/user"
+            android:id="@+id/user_img"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/fragment_set"
         android:layout_width="match_parent"

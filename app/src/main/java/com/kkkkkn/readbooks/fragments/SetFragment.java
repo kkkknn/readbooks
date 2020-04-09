@@ -5,12 +5,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.view.RoundImageView;
 
 public class SetFragment extends Fragment {
     private static final String TAG = "设置界面" ;
@@ -37,8 +41,8 @@ public class SetFragment extends Fragment {
             String name = bundle.get("name").toString();
             tv.setText(name);
         }
-        //相关布局创建
 
+        //相关布局创建
         return view;
     }
 
