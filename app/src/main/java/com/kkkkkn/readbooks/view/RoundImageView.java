@@ -1,6 +1,7 @@
 package com.kkkkkn.readbooks.view;
 
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -13,11 +14,14 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
+import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.kkkkkn.readbooks.R;
 
@@ -25,7 +29,8 @@ public class RoundImageView extends androidx.appcompat.widget.AppCompatImageView
     // 控件默认长、宽
     private int defaultWidth = 0;
     private int defaultHeight = 0;
-
+    private Matrix m=new Matrix();
+    private float proess=0;
     public RoundImageView(Context context) {
         super(context);
     }
@@ -59,15 +64,34 @@ public class RoundImageView extends androidx.appcompat.widget.AppCompatImageView
             defaultHeight = getHeight();
         }
         // 保证重新读取图片后不会因为图片大小而改变控件宽、高的大小（针对宽、高为wrap_content布局的imageview，但会导致margin无效）
-        // if (defaultWidth != 0 && defaultHeight != 0) {
-        // LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-        // defaultWidth, defaultHeight);
-        // setLayoutParams(params);
-        // }
-        int radius = (Math.min(defaultWidth, defaultHeight)) / 2;
-        Bitmap roundBitmap = getCroppedRoundBitmap(bitmap, radius);
-        canvas.drawBitmap(roundBitmap, roundBitmap.getWidth()/2 - radius, roundBitmap.getHeight() / 2 - radius, null);
+         /*if (defaultWidth != 0 && defaultHeight != 0) {
+         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+         defaultWidth, defaultHeight);
+         setLayoutParams(params);
+         }*/
+        m.setScale((float) getWidth()/bitmap.getWidth(), (float)getHeight()/bitmap.getHeight());
+        Bitmap bitmap1=Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),m,true);
+        int radius = (Math.min(bitmap1.getWidth(), bitmap1.getHeight())) / 2;
+        Bitmap roundBitmap = getCroppedRoundBitmap(bitmap1, radius);
 
+
+        m.setTranslate((float) roundBitmap.getWidth()/2,(float) roundBitmap.getHeight()/2);
+        m.setRotate(proess,(float) roundBitmap.getWidth()/2,(float) roundBitmap.getHeight()/2);
+
+        canvas.drawBitmap(roundBitmap, m, null);
+        proess+=30;
+        if(proess>360){
+            proess=0;
+        }else{
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    postInvalidate();
+                }
+            },20);
+        }
+
+        //invalidate();
         //postInvalidate();
     }
 
