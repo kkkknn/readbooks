@@ -50,7 +50,7 @@ public class MainFragmentAdapter extends BaseAdapter {
             if(!new File(imgpath).exists()){
                 imgpath="";
             }
-            Book book=new Book(i,booksName[i],imgpath);
+            Book book=new Book(i,booksName[i],imgpath,"cccc","ccccccc");
             rlist.add(book);
         }
         return rlist;

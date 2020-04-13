@@ -3,7 +3,14 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#021B60</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="tab_checked">#ED6A2C</color>
-    <color name="tab_unchecked">#757575</color>
     <color name="colorBlack">#000000</color>
+
+
+
+    <color name="tab_checked">#D3673C</color>
+    <color name="tab_unchecked">#757575</color>
+
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorMain">#EAF7F7</color>
+    <color name="colorNav">#EAF7F7</color>
 </resources>

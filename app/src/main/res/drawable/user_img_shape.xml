@@ -5,10 +5,6 @@
 
     <corners android:radius="10dp"/>
 
-    <stroke
-        android:width="0.5dp"
-        android:color="#FFFFFF" />     <!--边框颜色-->
-
     <padding
         android:bottom="10dp"
         android:left="10dp"

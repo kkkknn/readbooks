@@ -3,4 +3,8 @@
     <string name="menu_main">主页</string>
     <string name="menu_search">搜索</string>
     <string name="menu_set">设置</string>
+    <string name="set_about">软件详情</string>
+    <string name="set_version">软件版本</string>
+    <string name="set_check">检查更新</string>
+    <string name="app_about">关于</string>
 </resources>

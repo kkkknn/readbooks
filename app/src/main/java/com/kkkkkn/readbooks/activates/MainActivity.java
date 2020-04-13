@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks;
+package com.kkkkkn.readbooks.activates;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -6,15 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.ViewPagerAdapter;
 import com.kkkkkn.readbooks.fragments.MainFragment;
 import com.kkkkkn.readbooks.fragments.SearchFragment;

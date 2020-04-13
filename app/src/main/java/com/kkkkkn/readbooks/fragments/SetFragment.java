@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +15,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.activates.AboutActivity;
 import com.kkkkkn.readbooks.view.RoundImageView;
 
 public class SetFragment extends Fragment {
-    private static final String TAG = "设置界面" ;
+    private static final String TAG = "设置界面";
     private TextView tv;
 
     public static SetFragment newInstance(String name) {
@@ -32,9 +34,18 @@ public class SetFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_set, container, false);
+        final View view = inflater.inflate(R.layout.fragment_set, container, false);
         Log.i(TAG, "onCreateView: ");
         tv = (TextView) view.findViewById(R.id.fragment_set);
+        TextView about=view.findViewById(R.id.set_about);
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //点击关于，跳转到新的界面
+                Intent intent = new Intent(view.getContext(), AboutActivity.class);
+                startActivity(intent);
+            }
+        });
 
         Bundle bundle = getArguments();
         if (bundle != null) {
