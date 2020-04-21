@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.kkkkkn.readbooks.R;
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
