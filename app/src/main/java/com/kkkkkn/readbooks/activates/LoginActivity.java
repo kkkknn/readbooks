@@ -10,8 +10,6 @@ import android.widget.EditText;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.util.Md5Util;
-import com.kkkkkn.readbooks.util.NetworkUtil;
-import com.kkkkkn.readbooks.util.NetworkUtilListener;
 
 import java.io.IOException;
 
@@ -38,23 +36,6 @@ public class LoginActivity extends BaseActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NetworkUtil networkUtil=NetworkUtil.getInstance();
-                networkUtil.setListener(new NetworkUtilListener() {
-                    @Override
-                    public void Success(Response response) {
-                        try {
-                            Log.i(TAG, "Success: 联网成功"+response.body().string());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void Error() {
-                        Log.i(TAG, "Error: 联网错误");
-                    }
-                });
-                networkUtil.requestGet("https://msdn.itellyou.cn/");
                 Log.i(TAG, "onClick: "+text_name.getText()+"||"+ Md5Util.str2md5(text_password.getText().toString()));
             }
         });

@@ -12,7 +12,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 //网络请求工具类
-public class NetworkUtil implements Callback{
+class NetworkUtil implements Callback{
     private static NetworkUtil networkUtil;
     private NetworkUtilListener listener;
     private static OkHttpClient okHttpClient;
@@ -32,18 +32,18 @@ public class NetworkUtil implements Callback{
         return networkUtil;
     }
 
-    //设置监听
+    //2.设置服务器返回监听
     public void setListener(NetworkUtilListener listener){
         this.listener=listener;
     }
 
-    //1.请求服务器
-    public void requestGet(String string){
-        okHttpClient.newCall( new Request.Builder().get().url(string).build()).enqueue(this);
+    //1.请求服务器 get请求
+    public Response requestGet(Request request) throws IOException {
+        return okHttpClient.newCall(request).execute();
     }
 
-    public void requestPost(RequestBody requestBody){
-
+    public void requestPost(Request request){
+        okHttpClient.newCall(request).enqueue(this);
     }
 
     @Override
@@ -55,15 +55,4 @@ public class NetworkUtil implements Callback{
     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
         listener.Success(response);
     }
-
-    //2.设置服务器返回监听
-
-
-    //3.网络关闭
-
-
-    //4.网络状态恢复
-
-
-
 }

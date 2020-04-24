@@ -4,14 +4,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.kkkkkn.readbooks.entity.Book;
+import com.kkkkkn.readbooks.entity.BookInfo;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class MainFragmentAdapter extends BaseAdapter {
     private final static String Path="/sdcard/books/";
-    private ArrayList<Book> list;
+    private ArrayList<BookInfo> list;
 
     public MainFragmentAdapter() {
         list=getBookList();
@@ -41,8 +41,8 @@ public class MainFragmentAdapter extends BaseAdapter {
 
 
     //读取文件目录，获取图书列表
-    private static ArrayList<Book> getBookList(){
-        ArrayList<Book> rlist = new ArrayList<>();
+    private static ArrayList<BookInfo> getBookList(){
+        ArrayList<BookInfo> rlist = new ArrayList<>();
         File rootPath=new File(Path);
         String[] booksName=rootPath.list();
         for(int i=0;i<booksName.length;i++) {
@@ -50,8 +50,8 @@ public class MainFragmentAdapter extends BaseAdapter {
             if(!new File(imgpath).exists()){
                 imgpath="";
             }
-            Book book=new Book(i,booksName[i],imgpath,"cccc","ccccccc");
-            rlist.add(book);
+            //BookInfo bookInfo =new BookInfo(i,booksName[i],imgpath,"cccc","ccccccc");
+            //rlist.add(bookInfo);
         }
         return rlist;
     }
