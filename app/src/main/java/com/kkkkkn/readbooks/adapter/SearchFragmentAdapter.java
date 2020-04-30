@@ -18,8 +18,14 @@ import com.kkkkkn.readbooks.entity.BookInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFragmentAdapter extends RecyclerView.Adapter<SearchFragmentAdapter.ViewHolder> {
+public class SearchFragmentAdapter extends RecyclerView.Adapter<SearchFragmentAdapter.ViewHolder> implements View.OnClickListener {
     private List<BookInfo> mList;
+    private OnItemClickSearchFragmentAdapter listener;
+
+    @Override
+    public void onClick(View v) {
+        listener.onClickItem(v,mList.get((int)v.getTag()));
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         TextView bookName,bookAbout,bookAuthor;
@@ -44,6 +50,7 @@ public class SearchFragmentAdapter extends RecyclerView.Adapter<SearchFragmentAd
     public SearchFragmentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_search_item,parent,false);
         ViewHolder viewHolder=new ViewHolder(view);
+        view.setOnClickListener(this);
         return viewHolder;
     }
 
@@ -56,6 +63,7 @@ public class SearchFragmentAdapter extends RecyclerView.Adapter<SearchFragmentAd
         if(bookInfo.getBookImg()!=null){
             holder.bookImg.setImageBitmap(bookInfo.getBookImg());
         }
+        holder.itemView.setTag(position);
     }
 
     //动态添加图书相关
@@ -72,9 +80,14 @@ public class SearchFragmentAdapter extends RecyclerView.Adapter<SearchFragmentAd
             notifyDataSetChanged();
         }
     }
+    public void setOnClickListener(OnItemClickSearchFragmentAdapter onClickListener){
+        this.listener=onClickListener;
+    }
+
 
     @Override
     public int getItemCount() {
         return mList.size();
     }
+
 }

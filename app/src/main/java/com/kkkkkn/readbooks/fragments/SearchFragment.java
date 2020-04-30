@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.adapter.OnItemClickSearchFragmentAdapter;
 import com.kkkkkn.readbooks.adapter.SearchFragmentAdapter;
 import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.util.BookSourceByBQG1;
@@ -126,6 +127,12 @@ public class SearchFragment extends Fragment implements BookSourceListener {
                         System.out.println("到达底部了");
                     }
                 }
+            }
+        });
+        adapter.setOnClickListener(new OnItemClickSearchFragmentAdapter() {
+            @Override
+            public void onClickItem(View view, BookInfo bookInfo) {
+                Log.i(TAG, "onClickItem:  item点击了"+bookInfo.getBookName());
             }
         });
         return view;
