@@ -12,10 +12,22 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 //网络请求工具类
+/*
+* 全程和服务器端进行通信
+* 通信接口
+*   1.登录
+*   2.注销登录
+*   3.注册
+*   4.搜索图书
+*   5.缓存图书
+*   6.查找服务器APP版本
+*   7.下载APP
+* */
 class NetworkUtil implements Callback{
     private static NetworkUtil networkUtil;
     private NetworkUtilListener listener;
     private static OkHttpClient okHttpClient;
+    private int code=-1;//需要返回的消息代码，默认为-1
 
     private NetworkUtil() {
         okHttpClient=new OkHttpClient();

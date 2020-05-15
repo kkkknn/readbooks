@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +24,15 @@ import com.kkkkkn.readbooks.fragments.SetFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * 程序主界面，每次进入的时候获取SharedPreferences中的accountId和token,并进行网络请求，看是否登录成功
+ */
 public class MainActivity extends BaseActivity {
-    private final String TAG="主界面";
+    private final static String PRE_NAME="ReadBooksShared";
+    private final static String KEY_ID="AccountId";
+    private final static String KEY_TOKEN="AccountToken";
+    private final static String TAG="主界面";
     private BottomNavigationView bottomNavigationView;
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewPager;
@@ -34,6 +43,8 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //检测SharedPreferences 有没有accountid和token
+        checkLogin();
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -99,6 +110,18 @@ public class MainActivity extends BaseActivity {
         if (null != v) {
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
+    }
+
+    private boolean checkLogin(){
+        SharedPreferences sharedPreferences=getSharedPreferences(PRE_NAME, Context.MODE_PRIVATE);
+        int id=sharedPreferences.getInt(KEY_ID,0);
+        String token=sharedPreferences.getString(KEY_TOKEN,"");
+        if(id==0||token==null||token.isEmpty()){
+            return false;
+        }
+        //开始连接服务器进行查询
+
+        return false;
     }
 
 }

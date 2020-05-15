@@ -24,10 +24,6 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.OnItemClickSearchFragmentAdapter;
 import com.kkkkkn.readbooks.adapter.SearchFragmentAdapter;
 import com.kkkkkn.readbooks.entity.BookInfo;
-import com.kkkkkn.readbooks.util.BookSourceByBQG1;
-import com.kkkkkn.readbooks.util.BookSourceImp;
-import com.kkkkkn.readbooks.util.BookSourceListener;
-import com.kkkkkn.readbooks.util.BookSourceUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -38,11 +34,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class SearchFragment extends Fragment implements BookSourceListener {
+public class SearchFragment extends Fragment  {
     private static final String TAG = "搜索页面" ;
     private static SearchFragment searchFragment;
     private SearchView searchView;
-    private BookSourceUtil bookSourceUtil;
     private RecyclerView listView;
     private SearchFragmentAdapter adapter;
     private Handler handler=new Handler(new Handler.Callback() {
@@ -91,7 +86,7 @@ public class SearchFragment extends Fragment implements BookSourceListener {
             public boolean onQueryTextSubmit(String query) {
                 //请求字符串不为空，开始进行网络请求
                 if(!query.equals(" ")){
-                    bookSourceUtil.searchBook(query);
+
                 }
                 System.out.println("文字提交"+query);
                 return false;
@@ -107,9 +102,6 @@ public class SearchFragment extends Fragment implements BookSourceListener {
         searchView.setIconifiedByDefault(false);
         searchView.setFocusable(false);
 
-        bookSourceUtil=BookSourceUtil.getBookSourceUtil();
-        bookSourceUtil.setBookSource(new BookSourceByBQG1());
-        bookSourceUtil.setListener(this);
 
 
         //创建自定义Adapter的对象
@@ -151,18 +143,4 @@ public class SearchFragment extends Fragment implements BookSourceListener {
 
     }
 
-    @Override
-    public void Success(Object object) {
-        //adapter.notifyDataSetChanged();
-        //将布局添加到ListView中
-        Message msg=new Message();
-        msg.what=1;
-        msg.obj=object;
-        handler.sendMessage(msg);
-    }
-
-    @Override
-    public void Error(int errorCode) {
-
-    }
 }

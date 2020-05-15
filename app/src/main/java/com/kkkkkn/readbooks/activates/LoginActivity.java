@@ -16,6 +16,9 @@ import java.io.IOException;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+/**
+ * 登录账号页面，记录返回的token令牌，并载入缓存，每次请求都要加入此token
+ */
 public class LoginActivity extends BaseActivity {
     private final static String TAG="LoginActivity";
     EditText text_name,text_password;
