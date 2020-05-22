@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -44,7 +45,10 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         //检测SharedPreferences 有没有accountid和token
-        checkLogin();
+        if(!checkLogin()){
+            //跳转到登录界面
+
+        }
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -113,15 +117,19 @@ public class MainActivity extends BaseActivity {
     }
 
     private boolean checkLogin(){
-        SharedPreferences sharedPreferences=getSharedPreferences(PRE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences=getSharedPreferences(getString(R.string.PRE_NAME), Context.MODE_PRIVATE);
         int id=sharedPreferences.getInt(KEY_ID,0);
         String token=sharedPreferences.getString(KEY_TOKEN,"");
         if(id==0||token==null||token.isEmpty()){
+            Log.i(TAG, "checkLogin: 没有查询到数据");
             return false;
-        }
-        //开始连接服务器进行查询
+        }else{
+            Log.i(TAG, "checkLogin:查询到的数据"+id+"||"+token);
+            //开始连接服务器进行查询
 
-        return false;
+
+            return true;
+        }
     }
 
 }
