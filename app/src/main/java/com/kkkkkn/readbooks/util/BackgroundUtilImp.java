@@ -11,6 +11,8 @@ public interface BackgroundUtilImp {
     void addFavoriteBook(String bookStr,int accountId,String tokenStr);
     void getBookInfo(String bookStr,int accountId,String tokenStr);
     void getChapterContent(String chapterStr,int accountId,String tokenStr);
-    String getTokenStr();
+    void accountLogin(String account,String password);
+    void accountRegister(String account,String password);
     int getAccountId();
+    String getTokenStr();
 }

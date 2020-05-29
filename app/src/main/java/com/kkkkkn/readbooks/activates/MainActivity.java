@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,8 @@ import com.kkkkkn.readbooks.adapter.ViewPagerAdapter;
 import com.kkkkkn.readbooks.fragments.MainFragment;
 import com.kkkkkn.readbooks.fragments.SearchFragment;
 import com.kkkkkn.readbooks.fragments.SetFragment;
+import com.kkkkkn.readbooks.util.BackgroundUtil;
+import com.kkkkkn.readbooks.util.BackgroundUtilListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +32,7 @@ import java.util.List;
 /**
  * 程序主界面，每次进入的时候获取SharedPreferences中的accountId和token,并进行网络请求，看是否登录成功
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements BackgroundUtilListener {
     private final static String PRE_NAME="ReadBooksShared";
     private final static String KEY_ID="AccountId";
     private final static String KEY_TOKEN="AccountToken";
@@ -37,6 +40,7 @@ public class MainActivity extends BaseActivity {
     private BottomNavigationView bottomNavigationView;
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewPager;
+    private BackgroundUtil backgroundUtil;
     private MenuItem menuItem;
 
     @Override
@@ -44,10 +48,14 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //获取服务器接口类并进行初始化
+        backgroundUtil=BackgroundUtil.getInstance(this,this);
+
         //检测SharedPreferences 有没有accountid和token
         if(!checkLogin()){
             //跳转到登录界面
-
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            startActivityForResult(intent,301);
         }
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
@@ -117,9 +125,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private boolean checkLogin(){
-        SharedPreferences sharedPreferences=getSharedPreferences(getString(R.string.PRE_NAME), Context.MODE_PRIVATE);
-        int id=sharedPreferences.getInt(KEY_ID,0);
-        String token=sharedPreferences.getString(KEY_TOKEN,"");
+        if(backgroundUtil==null){
+            return false;
+        }
+        int id=backgroundUtil.getAccountId();
+        String token=backgroundUtil.getTokenStr();
         if(id==0||token==null||token.isEmpty()){
             Log.i(TAG, "checkLogin: 没有查询到数据");
             return false;
@@ -132,4 +142,33 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int reqcode,int rescode,Intent data) {
+        super.onActivityResult(reqcode, rescode, data);
+        switch (reqcode){
+            case 301:
+                if(rescode==1){
+                    //登录成功，开始加载图书数据及用户相关数据存储
+                }else {
+                    //登录失败，请检查填写数据是否有误
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public void success(int requestId) {
+
+    }
+
+    @Override
+    public void error(int codeId) {
+
+    }
+
+    @Override
+    public void timeOut(int requestId) {
+
+    }
 }
