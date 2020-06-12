@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.util.BackgroundUtil;
@@ -28,6 +30,7 @@ import okhttp3.ResponseBody;
 public class LoginActivity extends BaseActivity {
     private final static String TAG="LoginActivity";
     private EditText text_name,text_password;
+    private long lastBackClick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,5 +108,25 @@ public class LoginActivity extends BaseActivity {
                 MessageDialog.showDialog(LoginActivity.this,"提示","此功能暂未开发，等待后续版本添加",listener1,null);
             }
         });
+    }
+
+    //监听返回键，连续按2次直接退出程序
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            long nowBackClick=System.currentTimeMillis();
+            if(lastBackClick!=0&&(nowBackClick-lastBackClick)<1500){
+                //程序退出
+                this.exitAll();
+            }else{
+                //500ms以上，弹窗不处理
+                lastBackClick=nowBackClick;
+                Toast.makeText(getApplicationContext(),"请再按一次以退出程序",Toast.LENGTH_SHORT).show();
+            }
+
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

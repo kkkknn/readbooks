@@ -30,11 +30,11 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
     private Context mContext=null;
     private BackgroundUtilListener listener=null;
     private OkHttpClient mOkHttpClient=null;
-    private final static String loginURL="123.123.123:30456/Account/Login";
-    private final static String searchBooksURL="123.123.123:30456/Account/Login2";
-    private final static String addFavoriteBookURL="123.123.123:30456/Account/Login3";
-    private final static String getBookInfoURL="123.123.123:30456/Account/Login4";
-    private final static String getChapterContentURL="123.123.123:30456/Account/Login5";
+    private final static String loginURL="123.56.6.157:30480/User/Login";
+    private final static String searchBooksURL="123.56.6.157:30480/Account/Login2";
+    private final static String addFavoriteBookURL="123.56.6.157:30480/Account/Login3";
+    private final static String getBookInfoURL="123.56.6.157:30480/Account/Login4";
+    private final static String getChapterContentURL="123.56.6.157:30480/Account/Login5";
 
     private BackgroundUtil(Context context,BackgroundUtilListener listener) {
         this.mContext=context.getApplicationContext();

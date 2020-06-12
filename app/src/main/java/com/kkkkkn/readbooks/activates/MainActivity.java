@@ -66,9 +66,7 @@ public class MainActivity extends BaseActivity implements BackgroundUtilListener
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 //滑动时调用
-
                 hideInput();
-
             }
 
             @Override
