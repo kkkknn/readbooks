@@ -52,11 +52,11 @@ public class MainActivity extends BaseActivity implements BackgroundUtilListener
         backgroundUtil=BackgroundUtil.getInstance(this,this);
 
         //检测SharedPreferences 有没有accountid和token
-        if(!checkLogin()){
+        /*if(!checkLogin()){
             //跳转到登录界面
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivityForResult(intent,301);
-        }
+        }*/
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
