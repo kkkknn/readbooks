@@ -6,32 +6,36 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.adapter.MyAdapter;
+import com.kkkkkn.readbooks.adapter.BookShelfAdapter;
 import com.kkkkkn.readbooks.entity.MainBooks;
 import com.kkkkkn.readbooks.view.BookGridView;
 
 import java.util.ArrayList;
 
 public class MainFragment extends Fragment  {
-    private static final String TAG = "主页页面" ;
-    private TextView tv;
-    private BookGridView mGridView;
+    private static final String TAG = "主页页面" ;;
+    private static MainFragment mainFragment;
 
-    public static MainFragment newInstance(String name) {
+    private MainFragment() {
+    }
 
-        Bundle args = new Bundle();
-        args.putString("name", name);
-        MainFragment fragment = new MainFragment();
-        fragment.setArguments(args);
-        Log.i(TAG, "newInstance: ");
-        return fragment;
+    public static MainFragment newInstance() {
+        if(mainFragment==null){
+            synchronized (MainFragment.class){
+                if(mainFragment==null){
+                    mainFragment = new MainFragment();
+                    Log.i(TAG, "newInstance: ");
+                }
+            }
+        }
+        return mainFragment;
     }
 
     @Nullable
@@ -40,40 +44,21 @@ public class MainFragment extends Fragment  {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         Log.i(TAG, "onCreateView: ");
         //绑定相关控件
-        tv = (TextView) view.findViewById(R.id.fragment_test_tv);
-        mGridView=view.findViewById(R.id.booksGridview);
+        GridView mGridView=view.findViewById(R.id.booksGridview);
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            String name = bundle.get("name").toString();
-            tv.setText(name);
-        }
-        ArrayList<String> list=new ArrayList<>();
-        list.add("图书1");
-        list.add("图书2");
-        list.add("图书3");
-        list.add("图书4");
-        list.add("图书5");
-        list.add("图书1");
-        list.add("图书2");
-        list.add("图书3");
-        list.add("图书4");
-        list.add("图书5");
-        list.add("图书1");
-        list.add("图书2");
-        list.add("图书3");
-        list.add("图书4");
-        list.add("图书5");list.add("图书1");
-        list.add("图书2");
-        list.add("图书3");
-        list.add("图书4");
-        list.add("图书5");list.add("图书1");
-        list.add("图书2");
-        list.add("图书3");
-        list.add("图书4");
-        list.add("图书5");
+        ArrayList<MainBooks> list=new ArrayList<MainBooks>();
+        list.add(new MainBooks(R.drawable.user,"图书1"));
+        list.add(new MainBooks(R.drawable.user,"图书2"));
+        list.add(new MainBooks(R.drawable.user,"图书3"));
+        list.add(new MainBooks(R.drawable.user,"图书4"));
+        list.add(new MainBooks(R.drawable.user,"图书4"));
+        list.add(new MainBooks(R.drawable.user,"图书4"));
+        list.add(new MainBooks(R.drawable.user,"图书4"));
+        list.add(new MainBooks(R.drawable.user,"图书4"));
+        list.add(new MainBooks(R.drawable.user,"图书4"));
+        list.add(new MainBooks(R.drawable.user,"图书4"));
+        BookShelfAdapter mAdapter = new BookShelfAdapter(view.getContext(),list);
 
-        ArrayAdapter mAdapter = new ArrayAdapter<String>(view.getContext(),R.layout.fragment_main_item,list);
         mGridView.setAdapter(mAdapter);
 
 

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">readbooks</string>
-    <string name="menu_main">主页</string>
+    <string name="menu_main">书架</string>
     <string name="menu_search">搜索</string>
     <string name="menu_set">设置</string>
     <string name="set_about">软件详情</string>

@@ -12,7 +12,7 @@ import android.widget.GridView;
 import com.kkkkkn.readbooks.R;
 
 public class BookGridView extends GridView {
-    Drawable mInterlayer = this.getResources().getDrawable(R.drawable.user);//书架图片
+    Drawable mInterlayer = this.getResources().getDrawable(R.drawable.bookshelf);//书架图片
     Rect mMyDrawRect = new Rect();//书架的矩形位置
     public BookGridView(Context context) {
         super(context);
@@ -43,7 +43,7 @@ public class BookGridView extends GridView {
 
                 for (int i = initPos; i <= gridview_height; i += blockGapHeight) {
                     mMyDrawRect.top = i;
-                    mMyDrawRect.bottom = mMyDrawRect.top + interlayerHeight;
+                    mMyDrawRect.bottom = (mMyDrawRect.top + blockGapHeight);
                     mInterlayer.setBounds(mMyDrawRect);
                     mInterlayer.draw(canvas);//画书架图片
                 }

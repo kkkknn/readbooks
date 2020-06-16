@@ -13,9 +13,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -26,30 +29,42 @@ import okhttp3.ResponseBody;
 
 public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor {
     private final static String TAG="BackgroundUtil";
+    public final static int CONNECT_TIMEOUT = 60;
+    public final static int READ_TIMEOUT = 100;
+    public final static int WRITE_TIMEOUT = 60;
     private static BackgroundUtil backgroundUtil=null;
     private Context mContext=null;
     private BackgroundUtilListener listener=null;
     private OkHttpClient mOkHttpClient=null;
-    private final static String loginURL="123.56.6.157:30480/User/Login";
+    private final static String loginURL="http://123.56.6.157:30480/Account/Login";
     private final static String searchBooksURL="123.56.6.157:30480/Account/Login2";
     private final static String addFavoriteBookURL="123.56.6.157:30480/Account/Login3";
     private final static String getBookInfoURL="123.56.6.157:30480/Account/Login4";
     private final static String getChapterContentURL="123.56.6.157:30480/Account/Login5";
 
-    private BackgroundUtil(Context context,BackgroundUtilListener listener) {
+    private BackgroundUtil(Context context) {
         this.mContext=context.getApplicationContext();
-        this.listener=listener;
-        this.mOkHttpClient=new OkHttpClient.Builder().addInterceptor(this).build();
+        this.mOkHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)//设置连接超时时间
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)//设置读取超时时间
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .addInterceptor(this)
+                .build();
     }
 
-    public static BackgroundUtil getInstance(Context context,BackgroundUtilListener listener){
+    public static BackgroundUtil getInstance(Context context){
         if(backgroundUtil==null){
             synchronized (BackgroundUtil.class){
                 if(backgroundUtil==null){
-                    backgroundUtil=new BackgroundUtil(context,listener);
+                    backgroundUtil=new BackgroundUtil(context);
                 }
             }
         }
+        return backgroundUtil;
+    }
+
+    public BackgroundUtil setListener(BackgroundUtilListener listener){
+        backgroundUtil.listener=listener;
         return backgroundUtil;
     }
 
@@ -95,20 +110,12 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
      */
     @Override
     public void accountLogin(String account, String password) {
-        MediaType mediaType = MediaType.parse("text/plain; charset=utf-8");
-        JSONObject jsonObject=new JSONObject();
-
-        try {
-            jsonObject.put("accountName",account);
-            jsonObject.put("accountPassword",password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        RequestBody requestBody=RequestBody.create(jsonObject.toString(),mediaType);
+        FormBody body = new FormBody.Builder()
+                .add("accountName",account)
+                .add("accountPassword",password).build();
         Request request = new Request.Builder()
                 .url(loginURL)
-                .post(requestBody)
+                .post(body)
                 .build();
         mOkHttpClient.newCall(request).enqueue(this);
 
@@ -141,10 +148,16 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
 
     @Override
     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+        if(response.body()==null){
+            listener.error(333);
+            return;
+        }
         String reqUrl=response.request().url().toString();
+        String resStr= response.body().string();
+        Log.i(TAG, "onResponse:  "+resStr);
         switch(reqUrl){
             case loginURL:
-                //判断请求是否成功
+                listener.success(resStr);
 
                 //保存返回的accountid和token字符串
 
@@ -155,7 +168,6 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
             default:
                 break;
         }
-        listener.success(123123123);
     }
 
     /**

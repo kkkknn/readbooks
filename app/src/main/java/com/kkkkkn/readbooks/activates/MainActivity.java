@@ -49,14 +49,14 @@ public class MainActivity extends BaseActivity implements BackgroundUtilListener
         setContentView(R.layout.activity_main);
 
         //获取服务器接口类并进行初始化
-        backgroundUtil=BackgroundUtil.getInstance(this,this);
+        backgroundUtil=BackgroundUtil.getInstance(this).setListener(this);
 
         //检测SharedPreferences 有没有accountid和token
-        /*if(!checkLogin()){
+        if(!checkLogin()){
             //跳转到登录界面
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivityForResult(intent,301);
-        }*/
+        }
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -88,10 +88,11 @@ public class MainActivity extends BaseActivity implements BackgroundUtilListener
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
         List<Fragment> list = new ArrayList<>();
-        list.add(MainFragment.newInstance("首页"));
         list.add(SearchFragment.newInstance());
+        list.add(MainFragment.newInstance());
         list.add(SetFragment.newInstance("卡片"));
         viewPagerAdapter.setList(list);
+        viewPager.setCurrentItem(1);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -101,10 +102,10 @@ public class MainActivity extends BaseActivity implements BackgroundUtilListener
             menuItem = item;
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    viewPager.setCurrentItem(0);
+                    viewPager.setCurrentItem(1);
                     return true;
                 case R.id.navigation_dashboard:
-                    viewPager.setCurrentItem(1);
+                    viewPager.setCurrentItem(0);
                     return true;
                 case R.id.navigation_notifications:
                     viewPager.setCurrentItem(2);
@@ -135,7 +136,6 @@ public class MainActivity extends BaseActivity implements BackgroundUtilListener
             Log.i(TAG, "checkLogin:查询到的数据"+id+"||"+token);
             //开始连接服务器进行查询
 
-
             return true;
         }
     }
@@ -156,7 +156,7 @@ public class MainActivity extends BaseActivity implements BackgroundUtilListener
     }
 
     @Override
-    public void success(int requestId) {
+    public void success(String str) {
 
     }
 

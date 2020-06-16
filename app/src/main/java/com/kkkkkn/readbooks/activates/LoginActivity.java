@@ -67,27 +67,28 @@ public class LoginActivity extends BaseActivity {
                 }else{
                     //获取到相关数据，开始进行登录，调用接口类访问服务器进行登录
                     BackgroundUtilListener listener=new BackgroundUtilListener() {
+
                         @Override
-                        public void success(int requestId) {
-                            //登录成功，返回主页，并缓存相关数据
+                        public void success(String str) {
+                            //解析返回字符串，判断调用是否成功
+                            Log.i(TAG, "success: "+str);
                         }
 
                         @Override
                         public void error(int codeId) {
                             //登录失败，弹窗重新进行登录
+                            Log.i(TAG, "error: "+codeId);
 
                         }
 
                         @Override
                         public void timeOut(int requestId) {
                             //网络超时，弹窗重新进行登录
-
+                            Log.i(TAG, "timeOut: "+requestId);
                         }
                     };
-                    BackgroundUtil backgroundUtil=BackgroundUtil.getInstance(LoginActivity.this,listener);
+                    BackgroundUtil backgroundUtil=BackgroundUtil.getInstance(LoginActivity.this).setListener(listener);
                     backgroundUtil.accountLogin(account,password);
-
-
 
 
                 }
