@@ -2,37 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:id="@+id/book_item">
 
-        <ImageView
-            android:id="@+id/fragment_search_item_book_img"
-            android:layout_width="80dp"
-            android:layout_height="100dp"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/fragment_search_item_book_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textSize="16sp"
-                android:textColor="@color/colorBlack"/>
-            <TextView
-                android:textAlignment="viewEnd"
-                android:id="@+id/fragment_search_item_book_author_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"/>
-            <TextView
-                android:id="@+id/fragment_search_item_book_about"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:textSize="12sp"/>
-        </LinearLayout>
-
+    <TextView
+        android:id="@+id/fragment_search_item_book_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textColor="@color/colorBlack"/>
+    <TextView
+        android:textAlignment="viewEnd"
+        android:id="@+id/fragment_search_item_book_author_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"/>
 
 
 

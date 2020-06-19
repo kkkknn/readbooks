@@ -18,76 +18,24 @@ import com.kkkkkn.readbooks.entity.BookInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFragmentAdapter extends RecyclerView.Adapter<SearchFragmentAdapter.ViewHolder> implements View.OnClickListener {
-    private List<BookInfo> mList;
-    private OnItemClickSearchFragmentAdapter listener;
-
+public class SearchFragmentAdapter extends BaseAdapter {
     @Override
-    public void onClick(View v) {
-        listener.onClickItem(v,mList.get((int)v.getTag()));
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView bookName,bookAbout,bookAuthor;
-        ImageView bookImg;
-        public ViewHolder(View view){
-            super(view);
-            bookName=view.findViewById(R.id.fragment_search_item_book_name);
-            bookAbout=view.findViewById(R.id.fragment_search_item_book_about);
-            bookAuthor=view.findViewById(R.id.fragment_search_item_book_author_name);
-            bookImg=view.findViewById(R.id.fragment_search_item_book_img);
-        }
-
-    }
-
-    public SearchFragmentAdapter(List<BookInfo> mList) {
-        this.mList = mList;
-    }
-
-
-    @NonNull
-    @Override
-    public SearchFragmentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_search_item,parent,false);
-        ViewHolder viewHolder=new ViewHolder(view);
-        view.setOnClickListener(this);
-        return viewHolder;
+    public int getCount() {
+        return 0;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchFragmentAdapter.ViewHolder holder, int position) {
-        BookInfo bookInfo=mList.get(position);
-        holder.bookName.setText(bookInfo.getBookName());
-        holder.bookAbout.setText(bookInfo.getBookAbout());
-        holder.bookAuthor.setText(bookInfo.getAuthorName());
-        if(bookInfo.getBookImg()!=null){
-            holder.bookImg.setImageBitmap(bookInfo.getBookImg());
-        }
-        holder.itemView.setTag(position);
+    public Object getItem(int position) {
+        return null;
     }
-
-    //动态添加图书相关
-    public void addItem(BookInfo bookInfo){
-        if(mList!=null){
-            mList.add(bookInfo);
-            notifyDataSetChanged();
-        }
-    }
-    //清空搜索到的图书列表
-    public void removeAll(){
-        if(mList!=null){
-            mList.clear();
-            notifyDataSetChanged();
-        }
-    }
-    public void setOnClickListener(OnItemClickSearchFragmentAdapter onClickListener){
-        this.listener=onClickListener;
-    }
-
 
     @Override
-    public int getItemCount() {
-        return mList.size();
+    public long getItemId(int position) {
+        return 0;
     }
 
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        return null;
+    }
 }

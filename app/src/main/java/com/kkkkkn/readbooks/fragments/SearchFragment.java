@@ -24,6 +24,12 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.OnItemClickSearchFragmentAdapter;
 import com.kkkkkn.readbooks.adapter.SearchFragmentAdapter;
 import com.kkkkkn.readbooks.entity.BookInfo;
+import com.kkkkkn.readbooks.util.BackgroundUtil;
+import com.kkkkkn.readbooks.util.BackgroundUtilListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -34,28 +40,18 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class SearchFragment extends Fragment  {
+public class SearchFragment extends Fragment implements BackgroundUtilListener {
     private static final String TAG = "搜索页面" ;
     private static SearchFragment searchFragment;
     private SearchView searchView;
     private RecyclerView listView;
+    private BackgroundUtilListener listener;
     private SearchFragmentAdapter adapter;
-    private Handler handler=new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch(msg.what){
-                case 1:
-                    System.out.println("接收到handler了");
-                    adapter.addItem((BookInfo) msg.obj);
-                    break;
-                case 2:
-                    adapter.removeAll();
-                    break;
-            }
-            return true;
-        }
-    });
 
+
+    private SearchFragment() {
+        this.listener=this;
+    }
 
     public static SearchFragment newInstance() {
         Log.i(TAG, "newInstance: ");
@@ -85,8 +81,17 @@ public class SearchFragment extends Fragment  {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //请求字符串不为空，开始进行网络请求
-                if(!query.equals(" ")){
-
+                if(!query.isEmpty()){
+                    BackgroundUtil backgroundUtil=BackgroundUtil.getInstance(getContext()).setListener(listener);
+                    //获取id和token,获取失败弹窗并跳转到登录界面
+                    int id=backgroundUtil.getAccountId();
+                    String token=backgroundUtil.getTokenStr();
+                    if(id==0||token.isEmpty()){
+                        Log.i(TAG, "onQueryTextSubmit: 查询用户信息失败，跳转至登录界面");
+                        return false;
+                    }
+                    //开始搜索图书
+                    backgroundUtil.searchBooks(query,backgroundUtil.getAccountId(),token);
                 }
                 System.out.println("文字提交"+query);
                 return false;
@@ -103,30 +108,6 @@ public class SearchFragment extends Fragment  {
         searchView.setFocusable(false);
 
 
-
-        //创建自定义Adapter的对象
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this.getContext());
-        listView.setLayoutManager(linearLayoutManager);
-        ArrayList<BookInfo> list=new ArrayList<>();
-        adapter = new SearchFragmentAdapter(list);
-        listView.setAdapter(adapter);
-        listView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(newState==RecyclerView.SCROLL_STATE_IDLE){
-                    if(listView.canScrollVertically(-1)){
-                        System.out.println("到达底部了");
-                    }
-                }
-            }
-        });
-        adapter.setOnClickListener(new OnItemClickSearchFragmentAdapter() {
-            @Override
-            public void onClickItem(View view, BookInfo bookInfo) {
-                Log.i(TAG, "onClickItem:  item点击了"+bookInfo.getBookName());
-            }
-        });
         return view;
     }
 
@@ -143,4 +124,45 @@ public class SearchFragment extends Fragment  {
 
     }
 
+    @Override
+    public void success(String str) {
+        if(str.isEmpty()){
+            Log.i(TAG, "success: 返回为空");
+            return;
+        }
+        String code;
+        try {
+            JSONObject jsonObject=new JSONObject(str);
+            code=(String)jsonObject.get("code");
+            if(!code.isEmpty()&&code.equals("success")){
+                JSONObject dataobject=(JSONObject) jsonObject.get("data");
+                int now_page=(Integer) dataobject.get("page");
+                int sum_page=(Integer) dataobject.get("allPage");
+                JSONArray booksObject=(JSONArray)dataobject.get("data");
+                if(booksObject.length()==0){
+                    Log.i(TAG, "success: 没有查询到数据");
+                }else{
+                    //查询到数据，添加到listview中
+
+                    Log.i(TAG, "success: "+booksObject.length());
+                }
+            }else if(!code.isEmpty()&&code.equals("error")){
+                String tip=(String)jsonObject.get("data");
+                Log.i(TAG, "success: "+tip);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void error(int codeId) {
+
+    }
+
+    @Override
+    public void timeOut(int requestId) {
+
+    }
 }

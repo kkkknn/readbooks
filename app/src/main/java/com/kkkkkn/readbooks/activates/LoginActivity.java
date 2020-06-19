@@ -19,6 +19,9 @@ import com.kkkkkn.readbooks.util.BackgroundUtilListener;
 import com.kkkkkn.readbooks.util.Md5Util;
 import com.kkkkkn.readbooks.view.MessageDialog;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Response;
@@ -72,6 +75,38 @@ public class LoginActivity extends BaseActivity {
                         public void success(String str) {
                             //解析返回字符串，判断调用是否成功
                             Log.i(TAG, "success: "+str);
+                            try {
+                                JSONObject jsonObject=new JSONObject(str);
+                                String code=(String)jsonObject.get("code");
+                                if(!code.isEmpty()&&code.equals("success")){
+                                    //接口请求成功,接收
+                                    JSONObject accountInfo= (JSONObject)jsonObject.get("data");
+                                    int id=accountInfo.getInt("account_id");
+                                    String tokenStr=(String) jsonObject.get("token");
+                                    BackgroundUtil backgroundUtil=BackgroundUtil.getInstance(LoginActivity.this);
+                                    boolean flag_id=backgroundUtil.setAccountId(id);
+                                    boolean flag_str=backgroundUtil.setTokenStr(tokenStr);
+                                    if(!flag_id||!flag_str){
+                                        Log.i(TAG, "error:保存相关信息失败");
+                                    }
+                                }else if(!code.isEmpty()&&code.equals("error")){
+                                    //接口请求失败
+                                    Log.i(TAG, "error: 接口返回失败");
+                                    String tip=(String)jsonObject.get("data");
+                                    DialogInterface.OnClickListener listener1=new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Log.i(TAG, "onClick: 点击了确定");
+                                            dialog.dismiss();
+
+                                        }
+                                    };
+                                    MessageDialog.showDialog(LoginActivity.this,"提示",tip,listener1,null);
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override

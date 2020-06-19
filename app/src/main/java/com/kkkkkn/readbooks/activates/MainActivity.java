@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivity implements BackgroundUtilListener
                 }else {
                     //登录失败，请检查填写数据是否有误
                 }
-                break;
+            break;
         }
 
     }

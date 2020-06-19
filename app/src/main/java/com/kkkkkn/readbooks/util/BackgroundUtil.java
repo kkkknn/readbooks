@@ -37,7 +37,7 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
     private BackgroundUtilListener listener=null;
     private OkHttpClient mOkHttpClient=null;
     private final static String loginURL="http://123.56.6.157:30480/Account/Login";
-    private final static String searchBooksURL="123.56.6.157:30480/Account/Login2";
+    private final static String searchBooksURL="http://123.56.6.157:30480/Book/SearchBook";
     private final static String addFavoriteBookURL="123.56.6.157:30480/Account/Login3";
     private final static String getBookInfoURL="123.56.6.157:30480/Account/Login4";
     private final static String getChapterContentURL="123.56.6.157:30480/Account/Login5";
@@ -69,15 +69,18 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
     }
 
     @Override
-    public void searchBooks(String keywordStr, int accountId) {
-        if(keywordStr==null||keywordStr.isEmpty()||accountId==0||mOkHttpClient==null){
-            listener.error(-1);
-        }
-        /*Request request=new Request.Builder()
-                .url("asdsad")
-                .post()
-                .build();*/
-       // mOkHttpClient.newCall().enqueue(this);
+    public void searchBooks(String keywordStr, int accountId,String tokenStr) {
+        FormBody body = new FormBody.Builder()
+                .add("str",keywordStr)
+                .add("mode",String.valueOf(2))
+                .add("page",String.valueOf(0)).build();
+        Request request = new Request.Builder()
+                .addHeader("token",tokenStr)
+                .addHeader("accountId",String.valueOf(accountId))
+                .url(searchBooksURL)
+                .post(body)
+                .build();
+        mOkHttpClient.newCall(request).enqueue(this);
     }
 
     @Override
@@ -102,6 +105,30 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
         }
         SharedPreferences sharedPreferences=mContext.getSharedPreferences(mContext.getString(R.string.PRE_NAME), Context.MODE_PRIVATE);
         return sharedPreferences.getString(mContext.getString(R.string.KEY_TOKEN),"");
+    }
+
+    @Override
+    public boolean setAccountId(int id) {
+        if(mContext==null||id==0){
+            return false;
+        }
+        SharedPreferences sharedPreferences=mContext.getSharedPreferences(mContext.getString(R.string.PRE_NAME), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putInt(mContext.getString(R.string.KEY_ID),id);
+        Log.i(TAG, "setAccountId: 写入缓存"+id);
+        return editor.commit();
+    }
+
+    @Override
+    public boolean setTokenStr(String str) {
+        if(mContext==null||str.isEmpty()){
+            return false;
+        }
+        SharedPreferences sharedPreferences=mContext.getSharedPreferences(mContext.getString(R.string.PRE_NAME), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString(mContext.getString(R.string.KEY_TOKEN),str);
+        Log.i(TAG, "setAccountId: 写入缓存"+str);
+        return editor.commit();
     }
 
     /**
@@ -155,19 +182,7 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
         String reqUrl=response.request().url().toString();
         String resStr= response.body().string();
         Log.i(TAG, "onResponse:  "+resStr);
-        switch(reqUrl){
-            case loginURL:
-                listener.success(resStr);
-
-                //保存返回的accountid和token字符串
-
-                break;
-            case searchBooksURL:
-
-                break;
-            default:
-                break;
-        }
+        listener.success(resStr);
     }
 
     /**
