@@ -1,6 +1,6 @@
 package com.kkkkkn.readbooks.entity;
 
-public class SearchBookInfo {
+public class SearchBookItem {
     private String bookName;
     private String authorName;
     private String bookUrl;

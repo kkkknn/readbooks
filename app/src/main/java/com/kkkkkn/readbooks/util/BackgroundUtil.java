@@ -39,7 +39,7 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
     private final static String loginURL="http://123.56.6.157:30480/Account/Login";
     private final static String searchBooksURL="http://123.56.6.157:30480/Book/SearchBook";
     private final static String addFavoriteBookURL="123.56.6.157:30480/Account/Login3";
-    private final static String getBookInfoURL="123.56.6.157:30480/Account/Login4";
+    private final static String getBookInfoURL="http://123.56.6.157:30480/Book/GetBookInfo";
     private final static String getChapterContentURL="123.56.6.157:30480/Account/Login5";
 
     private BackgroundUtil(Context context) {
@@ -90,7 +90,17 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
 
     @Override
     public void getBookInfo(String bookStr, int accountId, String tokenStr) {
-
+        //仅支持图书源2
+        FormBody body = new FormBody.Builder()
+                .add("bookUrl",bookStr)
+                .add("mode",Integer.toString(2)).build();
+        Request request = new Request.Builder()
+                .addHeader("token",tokenStr)
+                .addHeader("accountId",String.valueOf(accountId))
+                .url(getBookInfoURL)
+                .post(body)
+                .build();
+        mOkHttpClient.newCall(request).enqueue(this);
     }
 
     @Override

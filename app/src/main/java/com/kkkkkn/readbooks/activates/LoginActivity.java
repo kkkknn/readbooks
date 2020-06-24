@@ -89,6 +89,8 @@ public class LoginActivity extends BaseActivity {
                                     if(!flag_id||!flag_str){
                                         Log.i(TAG, "error:保存相关信息失败");
                                     }
+                                    //结束当前窗口
+                                    finish();
                                 }else if(!code.isEmpty()&&code.equals("error")){
                                     //接口请求失败
                                     Log.i(TAG, "error: 接口返回失败");

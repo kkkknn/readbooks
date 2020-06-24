@@ -4,21 +4,24 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.entity.BookInfo;
-
 import java.util.ArrayList;
-import java.util.List;
 
-public class SearchFragmentAdapter extends BaseAdapter {
+public class BookChaptersAdapter extends BaseAdapter {
+    private ArrayList<String> chapterList;
+    private Context mContext;
+    private LayoutInflater mInflater;
+
+    public BookChaptersAdapter(ArrayList<String> chapterList, Context mContext) {
+        this.chapterList = chapterList;
+        this.mContext = mContext;
+        this.mInflater = LayoutInflater.from(mContext);
+    }
+
     @Override
     public int getCount() {
         return 0;
@@ -37,5 +40,9 @@ public class SearchFragmentAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return null;
+    }
+
+    private class ViewHolder{
+        public TextView chapterName;
     }
 }

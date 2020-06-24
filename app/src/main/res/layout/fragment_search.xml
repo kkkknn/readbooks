@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         app:queryHint="请输入图书名字"/>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <ListView
         android:id="@+id/search_listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

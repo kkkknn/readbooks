@@ -61,7 +61,7 @@ public class BookInfo {
 
     @Override
     public String toString() {
-        return "BookInfo{" +
+        return "BookInfoActivity{" +
                 "bookName='" + bookName + '\'' +
                 ", bookUrl='" + bookUrl + '\'' +
                 ", authorName='" + authorName + '\'' +
