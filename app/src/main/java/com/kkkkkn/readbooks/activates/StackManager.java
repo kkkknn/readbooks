@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.util;
+package com.kkkkkn.readbooks.activates;
 
 import android.app.Activity;
 

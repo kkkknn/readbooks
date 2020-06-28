@@ -1,15 +1,11 @@
 package com.kkkkkn.readbooks.activates;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.kkkkkn.readbooks.util.StackManager;
 
 
 public class BaseActivity extends AppCompatActivity {

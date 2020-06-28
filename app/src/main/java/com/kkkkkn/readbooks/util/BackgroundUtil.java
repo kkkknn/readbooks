@@ -181,6 +181,7 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
     @Override
     public void onFailure(@NotNull Call call, @NotNull IOException e) {
         listener.error(123123123);
+        e.printStackTrace();
     }
 
     @Override

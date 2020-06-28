@@ -117,12 +117,14 @@ public class SearchFragment extends Fragment implements BackgroundUtilListener {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String url=searchBooksList.get(position).getBookUrl();
-                Toast.makeText(getContext(),url,Toast.LENGTH_SHORT).show();
+                SearchBookItem item=searchBooksList.get(position);
+                Toast.makeText(getContext(),item.getBookUrl(),Toast.LENGTH_SHORT).show();
                 //跳转到图书详情页面,携带图书对象/图书链接
                 Intent intent=new Intent(getContext(),BookInfoActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putString("bookUrl",url);
+                bundle.putString("bookUrl",item.getBookUrl());
+                bundle.putString("bookAuthorName",item.getAuthorName());
+                bundle.putString("bookName",item.getBookName());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
