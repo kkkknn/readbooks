@@ -103,9 +103,10 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
         mOkHttpClient.newCall(request).enqueue(this);
     }
 
+    //获取章节内容
     @Override
     public void getChapterContent(String chapterStr, int accountId, String tokenStr) {
-
+        
     }
 
     @Override

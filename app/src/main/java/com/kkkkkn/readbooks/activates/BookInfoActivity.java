@@ -3,10 +3,15 @@ package com.kkkkkn.readbooks.activates;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,8 +59,14 @@ public class BookInfoActivity extends AppCompatActivity implements BackgroundUti
                     }
                     break;
                 case 100:
-                    String imgUrl=(String) message.obj;
-                    Log.i(TAG, "imgUrl: "+imgUrl);
+                    String imageStr=(String) message.obj;
+                    //todo::加载在线图片
+                    if(!imageStr.isEmpty()){
+                        byte[] decode = Base64.decode(imageStr.split(",")[1], Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+                        book_img.setImageBitmap(bitmap);
+                    }
+                    Log.i(TAG, "imgUrl:  显示图片");
                     break;
             }
             return false;
@@ -74,6 +85,15 @@ public class BookInfoActivity extends AppCompatActivity implements BackgroundUti
         chapter_listView=findViewById(R.id.bookInfo_chapters_listView);
         chaptersAdapter=new BookChaptersAdapter(chapterList,getApplicationContext());
         chapter_listView.setAdapter(chaptersAdapter);
+        //设置章节点击跳转
+        chapter_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //读取章节，成功进行跳转，失败Toast显示
+                String[] arrs=chapterList.get(i);
+                Log.i(TAG, "onItemClick: "+arrs[0]+"||"+arrs[1]);
+            }
+        });
         //查找图书信息是否存在
         Intent intent=getIntent();
         Bundle bundle=intent.getExtras();
