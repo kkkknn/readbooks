@@ -21,6 +21,7 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.BookChaptersAdapter;
 import com.kkkkkn.readbooks.util.BackgroundUtil;
 import com.kkkkkn.readbooks.util.BackgroundUtilListener;
+import com.kkkkkn.readbooks.util.ImageLoaderUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,12 +60,11 @@ public class BookInfoActivity extends AppCompatActivity implements BackgroundUti
                     }
                     break;
                 case 100:
-                    String imageStr=(String) message.obj;
+                    Bitmap bitmap=(Bitmap) message.obj;
                     //todo::加载在线图片
-                    if(!imageStr.isEmpty()){
-                        byte[] decode = Base64.decode(imageStr.split(",")[1], Base64.DEFAULT);
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+                    if(bitmap!=null){
                         book_img.setImageBitmap(bitmap);
+                        Log.i(TAG, "imgUrl:  图片不为空");
                     }
                     Log.i(TAG, "imgUrl:  显示图片");
                     break;
@@ -147,12 +147,9 @@ public class BookInfoActivity extends AppCompatActivity implements BackgroundUti
             String bookImgUrl=(String) dataObject.getString("bookImg");
             int sourceId=dataObject.getInt("bookSourceId");
             JSONArray chapterArray=(JSONArray)dataObject.get("chapterInfo");
-            //handler发送消息，同时获取章节目录和图书图片
-            Message msgImg=mHandler.obtainMessage();
-            msgImg.what=(100);
-            msgImg.obj=bookImgUrl;
-            mHandler.sendMessage(msgImg);
-
+            //开启线程获取图书图片
+            new ImageThread(sourceId,bookImgUrl).start();
+            //handler发送消息，同时获取章节目录
             Message msgChapter=mHandler.obtainMessage();
             msgChapter.what=(90);
             msgChapter.obj=chapterArray;
@@ -177,5 +174,22 @@ public class BookInfoActivity extends AppCompatActivity implements BackgroundUti
 
         Log.i("yyy", "success: 超时");
     }
+    private class ImageThread extends Thread{
+        private int sourceId;
+        private String imgUrl;
 
+        public ImageThread(int sourceId, String imgUrl) {
+            this.sourceId = sourceId;
+            this.imgUrl = imgUrl;
+        }
+
+        @Override
+        public void run() {
+            Bitmap bitmap=ImageLoaderUtil.getInstance().getImage(imgUrl,getApplicationContext());
+            Message msgImg=mHandler.obtainMessage();
+            msgImg.what=(100);
+            msgImg.obj=bitmap;
+            mHandler.sendMessage(msgImg);
+        }
+    }
 }

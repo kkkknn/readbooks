@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="n">
-        <activity android:name=".activates.BookBrowsingActivity"></activity>
+        <activity android:name=".activates.BookBrowsingActivity"/>
         <activity android:name=".activates.BookInfoActivity" />
         <activity android:name=".activates.RegisterActivity" />
         <activity android:name=".activates.LoginActivity" />
