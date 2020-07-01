@@ -127,6 +127,7 @@ public class SearchFragment extends Fragment implements BackgroundUtilListener {
                 bundle.putString("bookName",item.getBookName());
                 intent.putExtras(bundle);
                 startActivity(intent);
+
             }
         });
         return view;
@@ -146,7 +147,7 @@ public class SearchFragment extends Fragment implements BackgroundUtilListener {
     }
 
     @Override
-    public void success(String str) {
+    public void success(int codeFlag,String str) {
         if(str.isEmpty()){
             Log.i(TAG, "success: 返回为空");
             return;

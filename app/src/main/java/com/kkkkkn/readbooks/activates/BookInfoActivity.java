@@ -92,6 +92,7 @@ public class BookInfoActivity extends AppCompatActivity implements BackgroundUti
                 //读取章节，成功进行跳转，失败Toast显示
                 String[] arrs=chapterList.get(i);
                 Log.i(TAG, "onItemClick: "+arrs[0]+"||"+arrs[1]);
+
             }
         });
         //查找图书信息是否存在
@@ -128,7 +129,7 @@ public class BookInfoActivity extends AppCompatActivity implements BackgroundUti
     }
 
     @Override
-    public void success(String str) {
+    public void success(int codeFlag,String str) {
         Log.i("yyy", "success: 成功");
         try {
             JSONObject jsonObject = new JSONObject(str);

@@ -156,7 +156,7 @@ public class MainActivity extends BaseActivity implements BackgroundUtilListener
     }
 
     @Override
-    public void success(String str) {
+    public void success(int codeFlag,String str) {
 
     }
 

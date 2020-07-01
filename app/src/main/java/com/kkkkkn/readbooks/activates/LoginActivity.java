@@ -72,7 +72,7 @@ public class LoginActivity extends BaseActivity {
                     BackgroundUtilListener listener=new BackgroundUtilListener() {
 
                         @Override
-                        public void success(String str) {
+                        public void success(int codeFlag,String str) {
                             //解析返回字符串，判断调用是否成功
                             Log.i(TAG, "success: "+str);
                             try {

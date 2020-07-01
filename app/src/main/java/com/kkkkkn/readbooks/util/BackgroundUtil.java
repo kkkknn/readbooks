@@ -36,11 +36,18 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
     private Context mContext=null;
     private BackgroundUtilListener listener=null;
     private OkHttpClient mOkHttpClient=null;
+
     private final static String loginURL="http://123.56.6.157:30480/Account/Login";
     private final static String searchBooksURL="http://123.56.6.157:30480/Book/SearchBook";
     private final static String addFavoriteBookURL="123.56.6.157:30480/Account/Login3";
     private final static String getBookInfoURL="http://123.56.6.157:30480/Book/GetBookInfo";
     private final static String getChapterContentURL="123.56.6.157:30480/Account/Login5";
+
+    public final static int LOGIN=1;
+    public final static int SEARCH=2;
+    public final static int FAVORITE=3;
+    public final static int INFO=4;
+    public final static int CHAPTER=5;
 
     private BackgroundUtil(Context context) {
         this.mContext=context.getApplicationContext();
@@ -192,9 +199,25 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
             return;
         }
         String reqUrl=response.request().url().toString();
-        String resStr= response.body().string();
-        Log.i(TAG, "onResponse:  "+resStr);
-        listener.success(resStr);
+        int reqFlag=0;
+        switch (reqUrl){
+            case loginURL:
+                reqFlag=LOGIN;
+                break;
+            case searchBooksURL:
+                reqFlag=SEARCH;
+                break;
+            case getBookInfoURL:
+                reqFlag=INFO;
+                break;
+        }
+        ResponseBody responseBody=response.body();
+        if(responseBody==null){
+            listener.error(reqFlag);
+        }else{
+            listener.success(reqFlag,responseBody.string());
+        }
+        Log.i(TAG, "onResponse:  reqUrl："+reqUrl+"flag:"+reqFlag);
     }
 
     /**
