@@ -91,8 +91,15 @@ public class BookInfoActivity extends AppCompatActivity implements BackgroundUti
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //读取章节，成功进行跳转，失败Toast显示
                 String[] arrs=chapterList.get(i);
-                Log.i(TAG, "onItemClick: "+arrs[0]+"||"+arrs[1]);
+                Log.i(TAG, "onItemClick: 章节名字"+arrs[0]+"||章节地址"+arrs[1]);
 
+                //跳转到浏览界面，携带章节名字及地址
+                Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString("chapterUrl",arrs[1]);
+                bundle.putString("chapterName",arrs[0]);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
         //查找图书信息是否存在

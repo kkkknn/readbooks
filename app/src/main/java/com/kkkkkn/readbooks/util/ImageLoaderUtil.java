@@ -43,14 +43,18 @@ public class ImageLoaderUtil {
         String urlMd5=Md5Util.str2md5(imgUrl);
         if(bitmaps.containsKey(urlMd5)){
             //当前内存中含有该图片，直接加载
+            Log.i(TAG, "getImage: 返回内存图像");
             return bitmaps.get(urlMd5);
         }
         //读取本地目录，查看是否含有该图片
         Bitmap sdBitmap=getImgBySDCard(urlMd5,context);
         if(sdBitmap!=null){
+
+            Log.i(TAG, "getImage: 返回本地目录图像");
             return sdBitmap;
         }
         //返回网络图像
+        Log.i(TAG, "getImage: 返回网络图像");
         return getImgByWeb(imgUrl,context);
     }
     //加载本地SD卡图像，成功后加载到缓存内
