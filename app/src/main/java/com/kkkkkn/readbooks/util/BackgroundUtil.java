@@ -41,7 +41,7 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
     private final static String searchBooksURL="http://123.56.6.157:30480/Book/SearchBook";
     private final static String addFavoriteBookURL="123.56.6.157:30480/Account/Login3";
     private final static String getBookInfoURL="http://123.56.6.157:30480/Book/GetBookInfo";
-    private final static String getChapterContentURL="123.56.6.157:30480/Account/Login5";
+    private final static String getChapterContentURL="http://123.56.6.157:30480/Book/GetChapter";
 
     public final static int LOGIN=1;
     public final static int SEARCH=2;
@@ -113,7 +113,16 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
     //获取章节内容
     @Override
     public void getChapterContent(String chapterStr, int accountId, String tokenStr) {
-        
+        FormBody body = new FormBody.Builder()
+                .add("chapterUrl",chapterStr)
+                .add("mode",Integer.toString(2)).build();
+        Request request = new Request.Builder()
+                .addHeader("token",tokenStr)
+                .addHeader("accountId",String.valueOf(accountId))
+                .url(getChapterContentURL)
+                .post(body)
+                .build();
+        mOkHttpClient.newCall(request).enqueue(this);
     }
 
     @Override
@@ -210,6 +219,8 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
             case getBookInfoURL:
                 reqFlag=INFO;
                 break;
+            case getChapterContentURL:
+                reqFlag=CHAPTER;
         }
         ResponseBody responseBody=response.body();
         if(responseBody==null){

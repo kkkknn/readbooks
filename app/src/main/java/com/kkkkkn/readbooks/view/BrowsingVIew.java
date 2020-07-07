@@ -2,6 +2,8 @@ package com.kkkkkn.readbooks.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,12 +26,8 @@ public class BrowsingVIew extends View {
 
     @Override
     public void draw(Canvas canvas) {
+        canvas.drawColor(Color.YELLOW);
         super.draw(canvas);
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
     }
 
 

@@ -4,14 +4,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.util.BackgroundUtil;
 import com.kkkkkn.readbooks.util.BackgroundUtilListener;
 
-public class BookBrowsingActivity extends AppCompatActivity implements BackgroundUtilListener {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class BookBrowsingActivity extends BaseActivity implements BackgroundUtilListener {
     private final static String TAG="BookBrowsingActivity";
+    private Handler mHandler= new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            return false;
+        }
+    });
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +44,6 @@ public class BookBrowsingActivity extends AppCompatActivity implements Backgroun
             finish();
         }
         backgroundUtil.getChapterContent(url,id,token);
-
     }
 
     @Override
@@ -40,7 +51,17 @@ public class BookBrowsingActivity extends AppCompatActivity implements Backgroun
         if(codeId==BackgroundUtil.CHAPTER){
             //开始解析json字符串
             Log.i(TAG, "success: "+str);
+            try {
+                JSONObject jsonObject=new JSONObject(str);
+                String code=jsonObject.getString("code");
+                String data=jsonObject.getString("chapterContent");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             //发送handle消息渲染更新界面
+            Message message=mHandler.obtainMessage();
+            message.what=22;
         }
     }
 
