@@ -14,9 +14,17 @@ import com.kkkkkn.readbooks.util.BackgroundUtilListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.helper.ChangeNotifyingArrayList;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookBrowsingActivity extends BaseActivity implements BackgroundUtilListener {
     private final static String TAG="BookBrowsingActivity";
+    private ArrayList<String[]> chapterList=new ArrayList<>();
+    private int arrayCount;
+    private String chapterUrl;
     private Handler mHandler= new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -30,11 +38,19 @@ public class BookBrowsingActivity extends BaseActivity implements BackgroundUtil
         setContentView(R.layout.activity_book_browsing);
 
         //获取携带信息
-        Intent intent=getIntent();
-        String name=intent.getStringExtra("chapterName");
-        String url=intent.getStringExtra("chapterUrl");
-        if(name==null||url==null||url.isEmpty()){
+        Bundle bundle=getIntent().getExtras();
+        if(bundle==null){
+            //没有携带信息
             finish();
+        }else{
+            //序列化处理，防止转换警告
+            Object obj=(Object) bundle.getSerializable("chapterList");
+            if (obj instanceof ArrayList<?>) {
+                for (Object o : (List<?>) obj) {
+                    chapterList.add((String[]) o);
+                }
+            }
+            arrayCount=bundle.getInt("chapterPoint");
         }
         //请求服务器
         BackgroundUtil backgroundUtil=BackgroundUtil.getInstance(getApplicationContext()).setListener(this);
@@ -43,25 +59,28 @@ public class BookBrowsingActivity extends BaseActivity implements BackgroundUtil
         if(id==0||token==null||token.isEmpty()){
             finish();
         }
-        backgroundUtil.getChapterContent(url,id,token);
+        backgroundUtil.getChapterContent(chapterList.get(arrayCount)[1],id,token);
     }
 
     @Override
     public void success(int codeId, String str) {
         if(codeId==BackgroundUtil.CHAPTER){
-            //开始解析json字符串
+            String code="",data="";//开始解析json字符串
             Log.i(TAG, "success: "+str);
             try {
                 JSONObject jsonObject=new JSONObject(str);
-                String code=jsonObject.getString("code");
-                String data=jsonObject.getString("chapterContent");
+                code=jsonObject.getString("code");
+                if(code.equals("success")){
+                    data=jsonObject.getString("chapterContent");
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            //发送handle消息渲染更新界面
-            Message message=mHandler.obtainMessage();
-            message.what=22;
+            if(!data.isEmpty()){
+                //发送handle消息渲染更新界面
+                Message message=mHandler.obtainMessage();
+                message.what=22;
+            }
         }
     }
 
