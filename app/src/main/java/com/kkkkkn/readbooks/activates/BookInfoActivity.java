@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookInfoActivity extends AppCompatActivity implements BackgroundUtilListener {
+public class BookInfoActivity extends BaseActivity implements BackgroundUtilListener {
     private final static String TAG="BookInfoActivity";
     private TextView book_name,author_name;
     private ImageView book_img;

@@ -11,6 +11,7 @@ import android.util.Log;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.util.BackgroundUtil;
 import com.kkkkkn.readbooks.util.BackgroundUtilListener;
+import com.kkkkkn.readbooks.view.BrowsingVIew;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,10 +25,19 @@ public class BookBrowsingActivity extends BaseActivity implements BackgroundUtil
     private final static String TAG="BookBrowsingActivity";
     private ArrayList<String[]> chapterList=new ArrayList<>();
     private int arrayCount;
-    private String chapterUrl;
+    private String chapterContent;
+    private BrowsingVIew browsingVIew;
     private Handler mHandler= new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            switch(msg.what){
+                case 22:
+                    chapterContent=(String)msg.obj;
+                    browsingVIew.postInvalidate();
+                    break;
+                case 23:
+                    break;
+            }
             return false;
         }
     });
@@ -36,6 +46,8 @@ public class BookBrowsingActivity extends BaseActivity implements BackgroundUtil
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_browsing);
+
+        browsingVIew=findViewById(R.id.browView);
 
         //获取携带信息
         Bundle bundle=getIntent().getExtras();
@@ -65,21 +77,22 @@ public class BookBrowsingActivity extends BaseActivity implements BackgroundUtil
     @Override
     public void success(int codeId, String str) {
         if(codeId==BackgroundUtil.CHAPTER){
-            String code="",data="";//开始解析json字符串
+            String code="",content="";//开始解析json字符串
             Log.i(TAG, "success: "+str);
             try {
                 JSONObject jsonObject=new JSONObject(str);
                 code=jsonObject.getString("code");
                 if(code.equals("success")){
-                    data=jsonObject.getString("chapterContent");
+                    JSONObject data=jsonObject.getJSONObject("data");
+                    content=data.getString("chapterContent");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if(!data.isEmpty()){
+            if(!content.isEmpty()){
                 //发送handle消息渲染更新界面
-                Message message=mHandler.obtainMessage();
-                message.what=22;
+                chapterContent=content;
+                mHandler.sendEmptyMessage(22);
             }
         }
     }
