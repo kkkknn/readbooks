@@ -33,6 +33,7 @@ public class BookBrowsingActivity extends BaseActivity implements BackgroundUtil
             switch(msg.what){
                 case 22:
                     chapterContent=(String)msg.obj;
+
                     browsingVIew.postInvalidate();
                     break;
                 case 23:

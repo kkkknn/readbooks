@@ -226,9 +226,11 @@ public class BackgroundUtil implements BackgroundUtilImp, Callback, Interceptor 
         if(responseBody==null){
             listener.error(reqFlag);
         }else{
+            //解析返回字符串，
+
             listener.success(reqFlag,responseBody.string());
         }
-        Log.i(TAG, "onResponse:  reqUrl："+reqUrl+"flag:"+reqFlag);
+        Log.i(TAG, "onResponse:  reqUrl："+reqUrl+"    flag:"+reqFlag);
     }
 
     /**

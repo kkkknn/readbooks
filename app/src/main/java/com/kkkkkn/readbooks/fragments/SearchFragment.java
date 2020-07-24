@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.activates.BookInfoActivity;
+import com.kkkkkn.readbooks.activates.LoginActivity;
+import com.kkkkkn.readbooks.activates.MainActivity;
 import com.kkkkkn.readbooks.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.entity.SearchBookItem;
 import com.kkkkkn.readbooks.util.BackgroundUtil;
@@ -180,7 +182,13 @@ public class SearchFragment extends Fragment implements BackgroundUtilListener {
                 }
             }else if(!code.isEmpty()&&code.equals("error")){
                 String tip=(String)jsonObject.get("data");
-                Log.i(TAG, "success: "+tip);
+                if("令牌验证失败，请重新尝试".equals(tip))
+                {
+                    //跳转回登录界面
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
+                }
+                Log.i(TAG, "error: "+tip);
             }
         } catch (JSONException e) {
             e.printStackTrace();

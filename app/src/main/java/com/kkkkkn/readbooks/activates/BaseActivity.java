@@ -29,4 +29,6 @@ public class BaseActivity extends AppCompatActivity {
         StackManager stackManager=StackManager.getInstance();
         stackManager.exitAllActivity();
     }
+
+    //跳转回登录界面
 }
