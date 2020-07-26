@@ -6,16 +6,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.text.Layout;
-import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Scroller;
 
 import androidx.annotation.Nullable;
@@ -91,7 +85,7 @@ public class BrowsingVIew extends View {
 
     //章节生成bitmap并保存到对象中
     public boolean chapter2Bitmap(String chapterContent){
-
+        return false;
     }
 
 
