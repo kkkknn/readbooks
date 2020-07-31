@@ -4,23 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".activates.MainActivity">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/vp"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/main_SearchView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content"/>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/main_SwipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="?android:attr/windowBackground"
-        app:itemBackground="@color/colorNav"
-        app:itemIconTint="@drawable/bottom_navigation_selector"
-        app:itemTextColor="@drawable/bottom_navigation_selector"
-        app:menu="@menu/navigation" />
+        android:layout_height="match_parent">
+
+        <GridView
+            android:id="@+id/main_booksGridView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="auto_fit"
+            android:scrollbars="none" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>

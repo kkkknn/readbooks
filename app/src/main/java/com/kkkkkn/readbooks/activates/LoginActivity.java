@@ -149,7 +149,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     //监听返回键，连续按2次直接退出程序
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK){
