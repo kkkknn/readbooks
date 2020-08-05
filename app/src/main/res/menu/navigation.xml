@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:icon="@drawable/ic_search_book_24"
         android:id="@+id/navigation_dashboard"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_search" />
 
-    <item
-        android:icon="@drawable/ic_bookshelf_24"
-        android:id="@+id/navigation_home"
-        android:title="@string/menu_main" />
 
     <item
         android:icon="@drawable/ic_book_setting_24"
         android:id="@+id/navigation_notifications"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_set" />
     <!--android:icon="@drawable/iv4_p"-->
 </menu>

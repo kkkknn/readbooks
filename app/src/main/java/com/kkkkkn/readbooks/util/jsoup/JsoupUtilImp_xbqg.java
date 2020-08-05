@@ -1,5 +1,8 @@
 package com.kkkkkn.readbooks.util.jsoup;
 
+import android.util.Log;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -22,7 +25,9 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
                 .timeout(8000)
                 .post();
         JSONObject retObject=new JSONObject();
+        JSONArray jsonArray=new JSONArray();
         Elements elements=document.body().select(".grid>tbody tr");
+        Log.i("TAG", "searchBook: "+elements.size());
         for (int i = 1; i < elements.size(); i++) {
             Element element=elements.get(i);
             Elements items=element.select("td");
@@ -30,8 +35,9 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
             jsonObject.put("authorName",items.get(2).text());
             jsonObject.put("bookName",items.get(0).select("a").text());
             jsonObject.put("bookUrl",items.get(0).select("a").attr("href"));
-            retObject.put("data",jsonObject);
+            jsonArray.put(jsonObject);
         }
+        retObject.put("data",jsonArray);
         return retObject.toString();
     }
 

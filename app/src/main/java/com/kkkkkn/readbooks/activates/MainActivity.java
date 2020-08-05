@@ -1,13 +1,18 @@
 package com.kkkkkn.readbooks.activates;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.BookShelfAdapter;
@@ -23,18 +28,13 @@ public class MainActivity extends BaseActivity  {
     private final static String TAG="主界面";
     private long lastBackClick;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SearchView searchView=findViewById(R.id.main_SearchView);
-        searchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(),LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         //读取本地目录，生成已下载图书列表
         GridView mGridView=findViewById(R.id.main_booksGridView);
@@ -69,5 +69,26 @@ public class MainActivity extends BaseActivity  {
             return false;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigation,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.navigation_notifications:
+                Toast.makeText(this,"点击了1",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.navigation_dashboard:
+                //点击了搜索框，开始跳转
+                Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
