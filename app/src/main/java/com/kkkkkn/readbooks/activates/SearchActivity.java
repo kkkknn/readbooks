@@ -5,6 +5,8 @@ import androidx.appcompat.widget.SearchView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -21,7 +23,22 @@ import java.util.TimerTask;
 
 public class SearchActivity extends BaseActivity {
     private SearchView searchView;
-    private String searchStr;
+    private static final int SHOW_BOOKLIST=11,LOAD_NEXTPAGE=12;
+    private Handler mHandle=new Handler(new Handler.Callback(){
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what){
+                case SHOW_BOOKLIST:
+
+                    break;
+                case LOAD_NEXTPAGE:
+
+                    break;
+
+            }
+            return false;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,23 +52,11 @@ public class SearchActivity extends BaseActivity {
                 //请求字符串不为空，开始进行网络请求
                 if(!query.isEmpty()){
                     //读取缓存数据，获取当前图书来源设置
-                    searchStr=query;
+
                     //listview相关初始化
-                    Thread thread=new Thread(){
-                        @Override
-                        public void run() {
-                            JsoupUtil jsoupUtil=new JsoupUtilImp_xbqg();
-                            try {
-                                String str=jsoupUtil.searchBook(searchStr);
-                                System.out.println("搜索结果："+str);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    thread.start();
+
+                    //请求搜索
+                    new RequestThread(query).start();
                 }
                 return false;
             }
@@ -64,5 +69,24 @@ public class SearchActivity extends BaseActivity {
         });
         searchView.setIconifiedByDefault(false);
 
+    }
+
+    private static class RequestThread extends Thread{
+        String str;
+        public RequestThread(String string) {
+            super();
+            this.str=string;
+        }
+
+        @Override
+        public void run() {
+            JsoupUtil jsoupUtil=new JsoupUtilImp_xbqg();
+            try {
+                String str=jsoupUtil.searchBook(this.str);
+                System.out.println("搜索结果："+str);
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
