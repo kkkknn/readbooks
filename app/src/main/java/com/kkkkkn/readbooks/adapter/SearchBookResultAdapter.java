@@ -4,21 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.entity.BookInfo;
-import com.kkkkkn.readbooks.entity.MainBooks;
 import com.kkkkkn.readbooks.entity.SearchBookItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SearchBookResultAdapter extends BaseAdapter {
     private ArrayList<SearchBookItem> resultList;
@@ -50,7 +42,7 @@ public class SearchBookResultAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder=null;
         if(convertView==null){
-            convertView=mInflater.inflate(R.layout.fragment_search_item,parent,false);
+            convertView=mInflater.inflate(R.layout.activity_search_item,parent,false);
             viewHolder=new ViewHolder();
             viewHolder.authorName=convertView.findViewById(R.id.fragment_search_item_book_author_name);
             viewHolder.bookName=convertView.findViewById(R.id.fragment_search_item_book_name);

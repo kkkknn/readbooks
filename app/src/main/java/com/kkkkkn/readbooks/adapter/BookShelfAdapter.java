@@ -50,7 +50,7 @@ public class BookShelfAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder=null;
         if(convertView==null){
-            convertView=mInflater.inflate(R.layout.fragment_main_item,parent,false);
+            convertView=mInflater.inflate(R.layout.activity_main_item,parent,false);
             viewHolder=new ViewHolder();
             viewHolder.bookImg=(ImageView)convertView.findViewById(R.id.book_img);
             convertView.setTag(viewHolder);

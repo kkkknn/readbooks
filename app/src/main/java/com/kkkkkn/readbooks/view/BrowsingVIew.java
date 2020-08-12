@@ -1,6 +1,7 @@
 package com.kkkkkn.readbooks.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -49,6 +50,7 @@ public class BrowsingVIew extends View {
         point.setTextSize(40f);
         point.setColor(Color.BLACK);
         point.setAntiAlias(true);
+        int height=getStatusBarHeight(getContext());
         String str="生命中的痛苦就像是盐的咸味一样，就这么多。而我们所能感受和体验的程度，取决于我们将它放在多大的容器里。你的心量越小，烦恼就多了，心量大了，能承受的就多了，生活就不那么苦了。用敞亮的心去看待世界，世界就是闪闪发光的，相反，用阴暗的心去看待世界，世界就永无发光之日。";
         float size=point.getTextSize();
         char[] arr=str.toCharArray();
@@ -61,7 +63,7 @@ public class BrowsingVIew extends View {
             }else{
                 count=num;
             }
-            canvas.drawText(arr,i*num,count,0,size*i+1,point);
+            canvas.drawText(arr,i*num,count,0,size*i+height+1,point);
         }
         Log.i("TAG", "onDraw: "+num);
         super.draw(canvas);
@@ -89,6 +91,11 @@ public class BrowsingVIew extends View {
     }
 
 
-
+    public int getStatusBarHeight(Context context) {
+        Resources resources = context.getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        int height = resources.getDimensionPixelSize(resourceId);
+        return height;
+    }
 
 }

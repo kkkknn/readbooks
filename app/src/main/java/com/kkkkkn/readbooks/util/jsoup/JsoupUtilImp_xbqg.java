@@ -62,18 +62,18 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
         retObject.put("latestChapter",latest_chapter);
         //循环添加所有章节
         Elements elementsChapters=document.body().select("#list>dl>dd");
-        ArrayList<String[]> arrayList=new ArrayList<>();
-        for (Element ele:elementsChapters) {
-            Elements item=ele.getElementsByTag("a");
+        JSONArray jsonArray=new JSONArray();
+        for (int i=0;i<elementsChapters.size();i++) {
+            Elements item=elementsChapters.get(i).getElementsByTag("a");
             String chapterUrl=item.attr("href");
             String chapterName=item.text();
-            String[] chapterInfo=new String[2];
-            chapterInfo[0]=chapterName;
-            chapterInfo[1]=chapterUrl;
-            arrayList.add(chapterInfo);
+            JSONObject object=new JSONObject();
+            object.put("chapterName",chapterName);
+            object.put("chapterUrl",chapterUrl);
+            jsonArray.put(i,object);
 
         }
-        retObject.put("chapterInfo",arrayList);
+        retObject.put("chapterInfo",jsonArray);
         return retObject.toString();
     }
 

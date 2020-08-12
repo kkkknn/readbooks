@@ -11,9 +11,6 @@
         <activity android:name=".activates.SearchActivity" />
         <activity android:name=".activates.BookBrowsingActivity" />
         <activity android:name=".activates.BookInfoActivity" />
-        <activity android:name=".activates.RegisterActivity" />
-        <activity android:name=".activates.LoginActivity" />
-        <activity android:name=".activates.AboutActivity" />
         <activity android:name=".activates.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

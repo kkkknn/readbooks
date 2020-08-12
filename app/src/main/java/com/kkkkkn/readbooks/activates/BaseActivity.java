@@ -1,6 +1,8 @@
 package com.kkkkkn.readbooks.activates;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -54,7 +56,7 @@ public class BaseActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
-        int statusBarHeight = getStatusBarHeight();
+        int statusBarHeight = getStatusBarHeight(this);
         int statusColor = getResources().getColor(R.color.colorBlue);
 
         View mTopView = mContentView.getChildAt(0);
@@ -72,13 +74,11 @@ public class BaseActivity extends AppCompatActivity {
         mContentView.addView(mTopView, 0, lp);
     }
 
-    private int getStatusBarHeight() {
-        int result = 0;
-        int resId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resId > 0) {
-            result = getResources().getDimensionPixelSize(resId);
-        }
-        return result;
+    public static int getStatusBarHeight(Context context) {
+        Resources resources = context.getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        int height = resources.getDimensionPixelSize(resourceId);
+        return height;
     }
 
     public static void setStatusBarColor(Activity activity, int colorId) {

@@ -9,8 +9,6 @@ import android.os.Message;
 import android.util.Log;
 
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.util.BackgroundUtil;
-import com.kkkkkn.readbooks.util.BackgroundUtilListener;
 import com.kkkkkn.readbooks.view.BrowsingVIew;
 
 import org.json.JSONException;
@@ -21,7 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookBrowsingActivity extends BaseActivity implements BackgroundUtilListener {
+public class BookBrowsingActivity extends BaseActivity {
     private final static String TAG="BookBrowsingActivity";
     private ArrayList<String[]> chapterList=new ArrayList<>();
     private int arrayCount;
@@ -65,46 +63,7 @@ public class BookBrowsingActivity extends BaseActivity implements BackgroundUtil
             }
             arrayCount=bundle.getInt("chapterPoint");
         }
-        //请求服务器
-        BackgroundUtil backgroundUtil=BackgroundUtil.getInstance(getApplicationContext()).setListener(this);
-        String token=backgroundUtil.getTokenStr();
-        int id=backgroundUtil.getAccountId();
-        if(id==0||token==null||token.isEmpty()){
-            finish();
-        }
-        backgroundUtil.getChapterContent(chapterList.get(arrayCount)[1],id,token);
-    }
-
-    @Override
-    public void success(int codeId, String str) {
-        if(codeId==BackgroundUtil.CHAPTER){
-            String code="",content="";//开始解析json字符串
-            Log.i(TAG, "success: "+str);
-            try {
-                JSONObject jsonObject=new JSONObject(str);
-                code=jsonObject.getString("code");
-                if(code.equals("success")){
-                    JSONObject data=jsonObject.getJSONObject("data");
-                    content=data.getString("chapterContent");
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if(!content.isEmpty()){
-                //发送handle消息渲染更新界面
-                chapterContent=content;
-                mHandler.sendEmptyMessage(22);
-            }
-        }
-    }
-
-    @Override
-    public void error(int codeId) {
 
     }
 
-    @Override
-    public void timeOut(int requestId) {
-
-    }
 }

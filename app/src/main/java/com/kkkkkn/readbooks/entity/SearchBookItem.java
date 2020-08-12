@@ -28,4 +28,13 @@ public class SearchBookItem {
     public void setBookUrl(String bookUrl) {
         this.bookUrl = bookUrl;
     }
+
+    @Override
+    public String toString() {
+        return "SearchBookItem{" +
+                "bookName='" + bookName + '\'' +
+                ", authorName='" + authorName + '\'' +
+                ", bookUrl='" + bookUrl + '\'' +
+                '}';
+    }
 }
