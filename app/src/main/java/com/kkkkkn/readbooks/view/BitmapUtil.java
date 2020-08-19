@@ -8,7 +8,9 @@ import android.text.TextPaint;
 
 import java.util.ArrayList;
 
-//DCL锁实现单例
+/**
+ * DCL锁实现单例
+ */
 public class BitmapUtil {
     private final static ArrayList<Bitmap> bitmapArrayList=new ArrayList<>();
     private static volatile BitmapUtil bitmapUtil=null;
@@ -58,6 +60,7 @@ public class BitmapUtil {
 
             }
         }
+        return 1;
     }
 
 }

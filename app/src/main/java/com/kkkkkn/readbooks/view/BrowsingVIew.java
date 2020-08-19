@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
 
@@ -22,21 +23,75 @@ import java.util.ArrayList;
 public class BrowsingVIew extends View {
     private Scroller scroller;
     private ArrayList<Bitmap> bitmapArrayList=new ArrayList<>();
+    private float mClipX=0;
+    private int mViewHeight=0,mViewWidth=0;
     public BrowsingVIew(Context context) {
         super(context);
         scroller=new Scroller(context);
+        mViewWidth=getWidth();
+        mViewHeight=getHeight();
+        testDraw();
     }
 
     public BrowsingVIew(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         scroller=new Scroller(context);
+        mViewWidth=getWidth();
+        mViewHeight=getHeight();
+        testDraw();
     }
 
     public BrowsingVIew(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         scroller=new Scroller(context);
+        mViewWidth=getWidth();
+        mViewHeight=getHeight();
+        testDraw();
     }
 
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mClipX=event.getX();
+        invalidate();
+        if(event.getAction()==MotionEvent.ACTION_UP){
+            performClick();
+        }
+        return true;
+    }
+
+    private void drawBitmap(Canvas canvas){
+
+        for (int i = 0; i < bitmapArrayList.size(); i++) {
+            canvas.save();
+            //尽绘制最上层图像
+            if(i==bitmapArrayList.size()-1){
+                canvas.clipRect(0,0,mClipX,mViewHeight);
+            }
+
+            canvas.drawBitmap(bitmapArrayList.get(i), 0, 0, null);
+            canvas.restore();
+        }
+
+    }
+
+    private void addBitmap(Bitmap bitmap){
+        if(bitmap!=null){
+            bitmapArrayList.add(bitmap);
+        }
+
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        mViewHeight=h;
+        mViewWidth=w;
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -46,8 +101,8 @@ public class BrowsingVIew extends View {
         canvas.translate(0,50);
         layoutopen.draw(canvas);
         canvas.restore();*/
+        drawBitmap(canvas);
         super.onDraw(canvas);
-        testDraw(canvas);
     }
 
 
@@ -56,13 +111,15 @@ public class BrowsingVIew extends View {
         return false;
     }
 
-    private void testDraw(Canvas canvas){
+    private void testDraw2(){
+        Canvas canvas=new Canvas();
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
-        Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, getWidth(), getHeight(), true);
+        mViewHeight=getHeight();
+        Bitmap mBitmap = Bitmap.createScaledBitmap(bitmap, getWidth(), mViewHeight, true);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawBitmap(bitmap2, 0, 0, paint);
+        canvas.drawBitmap(mBitmap, 0, 0, paint);
         TextPaint point = new TextPaint();
         point.setTextSize(40f);
         point.setColor(Color.BLACK);
@@ -80,6 +137,13 @@ public class BrowsingVIew extends View {
             canvas.drawText(arr, i * num, Math.min(count, num), 0, size * i + height, point);
         }
         Log.i("TAG", "onDraw: " + num + "||arr" + arr.length + "||line" + line);
+    }
+
+    private void testDraw(){
+        for(int i=0;i<5;i++){
+            bitmapArrayList.add(BitmapFactory.decodeResource(getResources(), R.drawable.browsingview));
+            bitmapArrayList.add(BitmapFactory.decodeResource(getResources(), R.drawable.bookshelf));
+        }
     }
 
     private int getStatusBarHeight(Context context) {
