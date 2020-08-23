@@ -9,12 +9,15 @@ import android.os.Message;
 import android.util.Log;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
+import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
 import com.kkkkkn.readbooks.view.BrowsingVIew;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.helper.ChangeNotifyingArrayList;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +34,12 @@ public class BookBrowsingActivity extends BaseActivity {
             switch(msg.what){
                 case 22:
                     chapterContent=(String)msg.obj;
-
-                    browsingVIew.postInvalidate();
+                    if(chapterContent!=null && !chapterContent.isEmpty() ){
+                        browsingVIew.testDraw();
+                    }
                     break;
                 case 23:
+
                     break;
             }
             return false;
@@ -62,8 +67,34 @@ public class BookBrowsingActivity extends BaseActivity {
                 }
             }
             arrayCount=bundle.getInt("chapterPoint");
+            new GetContentThread(chapterList.get(arrayCount)[1]).start();
         }
 
+    }
+
+    //获取章节文字的网络线程
+    private class GetContentThread extends Thread{
+        private String url;
+
+        public GetContentThread(String url){
+            this.url=url;
+        }
+        @Override
+        public void run() {
+            //获取当前点击章节文字
+            JsoupUtil util=new JsoupUtilImp_xbqg();
+            try {
+                String retStr=util.getChapterContent(url);
+                JSONObject jsonObject=new JSONObject(retStr);
+                String text=jsonObject.getString("chapterContent");
+                Message msg=mHandler.obtainMessage();
+                msg.obj=text;
+                msg.what=22;
+                mHandler.sendMessage(msg);
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
