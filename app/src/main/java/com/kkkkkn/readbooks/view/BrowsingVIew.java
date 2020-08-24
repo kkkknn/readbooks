@@ -29,7 +29,7 @@ public class BrowsingVIew extends View {
     //控件宽高
     private int mViewHeight = 0, mViewWidth = 0;
     //当前章节文字
-    private String textContent;
+    private char[] textContent;
     //当前页面显示章节进度    textContent的count
     private int textContentCount = 0;
     //当前章节总字数
@@ -50,6 +50,8 @@ public class BrowsingVIew extends View {
     private Bitmap lastBitmap;
     //下一页bitmap
     private Bitmap nextBitmap;
+    //当前页bitmap
+    private Bitmap thisBitmap;
     //状态栏高度
     private int statusBarHeight;
     //绘图相关变量
@@ -89,12 +91,14 @@ public class BrowsingVIew extends View {
     }
 
     public void setTextSize(float textSize) {
+        mTextPaint.setTextSize(textSize);
         this.textSize = textSize;
         //重新计算行数和每行字数
         computeValue();
     }
 
     public void setTextColor(int textColor) {
+        mTextPaint.setColor(textColor);
         this.textColor = textColor;
     }
 
@@ -107,7 +111,7 @@ public class BrowsingVIew extends View {
     }
 
     public void setTextContent(String textContent) {
-        this.textContent = textContent;
+        this.textContent = textContent.toCharArray();
         textSum = textContent.toCharArray().length;
     }
 
@@ -155,6 +159,10 @@ public class BrowsingVIew extends View {
 
     //绘制阅读界面 2个页面  1，当前页面  2，根据当前手势判断绘制上一页/下一页
     private void drawBitmap(Canvas canvas) {
+        if (thisBitmap == null) {
+            center_drawBitmap(canvas);
+            return;
+        }
         //判断绘制模式
         if (drawStyle == 1) {
             //首先绘制下一页
@@ -163,31 +171,73 @@ public class BrowsingVIew extends View {
             //首先绘制上一页
             right_drawBitmap(canvas);
         }
-        //绘制背景
 
-        //计算要绘制的文字
+    }
 
-        //绘制文字
-        for (int i = 0; i < bitmapArrayList.size(); i++) {
-            canvas.save();
-            //仅裁切最上层图像
-            if (i == bitmapArrayList.size() - 1) {
-                canvas.clipRect(0, 0, mClipX, mViewHeight);
-            }
-
-            canvas.drawBitmap(bitmapArrayList.get(i), 0, 0, null);
-            canvas.restore();
+    //绘制当前阅读界面
+    private void center_drawBitmap(Canvas canvas) {
+        //无文字情况直接退出
+        if (textSum == 0) {
+            Log.i(TAG, "center_drawBitmap: 直接退出，芜湖");
+            return;
         }
+        thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, true);
+        canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
 
+        //计算要绘制文字数量
+        int textPageSum = linePageSum * textLineSum;
+        int drawLineNum = linePageSum;
+        if ((textContentCount + textPageSum) > textSum) {
+            textPageSum = textSum - textPageSum;
+            drawLineNum = textPageSum % textLineSum == 0 ? textPageSum / textLineSum : textPageSum / textLineSum + 1;
+        }
+        //绘制文字
+        for (int i = 0; i < drawLineNum; i++) {
+            canvas.drawText(textContent, textLineSum*i, textLineSum, 0, (float) (textSize * i + statusBarHeight), mTextPaint);
+        }
     }
 
     //左滑动绘制情况
     private void left_drawBitmap(Canvas canvas) {
         //判断文字情况，无文字直接推出绘制
-        if (textContent == null || textContent.isEmpty()) {
+        if (textSum == 0 || thisBitmap == null) {
             return;
         }
         //绘制下一页面内容
+        if (nextBitmap == null) {
+            nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, true);
+            canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
+            //计算要绘制文字数量
+            int textPageSum = linePageSum * textLineSum;
+            int drawLineNum = linePageSum;
+            if ((textContentCount + textPageSum) > textSum) {
+                textPageSum = textSum - textPageSum;
+                drawLineNum = textPageSum % textLineSum == 0 ? textPageSum / textLineSum : textPageSum / textLineSum + 1;
+            }
+            int draw_textIndex = textContentCount + linePageSum * textLineSum;
+            //绘制文字
+            for (int i = 0; i < drawLineNum; i++) {
+
+                canvas.drawText(textContent, draw_textIndex, textLineSum, 0, textSize * i + statusBarHeight, mTextPaint);
+                draw_textIndex += textLineSum;
+            }
+
+        } else {
+            canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
+        }
+        canvas.save();
+        //绘制当前页内容 裁切并绘制
+        canvas.clipRect(0, 0, mClipX, mViewHeight);
+        canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
+        canvas.restore();
+    }
+
+    //右滑动绘制情况
+    private void right_drawBitmap(Canvas canvas) {
+        //判断文字情况，无文字直接推出绘制
+        if (textSum == 0 || thisBitmap == null) {
+            return;
+        }
         if (lastBitmap == null) {
             lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, true);
             canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
@@ -198,17 +248,22 @@ public class BrowsingVIew extends View {
                 textPageSum = textSum - textPageSum;
                 drawLineNum = textPageSum % textLineSum == 0 ? textPageSum / textLineSum : textPageSum / textLineSum + 1;
             }
+            int draw_textIndex = textContentCount - linePageSum * textLineSum;
             //绘制文字
-            for(int i=0;i<drawLineNum;i++){
-                //canvas.drawText();
+            for (int i = 0; i < drawLineNum; i++) {
+
+                canvas.drawText(textContent, textLineSum*i, textLineSum, 0, textSize * i + statusBarHeight, mTextPaint);
+                draw_textIndex += textLineSum;
             }
 
+        } else {
+            canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
         }
-
-    }
-
-    //右滑动绘制情况
-    private void right_drawBitmap(Canvas canvas) {
+        canvas.save();
+        //绘制当前页内容 裁切并绘制
+        canvas.clipRect(0, 0, mClipX, mViewHeight);
+        canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
+        canvas.restore();
 
     }
 
@@ -219,6 +274,7 @@ public class BrowsingVIew extends View {
         mViewWidth = w;
         super.onSizeChanged(w, h, oldw, oldh);
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {

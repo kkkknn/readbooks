@@ -3,6 +3,7 @@ package com.kkkkkn.readbooks.activates;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -35,7 +36,10 @@ public class BookBrowsingActivity extends BaseActivity {
                 case 22:
                     chapterContent=(String)msg.obj;
                     if(chapterContent!=null && !chapterContent.isEmpty() ){
-                        browsingVIew.testDraw();
+                        browsingVIew.setTextContent(chapterContent);
+                        browsingVIew.setTextColor(Color.BLACK);
+                        browsingVIew.setTextSize(20f);
+                        browsingVIew.invalidate();
                     }
                     break;
                 case 23:
