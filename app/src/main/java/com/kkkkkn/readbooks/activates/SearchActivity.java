@@ -84,7 +84,9 @@ public class SearchActivity extends BaseActivity {
                     //读取缓存数据，获取当前图书来源设置
 
                     //请求搜索
-                    new RequestThread(query).start();
+                    new RequestThread(query,1).start();
+                    //防止抬起落下都触发此事件
+                    searchView.setIconified(true);
                 }
                 return false;
             }
@@ -100,10 +102,12 @@ public class SearchActivity extends BaseActivity {
     }
 
     private class RequestThread extends Thread{
+        int sourceId;
         String str;
-        public RequestThread(String string) {
+        public RequestThread(String string,int id) {
             super();
             this.str=string;
+            this.sourceId=id;
         }
 
         @Override
