@@ -208,7 +208,6 @@ public class BrowsingVIew extends View {
         for (int i = 0; i < drawLineNum; i++) {
             canvas.drawText(textContent, textContentCount+textLineSum*i, textLineSum, drawOffset, (float) (textSize * i + statusBarHeight), mTextPaint);
         }
-
         canvas.restore();
     }
 

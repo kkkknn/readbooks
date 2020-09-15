@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.TextPaint;
 
+import com.kkkkkn.readbooks.util.bookbrowsing.BrowsingViewInfo;
+
 import java.util.ArrayList;
 
 /**
@@ -47,7 +49,6 @@ public class BitmapUtil {
         mTextPaint.setTextSize(40f);
         mTextPaint.setColor(Color.BLACK);
         mTextPaint.setAntiAlias(true);
-
 
         return false;
     }
