@@ -78,6 +78,27 @@ public class BrowsingViewInfo {
         mBrowsingViewInfo.backgroundBitmap=backgroundBitmap;
         return mBrowsingViewInfo;
     }
+    public Bitmap getBackgroundBitmap(){
+        return backgroundBitmap;
+    }
+    public TextPaint getmTextPaint(){
+        return mTextPaint;
+    }
+
+    public Paint getmPaint(){
+        return mPaint;
+    }
+    public int getLinePageSum(){
+        return linePageSum;
+    }
+
+    public int getStatusBarHeight() {
+        return statusBarHeight;
+    }
+
+    public int getTextLineSum() {
+        return textLineSum;
+    }
 
     private void computeTextConfig(){
         //计算行文字数量

@@ -132,6 +132,9 @@ public class BrowsingVIew extends View {
                 drawStyle = 0;
                 performClick();
                 //判断是否需要自动滑动回去
+
+                //判断是否需要变化当前页
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 //判断向左还是向右滑动
