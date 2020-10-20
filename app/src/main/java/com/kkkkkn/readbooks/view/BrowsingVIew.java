@@ -134,7 +134,15 @@ public class BrowsingVIew extends View {
                 //判断是否需要自动滑动回去
 
                 //判断是否需要变化当前页
+                //获取中点长度，
+                int centerX=mViewWidth/2;
+                if(event.getX()<centerX){
+                    //左滑动自动绘制+下一页变当前页
 
+                }else if(event.getX()>centerX) {
+                    //右滑动自动绘制+上一页变当前页
+                    
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 //判断向左还是向右滑动
@@ -290,7 +298,7 @@ public class BrowsingVIew extends View {
 
 
     //章节生成bitmap并保存到对象中
-    public boolean chapter2Bitmap(String chapterContent) {
+   /* public boolean chapter2Bitmap(String chapterContent) {
         if (chapterContent == null || chapterContent.isEmpty()) {
             return false;
         }
@@ -373,7 +381,7 @@ public class BrowsingVIew extends View {
         bitmapArrayList.add(testDraw2());
         bitmapArrayList.add(BitmapFactory.decodeResource(getResources(), R.drawable.bookshelf));
         invalidate();
-    }
+    }*/
 
     private int getStatusBarHeight(Context context) {
         Resources resources = context.getResources();
