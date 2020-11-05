@@ -100,5 +100,15 @@ public class BookBrowsingActivity extends BaseActivity {
             }
         }
     }
+    
+    //获取当期时间
+    private String getTimeStr(){
+        return null;
+    }
+
+    //获取当前电量
+    private String getBatteryStr(){
+        return null;
+    }
 
 }
