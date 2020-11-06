@@ -2,7 +2,10 @@ package com.kkkkkn.readbooks.activates;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,6 +52,25 @@ public class BookBrowsingActivity extends BaseActivity {
             return false;
         }
     });
+
+    //静态广播
+    private final BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_TIME_TICK)) {
+                Log.i(TAG, "onReceive: 时间变化广播接收");
+                //开始设置浏览界面时间
+
+            }else if(action.equals(Intent.ACTION_BATTERY_CHANGED)){
+                //获取当前电量
+                int level = intent.getIntExtra("level", 0);
+                Log.i(TAG, "onReceive: 电量变化广播接收"+level);
+                //开始设置浏览界面电量
+
+            }
+        }
+    };
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +95,11 @@ public class BookBrowsingActivity extends BaseActivity {
             arrayCount=bundle.getInt("chapterPoint");
             new GetContentThread(chapterList.get(arrayCount)[1]).start();
         }
-
+        //注册静态广播
+        IntentFilter filter=new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(broadcastReceiver,filter);
     }
 
     //获取章节文字的网络线程
@@ -103,6 +129,7 @@ public class BookBrowsingActivity extends BaseActivity {
     
     //获取当期时间
     private String getTimeStr(){
+
         return null;
     }
 
@@ -111,4 +138,9 @@ public class BookBrowsingActivity extends BaseActivity {
         return null;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //取消注册静态广播
+    }
 }
