@@ -23,7 +23,14 @@ import java.util.ArrayList;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class BrowsingVIew extends View {
-
+    //当前时间字符串
+    private String timeStr;
+    //当前章节名字
+    private String chapterNameStr;
+    //当前章节/总章节字符串
+    private String progressStr;
+    //当前电量字符串
+    private String batteryStr;
     //当前划屏位置
     private float mClipX = 0;
     //左右滑动偏移量 变量
@@ -58,8 +65,41 @@ public class BrowsingVIew extends View {
     private int statusBarHeight;
     //绘图相关变量
     private TextPaint mTextPaint;
+
     private Paint mPaint;
     private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
+
+    public String getTimeStr() {
+        return timeStr;
+    }
+
+    public void setTimeStr(String timeStr) {
+        this.timeStr = timeStr;
+    }
+
+    public String getChapterNameStr() {
+        return chapterNameStr;
+    }
+
+    public void setChapterNameStr(String chapterNameStr) {
+        this.chapterNameStr = chapterNameStr;
+    }
+
+    public String getProgressStr() {
+        return progressStr;
+    }
+
+    public void setProgressStr(String progressStr) {
+        this.progressStr = progressStr;
+    }
+
+    public String getBatteryStr() {
+        return batteryStr;
+    }
+
+    public void setBatteryStr(String batteryStr) {
+        this.batteryStr = batteryStr;
+    }
 
     public BrowsingVIew(Context context) {
         super(context);
@@ -218,13 +258,6 @@ public class BrowsingVIew extends View {
             textPageSum = textSum - textPageSum;
             drawLineNum = textPageSum % textLineSum == 0 ? textPageSum / textLineSum : textPageSum / textLineSum + 1;
         }
-        /*if(drawStyle==1){
-            canvas.clipRect(0, 0, offsetX, mViewHeight);
-            drawOffset=-(int)(mViewWidth-offsetX);
-        }else if(drawStyle==2){
-            canvas.clipRect(offsetX, 0, mViewWidth, mViewHeight);
-            drawOffset=(int)offsetX;
-        }*/
         canvas.clipRect(offsetX, 0, mViewWidth, mViewHeight);
         drawOffset=(int)offsetX;
         canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
@@ -242,6 +275,14 @@ public class BrowsingVIew extends View {
             }
 
         }
+        //绘制当前章节名字，时间，电量，浏览进度
+        if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null){
+            canvas.drawText(timeStr,drawOffset,statusBarHeight-textSize,mTextPaint);
+            canvas.drawText(chapterNameStr,drawOffset,mViewHeight,mTextPaint);
+            canvas.drawText(batteryStr,drawOffset+(mViewWidth-textSize*batteryStr.length()),statusBarHeight-textSize,mTextPaint);
+            canvas.drawText(progressStr,drawOffset+(mViewWidth-textSize*batteryStr.length()),mViewHeight,mTextPaint);
+        }
+
         canvas.restore();
     }
 
@@ -265,6 +306,13 @@ public class BrowsingVIew extends View {
         for (int i = 0; i < drawLineNum; i++) {
             canvas.drawText(textContent, textLineSum*i, textLineSum, 0, textSize * i + statusBarHeight, mTextPaint);
             draw_textIndex += textLineSum;
+        }
+        //绘制当前章节名字，时间，电量，浏览进度
+        if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null) {
+            canvas.drawText(timeStr,0,statusBarHeight-textSize,mTextPaint);
+            canvas.drawText(chapterNameStr,0,mViewHeight,mTextPaint);
+            canvas.drawText(batteryStr,(mViewWidth-textSize*batteryStr.length()),statusBarHeight-textSize,mTextPaint);
+            canvas.drawText(progressStr,(mViewWidth-textSize*batteryStr.length()),mViewHeight,mTextPaint);
         }
 
     }
@@ -295,6 +343,14 @@ public class BrowsingVIew extends View {
             draw_textIndex += textLineSum;
 
         }
+        //绘制当前章节名字，时间，电量，浏览进度
+        if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null) {
+            canvas.drawText(timeStr,0,statusBarHeight-textSize,mTextPaint);
+            canvas.drawText(chapterNameStr,0,mViewHeight,mTextPaint);
+            canvas.drawText(batteryStr,(mViewWidth-textSize*batteryStr.length()),statusBarHeight-textSize,mTextPaint);
+            canvas.drawText(progressStr,(mViewWidth-textSize*batteryStr.length()),mViewHeight,mTextPaint);
+
+        }
 
     }
 
@@ -313,15 +369,7 @@ public class BrowsingVIew extends View {
         drawBitmap(canvas);
     }
 
-    //todo:绘制页面其他信息，时间，电量，当前章节名字，当前页数/本章页数
-    private void drawInfo(Bitmap bitmap){
-        if(bitmap==null){
-            return ;
-        }
-        Canvas canvas=new Canvas(bitmap);
-        canvas.drawText("当前电量：100%",0,0,mPaint);
 
-    }
 
 
     private int getStatusBarHeight(Context context) {

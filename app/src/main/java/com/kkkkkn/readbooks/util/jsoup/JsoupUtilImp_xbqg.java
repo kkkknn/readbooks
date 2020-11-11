@@ -87,6 +87,7 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
         String chapter_name=document.body().select(".bookname>h1").text();
         retObject.put("chapterName",chapter_name);
         String contentStr=document.body().select("#content").text();
+        Log.i("asdasd", "getChapterContent: "+contentStr);
         String adStr=document.body().select("#content>p").text();
         String valueStr=contentStr.replace(adStr,"");
         retObject.put("chapterContent",valueStr);

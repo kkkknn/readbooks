@@ -60,14 +60,24 @@ public class BookBrowsingActivity extends BaseActivity {
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_TIME_TICK)) {
                 Log.i(TAG, "onReceive: 时间变化广播接收");
+                //获得系统的时间，单位为毫秒,转换为妙
+                long totalMilliSeconds = System.currentTimeMillis();
+                long totalSeconds = totalMilliSeconds / 1000;
+                //求出现在的分
+                long totalMinutes = totalSeconds / 60;
+                long currentMinute = totalMinutes % 60;
+                //求出现在的小时
+                long totalHour = totalMinutes / 60;
+                long currentHour = totalHour % 24;
                 //开始设置浏览界面时间
-
+                String timeStr=currentHour+":"+currentMinute;
+                browsingVIew.setTimeStr(timeStr);
             }else if(action.equals(Intent.ACTION_BATTERY_CHANGED)){
                 //获取当前电量
                 int level = intent.getIntExtra("level", 0);
                 Log.i(TAG, "onReceive: 电量变化广播接收"+level);
                 //开始设置浏览界面电量
-
+                browsingVIew.setBatteryStr(level+"%");
             }
         }
     };
@@ -94,6 +104,8 @@ public class BookBrowsingActivity extends BaseActivity {
             }
             arrayCount=bundle.getInt("chapterPoint");
             new GetContentThread(chapterList.get(arrayCount)[1]).start();
+            browsingVIew.setChapterNameStr(chapterList.get(arrayCount)[0]);
+            browsingVIew.setProgressStr(arrayCount+"/"+chapterList.size());
         }
         //注册静态广播
         IntentFilter filter=new IntentFilter();
@@ -125,17 +137,6 @@ public class BookBrowsingActivity extends BaseActivity {
                 e.printStackTrace();
             }
         }
-    }
-    
-    //获取当期时间
-    private String getTimeStr(){
-
-        return null;
-    }
-
-    //获取当前电量
-    private String getBatteryStr(){
-        return null;
     }
 
     @Override
