@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -86,11 +87,13 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
         JSONObject retObject=new JSONObject();
         String chapter_name=document.body().select(".bookname>h1").text();
         retObject.put("chapterName",chapter_name);
-        String contentStr=document.body().select("#content").text();
-        Log.i("asdasd", "getChapterContent: "+contentStr);
-        String adStr=document.body().select("#content>p").text();
-        String valueStr=contentStr.replace(adStr,"");
-        retObject.put("chapterContent",valueStr);
+        //过滤字符串
+        String contentHtml=document.body().select("#content").html();
+        String footHtml=document.body().select("#content>p").html();
+        String valueHtml=contentHtml.replace(footHtml,"");
+        String valStr=Jsoup.clean(valueHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+        String contentStr=valStr.replace("&nbsp;&nbsp;&nbsp;&nbsp;","    ");
+        retObject.put("chapterContent",contentStr);
         return retObject.toString();
     }
 }

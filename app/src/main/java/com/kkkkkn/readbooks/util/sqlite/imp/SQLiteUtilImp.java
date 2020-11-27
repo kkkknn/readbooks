@@ -8,6 +8,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.kkkkkn.readbooks.util.sqlite.entity.SQLBookInfo;
 import com.kkkkkn.readbooks.util.sqlite.inf.SQLiteUtil;
 
 import java.util.ArrayList;
@@ -94,6 +95,11 @@ public class SQLiteUtilImp extends SQLiteOpenHelper implements SQLiteUtil  {
         //根据图书id查询
         
         return null;
+    }
+
+    @Override
+    public boolean UpdateBook(SQLBookInfo sqlBookInfo) {
+        return false;
     }
 
 

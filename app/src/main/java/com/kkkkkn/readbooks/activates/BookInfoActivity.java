@@ -121,7 +121,6 @@ public class BookInfoActivity extends BaseActivity {
         author_name.setText(authorName);
         book_name.setText(bookName);
 
-
         new RequestThread(url).start();
     }
 

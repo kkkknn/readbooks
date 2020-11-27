@@ -29,23 +29,23 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/bookInfo_authorName"
+                android:id="@+id/bookInfo_bookName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="作者名字"
+                android:text="图书名字"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorBlack"
                 android:textSize="24sp" />
 
             <TextView
-                android:id="@+id/bookInfo_bookName"
+                android:id="@+id/bookInfo_authorName"
                 android:textSize="20sp"
                 android:textAlignment="textStart"
                 android:padding="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="图书名字"/>
+                android:text="作者名字"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="wrap_content"
