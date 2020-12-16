@@ -25,9 +25,9 @@ import com.kkkkkn.readbooks.R;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class BrowsingVIew extends View {
+    private final static String TAG="BrowsingVIew";
     //当前时间字符串
     private String timeStr;
     //当前章节名字
@@ -45,7 +45,7 @@ public class BrowsingVIew extends View {
     //当前章节文字
     private char[] textContent;
     //当前章节字符串
-    private String contentStr;
+    private String[] contentArr;
     //当前页面显示章节进度    textContent的count
     private int textContentCount = 0;
     //当前章节总字数
@@ -160,10 +160,9 @@ public class BrowsingVIew extends View {
 
     }
 
-    public void setTextContent(String textContent) {
-        this.textContent = textContent.toCharArray();
-        contentStr=textContent;
-        textSum = textContent.toCharArray().length;
+    public void setTextContent(String[] content) {
+        this.contentArr=content;
+        textSum = content.toCharArray().length;
     }
 
     @Override
@@ -267,7 +266,9 @@ public class BrowsingVIew extends View {
         if ((textContentCount + textPageSum) >= textSum) {
             textPageSum = textSum - textPageSum;
         }
-
+        //Log.i(TAG, "center_drawBitmap: 当前页面绘制文字数量"+textPageSum);
+        String content=contentStr.substring(0,textPageSum);
+        //Log.i(TAG, "center_drawBitmap: 当前页面绘制文字"+content);
         //裁切绘制
         canvas.save();
 
@@ -278,7 +279,7 @@ public class BrowsingVIew extends View {
 
         StaticLayout layout =StaticLayout.Builder.obtain(contentStr,textContentCount,textPageSum,mTextPaint,mViewWidth)
                 .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                .setLineSpacing(0.0F,1F)
+                .setLineSpacing(0F,1F)
                 .setIncludePad(false)
                 .build();
         canvas.translate(offsetX,0);

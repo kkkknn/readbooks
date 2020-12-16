@@ -1,6 +1,7 @@
 package com.kkkkkn.readbooks.util.jsoup;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -11,6 +12,6 @@ public interface JsoupUtil {
     //获取图书详情,返回json字符串
     String getBookInfo(String book_url) throws IOException, JSONException;
     //获取章节内容,返回json字符串
-    String getChapterContent(String chapter_url) throws IOException, JSONException;
+    JSONObject getChapterContent(String chapter_url) throws IOException, JSONException;
     //
 }

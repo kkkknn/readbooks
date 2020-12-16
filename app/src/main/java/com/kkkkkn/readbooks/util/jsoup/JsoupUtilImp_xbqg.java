@@ -79,7 +79,7 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
     }
 
     @Override
-    public String getChapterContent(String chapter_url) throws IOException, JSONException {
+    public JSONObject getChapterContent(String chapter_url) throws IOException, JSONException {
         Document document=Jsoup.connect(URL+chapter_url)
                 .timeout(8000)
                 .ignoreContentType(true)
@@ -93,7 +93,9 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
         String valueHtml=contentHtml.replace(footHtml,"");
         String valStr=Jsoup.clean(valueHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
         String contentStr=valStr.replace("&nbsp;&nbsp;&nbsp;&nbsp;","    ");
-        retObject.put("chapterContent",contentStr);
-        return retObject.toString();
+        String[] strArr=valStr.split("&nbsp;&nbsp;&nbsp;&nbsp;");
+        retObject.put("chapterContent",strArr);
+        Log.i("TAG", "getChapterContent: "+strArr.length);
+        return retObject;
     }
 }

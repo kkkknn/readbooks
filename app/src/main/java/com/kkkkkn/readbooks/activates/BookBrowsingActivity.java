@@ -30,14 +30,14 @@ public class BookBrowsingActivity extends BaseActivity {
     private final static String TAG="BookBrowsingActivity";
     private ArrayList<String[]> chapterList=new ArrayList<>();
     private int arrayCount;
-    private String chapterContent;
+    private String[] chapterContent;
     private BrowsingVIew browsingVIew;
     private Handler mHandler= new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch(msg.what){
                 case 22:
-                    chapterContent=(String)msg.obj;
+                    chapterContent=(String[])msg.obj;
                     if(chapterContent!=null && !chapterContent.isEmpty() ){
                         browsingVIew.setTextContent(chapterContent);
                         browsingVIew.setTextColor(Color.BLACK);
@@ -126,11 +126,10 @@ public class BookBrowsingActivity extends BaseActivity {
             //获取当前点击章节文字
             JsoupUtil util=new JsoupUtilImp_xbqg();
             try {
-                String retStr=util.getChapterContent(url);
-                JSONObject jsonObject=new JSONObject(retStr);
-                String text=jsonObject.getString("chapterContent");
+                JSONObject jsonObject=util.getChapterContent(url);
+                String[] arr_text=(String[])jsonObject.get("chapterContent");
                 Message msg=mHandler.obtainMessage();
-                msg.obj=text;
+                msg.obj=arr_text;
                 msg.what=22;
                 mHandler.sendMessage(msg);
             } catch (IOException | JSONException e) {
