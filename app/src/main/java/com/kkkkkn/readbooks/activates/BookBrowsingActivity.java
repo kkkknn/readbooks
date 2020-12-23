@@ -38,7 +38,7 @@ public class BookBrowsingActivity extends BaseActivity {
             switch(msg.what){
                 case 22:
                     chapterContent=(String[])msg.obj;
-                    if(chapterContent!=null && !chapterContent.isEmpty() ){
+                    if(chapterContent!=null && chapterContent.length>0 ){
                         browsingVIew.setTextContent(chapterContent);
                         browsingVIew.setTextColor(Color.BLACK);
                         browsingVIew.setTextSize(20f);

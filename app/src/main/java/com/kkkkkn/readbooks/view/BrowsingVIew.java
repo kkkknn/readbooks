@@ -34,6 +34,10 @@ public class BrowsingVIew extends View {
     private String chapterNameStr;
     //当前章节/总章节字符串
     private String progressStr;
+    //当前章节
+    private int mChapterCount;
+    //总章节数量
+    private int mChapterLen;
     //当前电量字符串
     private String batteryStr;
     //当前划屏位置
@@ -42,14 +46,10 @@ public class BrowsingVIew extends View {
     private float offsetX=0;
     //控件宽高
     private int mViewHeight = 0, mViewWidth = 0;
-    //当前章节文字
-    private char[] textContent;
     //当前章节字符串
     private String[] contentArr;
     //当前页面显示章节进度    textContent的count
     private int textContentCount = 0;
-    //当前章节总字数
-    private int textSum;
     //文字大小
     private float textSize = 40f;
     //文字颜色
@@ -64,10 +64,16 @@ public class BrowsingVIew extends View {
     private boolean isAdsorb = false;
     //上一页bitmap
     private static Bitmap lastBitmap;
+    private int last_arrCount;
+    private int last_lineCount;
     //下一页bitmap
     private static Bitmap nextBitmap;
+    private int next_arrCount;
+    private int next_lineCount;
     //当前页bitmap
     private static Bitmap thisBitmap;
+    private int this_arrCount;
+    private int this_lineCount;
     //状态栏高度
     private int statusBarHeight;
     //绘图相关变量
@@ -162,7 +168,6 @@ public class BrowsingVIew extends View {
 
     public void setTextContent(String[] content) {
         this.contentArr=content;
-        textSum = content.toCharArray().length;
     }
 
     @Override
@@ -236,11 +241,11 @@ public class BrowsingVIew extends View {
     //绘制阅读界面 2个页面  1，当前页面  2，根据当前手势判断绘制上一页/下一页
     private void drawBitmap(Canvas canvas) {
         //判断是否需要绘制
-        if(textContentCount<0||textContent==null||textContentCount>=textSum){
+        if(contentArr==null||contentArr.length==0){
             Log.i(TAG, "drawBitmap: 超出长度或没有文字内容，忽略绘制");
             return;
         }
-        boolean flag=false;
+        /*boolean flag=false;
         //根据drawstyle 决定绘制左边还是右边
         if (drawStyle == 1) {
             flag=left_drawBitmap(canvas);
@@ -252,11 +257,78 @@ public class BrowsingVIew extends View {
         //绘制当前页
         if (textSum == 0 || thisBitmap == null||textContentCount<=0||flag) {
             center_drawBitmap(canvas);
-        }
+        }*/
+        drawTextView(canvas);
     }
 
+    //绘制浏览文字
+    private void drawTextView(Canvas canvas){
+        int arrCount;
+        int lineCount;
+        float drawX=0,drawY=statusBarHeight;
+        switch (drawStyle){
+            case 0:
+                drawX=offsetX;
+                if(thisBitmap==null){
+                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                }
+                canvas.drawBitmap(thisBitmap, drawX, 0, mPaint);
+                canvas.translate(drawX,0);
+                arrCount=this_arrCount;
+                lineCount=this_lineCount;
+                Log.i(TAG, "drawTextView: 绘制当前界面");
+                break;
+            case 1:
+                if(nextBitmap==null){
+                    nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                }
+                drawX=0;
+                canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
+                arrCount=next_arrCount;
+                lineCount=next_lineCount;
+
+                Log.i(TAG, "drawTextView: 绘制下一界面");
+                break;
+            case 2:
+                if(lastBitmap==null){
+                    lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                }
+                drawX=0;
+                canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
+                arrCount=last_arrCount;
+                lineCount=last_lineCount;
+                Log.i(TAG, "drawTextView: 绘制上一界面");
+                break;
+            default:
+                return;
+        }
+        canvas.save();
+        for (int i=0;i<linePageSum;i++){
+            if(lineCount==contentArr.length){
+                break;
+            }
+            String str=contentArr[lineCount];
+            int drawLen=str.length()-arrCount;
+            do {
+                if(drawLen>textLineSum){
+                    canvas.drawText(str,arrCount,(arrCount+textLineSum),drawX,drawY,mTextPaint);
+                    drawLen-=textLineSum;
+                    arrCount+=textLineSum;
+                }else{
+                    canvas.drawText(str,arrCount,(arrCount+drawLen),drawX,drawY,mTextPaint);
+                    drawLen=0;
+                    lineCount++;
+                }
+                drawY+=textSize;
+            }while (drawLen!=0);
+        }
+
+        canvas.restore();
+
+        return;
+    }
     //绘制当前阅读界面
-    private void center_drawBitmap(Canvas canvas) {
+    /*private void center_drawBitmap(Canvas canvas) {
         if(thisBitmap==null){
             thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, true);
         }
@@ -271,10 +343,9 @@ public class BrowsingVIew extends View {
         //Log.i(TAG, "center_drawBitmap: 当前页面绘制文字"+content);
         //裁切绘制
         canvas.save();
-
         //canvas.clipRect(offsetX, 0, mViewWidth, mViewHeight);
         canvas.drawBitmap(thisBitmap,offsetX,0, mPaint);
-
+        canvas.setBitmap(thisBitmap);
         //canvas.drawRoundRect(0,0,offsetX,mViewHeight,5,5,mPaint);
 
         StaticLayout layout =StaticLayout.Builder.obtain(contentStr,textContentCount,textPageSum,mTextPaint,mViewWidth)
@@ -287,13 +358,13 @@ public class BrowsingVIew extends View {
         canvas.restore();
 
         //绘制当前章节名字，时间，电量，浏览进度
-        /*if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null){
+        *//*if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null){
             canvas.drawText(timeStr,drawOffset,statusBarHeight-textSize,mTextPaint);
             canvas.drawText(chapterNameStr,drawOffset,mViewHeight,mTextPaint);
             canvas.drawText(batteryStr,drawOffset+(mViewWidth-textSize*batteryStr.length()),statusBarHeight-textSize,mTextPaint);
             canvas.drawText(progressStr,drawOffset+(mViewWidth-textSize*batteryStr.length()),mViewHeight,mTextPaint);
-        }
-*/
+        }*//*
+
     }
 
     //左滑动绘制情况
@@ -325,12 +396,12 @@ public class BrowsingVIew extends View {
         canvas.restore();
 
         //绘制当前章节名字，时间，电量，浏览进度
-       /* if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null) {
+       *//* if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null) {
             canvas.drawText(timeStr,0,statusBarHeight-textSize,mTextPaint);
             canvas.drawText(chapterNameStr,0,mViewHeight,mTextPaint);
             canvas.drawText(batteryStr,(mViewWidth-textSize*batteryStr.length()),statusBarHeight-textSize,mTextPaint);
             canvas.drawText(progressStr,(mViewWidth-textSize*batteryStr.length()),mViewHeight,mTextPaint);
-        }*/
+        }*//*
         return true;
     }
 
@@ -360,16 +431,16 @@ public class BrowsingVIew extends View {
         layout.draw(canvas);
         canvas.restore();
         //绘制当前章节名字，时间，电量，浏览进度
-        /*if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null) {
+        *//*if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null) {
             canvas.drawText(timeStr,0,statusBarHeight-textSize,mTextPaint);
             canvas.drawText(chapterNameStr,0,mViewHeight,mTextPaint);
             canvas.drawText(batteryStr,(mViewWidth-textSize*batteryStr.length()),statusBarHeight-textSize,mTextPaint);
             canvas.drawText(progressStr,(mViewWidth-textSize*batteryStr.length()),mViewHeight,mTextPaint);
 
-        }*/
+        }*//*
 
         return true;
-    }
+    }*/
 
 
     @Override
