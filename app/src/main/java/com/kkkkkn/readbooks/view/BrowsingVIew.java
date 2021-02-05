@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.view;
+     package com.kkkkkn.readbooks.view;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -149,21 +149,15 @@ public class BrowsingVIew extends View {
     public void setTextSize(float textSize) {
         mTextPaint.setTextSize(textSize);
         this.textSize = textSize;
-        //重新计算行数和每行字数
-        computeValue();
+
+        //计算页面 绘制的总字数，行数，每行字数
+        textLineSum = mViewWidth / (int) textSize;
+        linePageSum = (mViewHeight - statusBarHeight) / (int) textSize;
     }
 
     public void setTextColor(int textColor) {
         mTextPaint.setColor(textColor);
         this.textColor = textColor;
-    }
-
-    //计算绘制相关变量
-    private void computeValue() {
-        //计算页面 绘制的总字数，行数，每行字数
-        textLineSum = mViewWidth / (int) textSize;
-        linePageSum = (mViewHeight - statusBarHeight) / (int) textSize;
-
     }
 
     public void setTextContent(String[] content) {
@@ -303,144 +297,44 @@ public class BrowsingVIew extends View {
                 return;
         }
         canvas.save();
+        //绘制当前页面
         for (int i=0;i<linePageSum;i++){
             if(lineCount==contentArr.length){
-                break;
+                return;
             }
             String str=contentArr[lineCount];
-            int drawLen=str.length()-arrCount;
-            do {
-                if(drawLen>textLineSum){
+            int drawLen=str.length();
+            if(drawLen==0){
+                Log.i(TAG, "drawTextView: contentArr[i] 长度为0 ");
+                lineCount++;
+                continue;
+            }
+
+            while(drawLen!=0){
+                if(drawLen>=textLineSum){
+                    Log.i(TAG, "drawTextView111: "+str+"||"+arrCount+"||"+drawLen+"||"+textLineSum);
+
                     canvas.drawText(str,arrCount,(arrCount+textLineSum),drawX,drawY,mTextPaint);
                     drawLen-=textLineSum;
                     arrCount+=textLineSum;
+                    Log.i(TAG, "drawTextView: while绘制，111："+drawLen);
                 }else{
-                    canvas.drawText(str,arrCount,(arrCount+drawLen),drawX,drawY,mTextPaint);
+                    Log.i(TAG, "drawTextView: "+arrCount+"||"+textLineSum);
+                    canvas.drawText(str,arrCount,str.length(),drawX,drawY,mTextPaint);
                     drawLen=0;
                     lineCount++;
+                    Log.i(TAG, "drawTextView: while绘制，222："+drawLen);
                 }
                 drawY+=textSize;
-            }while (drawLen!=0);
+            }
         }
 
         canvas.restore();
 
         return;
     }
-    //绘制当前阅读界面
-    /*private void center_drawBitmap(Canvas canvas) {
-        if(thisBitmap==null){
-            thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, true);
-        }
-
-        //计算要绘制文字数量
-        int textPageSum = linePageSum * textLineSum;
-        if ((textContentCount + textPageSum) >= textSum) {
-            textPageSum = textSum - textPageSum;
-        }
-        //Log.i(TAG, "center_drawBitmap: 当前页面绘制文字数量"+textPageSum);
-        String content=contentStr.substring(0,textPageSum);
-        //Log.i(TAG, "center_drawBitmap: 当前页面绘制文字"+content);
-        //裁切绘制
-        canvas.save();
-        //canvas.clipRect(offsetX, 0, mViewWidth, mViewHeight);
-        canvas.drawBitmap(thisBitmap,offsetX,0, mPaint);
-        canvas.setBitmap(thisBitmap);
-        //canvas.drawRoundRect(0,0,offsetX,mViewHeight,5,5,mPaint);
-
-        StaticLayout layout =StaticLayout.Builder.obtain(contentStr,textContentCount,textPageSum,mTextPaint,mViewWidth)
-                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                .setLineSpacing(0F,1F)
-                .setIncludePad(false)
-                .build();
-        canvas.translate(offsetX,0);
-        layout.draw(canvas);
-        canvas.restore();
-
-        //绘制当前章节名字，时间，电量，浏览进度
-        *//*if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null){
-            canvas.drawText(timeStr,drawOffset,statusBarHeight-textSize,mTextPaint);
-            canvas.drawText(chapterNameStr,drawOffset,mViewHeight,mTextPaint);
-            canvas.drawText(batteryStr,drawOffset+(mViewWidth-textSize*batteryStr.length()),statusBarHeight-textSize,mTextPaint);
-            canvas.drawText(progressStr,drawOffset+(mViewWidth-textSize*batteryStr.length()),mViewHeight,mTextPaint);
-        }*//*
-
-    }
-
-    //左滑动绘制情况
-    private boolean left_drawBitmap(Canvas canvas) {
-        //计算要绘制文字数量
-        int startIndex = textContentCount + linePageSum * textLineSum;
-        int endIndex=startIndex+linePageSum * textLineSum;
-        if(startIndex>=textSum) {
-            Log.i(TAG, "left_drawBitmap: 到头了，最左边");
-            return false;
-        }else if(endIndex>textSum){
-            endIndex=textSum-startIndex;
-        }
-
-        //绘制下一页面内容
-        if (nextBitmap == null) {
-            nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, true);
-        }
-        canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
-
-        StaticLayout layout =StaticLayout.Builder.obtain(contentStr,startIndex,endIndex,mTextPaint,mViewWidth)
-                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                .setLineSpacing(0.0F,1F)
-                .setIncludePad(false)
-                .build();
-
-        canvas.save();
-        layout.draw(canvas);
-        canvas.restore();
-
-        //绘制当前章节名字，时间，电量，浏览进度
-       *//* if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null) {
-            canvas.drawText(timeStr,0,statusBarHeight-textSize,mTextPaint);
-            canvas.drawText(chapterNameStr,0,mViewHeight,mTextPaint);
-            canvas.drawText(batteryStr,(mViewWidth-textSize*batteryStr.length()),statusBarHeight-textSize,mTextPaint);
-            canvas.drawText(progressStr,(mViewWidth-textSize*batteryStr.length()),mViewHeight,mTextPaint);
-        }*//*
-        return true;
-    }
-
-    //右滑动绘制情况
-    private boolean right_drawBitmap(Canvas canvas) {
-        //计算要绘制文字数量
-        int startIndex = textContentCount - linePageSum * textLineSum;
-        int endIndex = startIndex+linePageSum * textLineSum;
-        if(startIndex<0) {
-            Log.i(TAG, "right_drawBitmap: 到头了，最左边");
-            return false;
-        }
-
-        if (lastBitmap == null) {
-            lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, true);
-        }
-        canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
 
 
-        StaticLayout layout =StaticLayout.Builder.obtain(contentStr,startIndex,endIndex,mTextPaint,mViewWidth)
-                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                .setLineSpacing(0.0F,1F)
-                .setIncludePad(false)
-                .build();
-
-        canvas.save();
-        layout.draw(canvas);
-        canvas.restore();
-        //绘制当前章节名字，时间，电量，浏览进度
-        *//*if(timeStr!=null&&chapterNameStr!=null&&batteryStr!=null&&progressStr!=null) {
-            canvas.drawText(timeStr,0,statusBarHeight-textSize,mTextPaint);
-            canvas.drawText(chapterNameStr,0,mViewHeight,mTextPaint);
-            canvas.drawText(batteryStr,(mViewWidth-textSize*batteryStr.length()),statusBarHeight-textSize,mTextPaint);
-            canvas.drawText(progressStr,(mViewWidth-textSize*batteryStr.length()),mViewHeight,mTextPaint);
-
-        }*//*
-
-        return true;
-    }*/
 
 
     @Override

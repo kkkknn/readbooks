@@ -13,10 +13,11 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class JsoupUtilImp_xbqg implements JsoupUtil {
     //来源网址
-    private final static String URL="http://www.xbiquge.la";
+    private final static String URL="http://www.paoshuzw.com";
 
     @Override
     public String searchBook(String str) throws IOException, JSONException {
