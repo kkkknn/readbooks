@@ -276,7 +276,7 @@ public class BrowsingVIew extends View {
                 if(nextBitmap==null){
                     nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
-                drawX=0;
+                drawX=offsetX;
                 canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
                 arrCount=next_arrCount;
                 lineCount=next_lineCount;
@@ -287,7 +287,7 @@ public class BrowsingVIew extends View {
                 if(lastBitmap==null){
                     lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
-                drawX=0;
+                drawX=offsetX;
                 canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
                 arrCount=last_arrCount;
                 lineCount=last_lineCount;
@@ -311,29 +311,32 @@ public class BrowsingVIew extends View {
             }
 
             while(drawLen!=0){
-                if(drawLen>=textLineSum){
-                    Log.i(TAG, "drawTextView111: "+str+"||"+arrCount+"||"+drawLen+"||"+textLineSum);
+                if(drawLen>textLineSum){
+                    //Log.i(TAG, "drawTextView111: "+str+"||"+arrCount+"||"+drawLen+"||"+textLineSum);
 
                     canvas.drawText(str,arrCount,(arrCount+textLineSum),drawX,drawY,mTextPaint);
                     drawLen-=textLineSum;
                     arrCount+=textLineSum;
-                    Log.i(TAG, "drawTextView: while绘制，111："+drawLen);
+                    //Log.i(TAG, "drawTextView: while绘制，111："+drawLen);
                 }else{
-                    Log.i(TAG, "drawTextView: "+arrCount+"||"+textLineSum);
+                    //Log.i(TAG, "drawTextView: "+arrCount+"||"+textLineSum);
                     canvas.drawText(str,arrCount,str.length(),drawX,drawY,mTextPaint);
                     drawLen=0;
+                    arrCount=0;
                     lineCount++;
-                    Log.i(TAG, "drawTextView: while绘制，222："+drawLen);
+                    //Log.i(TAG, "drawTextView: while绘制，222："+drawLen);
                 }
                 drawY+=textSize;
             }
         }
-
         canvas.restore();
 
         return;
     }
 
+    private void drawTextPage(Canvas canvas,int offset,Bitmap bitmap,int arrCount,int lineCount){
+
+    }
 
 
 
