@@ -93,8 +93,8 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
         String footHtml=document.body().select("#content>p").html();
         String valueHtml=contentHtml.replace(footHtml,"");
         String valStr=Jsoup.clean(valueHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
-        String contentStr=valStr.replace("&nbsp;&nbsp;&nbsp;&nbsp;","    ");
-        String[] strArr=valStr.split("&nbsp;&nbsp;&nbsp;&nbsp;");
+        String contentStr=valStr.replaceAll("\\n \\n","");
+        String[] strArr=contentStr.split("&nbsp;&nbsp;&nbsp;&nbsp;");
         retObject.put("chapterContent",strArr);
         Log.i("TAG", "getChapterContent: "+strArr.length);
         return retObject;

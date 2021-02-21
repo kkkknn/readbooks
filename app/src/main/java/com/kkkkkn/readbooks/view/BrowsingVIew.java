@@ -239,20 +239,50 @@ public class BrowsingVIew extends View {
             Log.i(TAG, "drawBitmap: 超出长度或没有文字内容，忽略绘制");
             return;
         }
-        /*boolean flag=false;
+
+        int arrCount;
+        int lineCount;
+        float drawX=0,drawY=statusBarHeight;
+
         //根据drawstyle 决定绘制左边还是右边
-        if (drawStyle == 1) {
-            flag=left_drawBitmap(canvas);
-        } else if (drawStyle == 2) {
-            flag=right_drawBitmap(canvas);
-        }else{
-            flag=true;
+        switch (drawStyle) {
+            case 0:
+                drawX = offsetX;
+                if (thisBitmap == null) {
+                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                }
+                canvas.drawBitmap(thisBitmap, drawX, 0, mPaint);
+                canvas.translate(drawX, 0);
+                arrCount = this_arrCount;
+                lineCount = this_lineCount;
+                Log.i(TAG, "drawTextView: 绘制当前界面");
+                break;
+            case 1:
+                if (nextBitmap == null) {
+                    nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                }
+                drawX = 0;
+                canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
+                arrCount = next_arrCount;
+                lineCount = next_lineCount;
+
+                Log.i(TAG, "drawTextView: 绘制下一界面");
+                break;
+            case 2:
+                if (lastBitmap == null) {
+                    lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                }
+                drawX = 0;
+                canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
+                arrCount = last_arrCount;
+                lineCount = last_lineCount;
+                Log.i(TAG, "drawTextView: 绘制上一界面");
+                break;
+            default:
+                return;
         }
-        //绘制当前页
-        if (textSum == 0 || thisBitmap == null||textContentCount<=0||flag) {
-            center_drawBitmap(canvas);
-        }*/
-        drawTextView(canvas);
+
+
     }
 
     //绘制浏览文字
@@ -276,7 +306,7 @@ public class BrowsingVIew extends View {
                 if(nextBitmap==null){
                     nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
-                drawX=offsetX;
+                drawX=0;
                 canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
                 arrCount=next_arrCount;
                 lineCount=next_lineCount;
@@ -287,7 +317,7 @@ public class BrowsingVIew extends View {
                 if(lastBitmap==null){
                     lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
-                drawX=offsetX;
+                drawX=0;
                 canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
                 arrCount=last_arrCount;
                 lineCount=last_lineCount;
@@ -297,13 +327,15 @@ public class BrowsingVIew extends View {
                 return;
         }
         canvas.save();
-        //绘制当前页面
+        //判断当前style 决定是否要绘制上、下一页面  绘制当前页面
+
         for (int i=0;i<linePageSum;i++){
             if(lineCount==contentArr.length){
                 return;
             }
             String str=contentArr[lineCount];
             int drawLen=str.length();
+
             if(drawLen==0){
                 Log.i(TAG, "drawTextView: contentArr[i] 长度为0 ");
                 lineCount++;
@@ -317,6 +349,7 @@ public class BrowsingVIew extends View {
                     canvas.drawText(str,arrCount,(arrCount+textLineSum),drawX,drawY,mTextPaint);
                     drawLen-=textLineSum;
                     arrCount+=textLineSum;
+
                     //Log.i(TAG, "drawTextView: while绘制，111："+drawLen);
                 }else{
                     //Log.i(TAG, "drawTextView: "+arrCount+"||"+textLineSum);
@@ -332,10 +365,6 @@ public class BrowsingVIew extends View {
         canvas.restore();
 
         return;
-    }
-
-    private void drawTextPage(Canvas canvas,int offset,Bitmap bitmap,int arrCount,int lineCount){
-
     }
 
 
