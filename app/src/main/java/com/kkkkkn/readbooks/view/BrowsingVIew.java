@@ -7,26 +7,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.text.Layout;
-import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Scroller;
 
 import androidx.annotation.Nullable;
 
 import com.kkkkkn.readbooks.R;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
-
-public class BrowsingVIew extends View {
+     public class BrowsingVIew extends View {
     private final static String TAG="BrowsingVIew";
     //当前时间字符串
     private String timeStr;
@@ -74,6 +66,9 @@ public class BrowsingVIew extends View {
     private static Bitmap thisBitmap;
     private int this_arrCount;
     private int this_lineCount;
+    //绘制翻页锚点
+    private int skip_arrCount;
+    private int skip_lineCount;
     //状态栏高度
     private int statusBarHeight;
     //绘图相关变量
@@ -177,35 +172,31 @@ public class BrowsingVIew extends View {
                 mClipX = event.getX();
                 break;
             case MotionEvent.ACTION_UP:
-                mClipX = -1;
-                offsetX=0;
-                //判断是否需要自动滑动回去
+
                 //判断是否需要变化当前页
                 if(drawStyle==1){
-                    //左滑动自动绘制+下一页变当前页
+                    //下一页变当前页
                     Log.i(TAG, "onTouchEvent: 向左滑动抬起");
                     /*while(mClipX>0){
                         mClipX--;
                         invalidate();
                     }*/
-                    textContentCount+=textLineSum*linePageSum;
+                    //todo：要修改此处
+                    last_arrCount=this_arrCount;
+                    last_lineCount=this_lineCount;
+                    this_arrCount=skip_arrCount;
+                    this_lineCount=skip_lineCount;
                 }else if(drawStyle==2) {
-                    //右滑动自动绘制+上一页变当前页
+                    //上一页变当前页
                     Log.i(TAG, "onTouchEvent: 向右滑动抬起");
                     /*while(mClipX<mViewWidth){
                         mClipX++;
                         invalidate();
                     }*/
-                    textContentCount-=textLineSum*linePageSum;
+                    //textContentCount-=textLineSum*linePageSum;
                 }
-                //防止坐标为负的情况出现
-                /*if(textContentCount<0){
-                    textContentCount=0;
-                }
-                //防止最后一页报错
-                if(textContentCount>=textSum){
-                    textContentCount-=textLineSum*linePageSum;
-                }*/
+                mClipX = -1;
+                offsetX=0;
                 drawStyle=0;
                 performClick();
                 break;
@@ -222,6 +213,8 @@ public class BrowsingVIew extends View {
                     //向右滑动
                     if (drawStyle == 0) {
                         drawStyle = 2;
+                        //计算初始锚点
+                        offsetX=-(mViewWidth-x);
                     }
                 }
                 mClipX = x;
@@ -240,131 +233,102 @@ public class BrowsingVIew extends View {
             return;
         }
 
-        int arrCount;
-        int lineCount;
-        float drawX=0,drawY=statusBarHeight;
-
         //根据drawstyle 决定绘制左边还是右边
         switch (drawStyle) {
-            case 0:
-                drawX = offsetX;
-                if (thisBitmap == null) {
-                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }
-                canvas.drawBitmap(thisBitmap, drawX, 0, mPaint);
-                canvas.translate(drawX, 0);
-                arrCount = this_arrCount;
-                lineCount = this_lineCount;
-                Log.i(TAG, "drawTextView: 绘制当前界面");
-                break;
             case 1:
                 if (nextBitmap == null) {
                     nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
-                drawX = 0;
-                canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
-                arrCount = next_arrCount;
-                lineCount = next_lineCount;
-
-                Log.i(TAG, "drawTextView: 绘制下一界面");
+                if (thisBitmap == null) {
+                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                }
+                //判断是否需要绘制下一页面
+                if(next_lineCount<contentArr.length){
+                    //绘制下一页面
+                    canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
+                    drawTextView(canvas,next_arrCount,next_lineCount,false);
+                }else{
+                    offsetX=0;
+                }
+                //绘制当前页面
+                canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
+                canvas.translate(offsetX, 0);
+                drawTextView(canvas,this_arrCount,this_lineCount,true);
                 break;
+
             case 2:
                 if (lastBitmap == null) {
                     lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
-                drawX = 0;
-                canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
-                arrCount = last_arrCount;
-                lineCount = last_lineCount;
-                Log.i(TAG, "drawTextView: 绘制上一界面");
+                if (thisBitmap == null) {
+                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                }
+
+                //判断是否绘制上一页面
+                if(this_lineCount>0){
+                    //绘制当前页面
+                    canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
+                    canvas.translate(offsetX, 0);
+                    drawTextView(canvas,this_arrCount,this_lineCount,true);
+                    //绘制上一页面
+                    canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
+                    drawTextView(canvas,last_arrCount,last_lineCount,false);
+                }else {
+                    canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
+                    canvas.translate(0, 0);
+                    drawTextView(canvas,this_arrCount,this_lineCount,true);
+                }
                 break;
             default:
-                return;
+                //绘制当前页面
+                if (thisBitmap == null) {
+                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                }
+                canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
+                canvas.translate(offsetX, 0);
+                drawTextView(canvas,this_arrCount,this_lineCount,true);
+                break;
         }
-
 
     }
 
     //绘制浏览文字
-    private void drawTextView(Canvas canvas){
-        int arrCount;
-        int lineCount;
-        float drawX=0,drawY=statusBarHeight;
-        switch (drawStyle){
-            case 0:
-                drawX=offsetX;
-                if(thisBitmap==null){
-                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }
-                canvas.drawBitmap(thisBitmap, drawX, 0, mPaint);
-                canvas.translate(drawX,0);
-                arrCount=this_arrCount;
-                lineCount=this_lineCount;
-                Log.i(TAG, "drawTextView: 绘制当前界面");
-                break;
-            case 1:
-                if(nextBitmap==null){
-                    nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }
-                drawX=0;
-                canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
-                arrCount=next_arrCount;
-                lineCount=next_lineCount;
-
-                Log.i(TAG, "drawTextView: 绘制下一界面");
-                break;
-            case 2:
-                if(lastBitmap==null){
-                    lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }
-                drawX=0;
-                canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
-                arrCount=last_arrCount;
-                lineCount=last_lineCount;
-                Log.i(TAG, "drawTextView: 绘制上一界面");
-                break;
-            default:
-                return;
-        }
+    private void drawTextView(Canvas canvas, int arrCount, int lineCount,boolean isThis){
         canvas.save();
-        //判断当前style 决定是否要绘制上、下一页面  绘制当前页面
-
+        int drawY=statusBarHeight;
         for (int i=0;i<linePageSum;i++){
             if(lineCount==contentArr.length){
                 return;
             }
             String str=contentArr[lineCount];
             int drawLen=str.length();
-
             if(drawLen==0){
-                Log.i(TAG, "drawTextView: contentArr[i] 长度为0 ");
                 lineCount++;
                 continue;
             }
-
             while(drawLen!=0){
                 if(drawLen>textLineSum){
-                    //Log.i(TAG, "drawTextView111: "+str+"||"+arrCount+"||"+drawLen+"||"+textLineSum);
-
-                    canvas.drawText(str,arrCount,(arrCount+textLineSum),drawX,drawY,mTextPaint);
+                    canvas.drawText(str,arrCount,(arrCount+textLineSum), (float) 0,drawY,mTextPaint);
                     drawLen-=textLineSum;
                     arrCount+=textLineSum;
-
-                    //Log.i(TAG, "drawTextView: while绘制，111："+drawLen);
+                    if(drawLen!=0){
+                        i++;
+                    }
                 }else{
-                    //Log.i(TAG, "drawTextView: "+arrCount+"||"+textLineSum);
-                    canvas.drawText(str,arrCount,str.length(),drawX,drawY,mTextPaint);
+                    canvas.drawText(str,arrCount,str.length(), (float) 0,drawY,mTextPaint);
                     drawLen=0;
                     arrCount=0;
                     lineCount++;
-                    //Log.i(TAG, "drawTextView: while绘制，222："+drawLen);
                 }
                 drawY+=textSize;
             }
         }
-        canvas.restore();
+        if(isThis){
+            skip_lineCount=lineCount;
+            skip_arrCount=arrCount;
+        }
 
-        return;
+        canvas.restore();
     }
 
 
