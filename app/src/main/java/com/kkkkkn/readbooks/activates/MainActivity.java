@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.activates;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,11 +44,11 @@ public class MainActivity extends BaseActivity  {
         list.add(new MainBooks(R.drawable.user,"图书2"));
         list.add(new MainBooks(R.drawable.user,"图书3"));
         list.add(new MainBooks(R.drawable.user,"图书4"));
-        list.add(new MainBooks(R.drawable.user,"图书4"));
-        list.add(new MainBooks(R.drawable.user,"图书4"));
-        list.add(new MainBooks(R.drawable.user,"图书4"));
-        list.add(new MainBooks(R.drawable.user,"图书4"));
-        list.add(new MainBooks(R.drawable.user,"图书4"));
+        list.add(new MainBooks(R.drawable.user,"图书5"));
+        list.add(new MainBooks(R.drawable.user,"图书6"));
+        list.add(new MainBooks(R.drawable.user,"图书7"));
+        list.add(new MainBooks(R.drawable.user,"图书8"));
+        list.add(new MainBooks(R.drawable.user,"图书9"));
         BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
         mGridView.setAdapter(mAdapter);
 

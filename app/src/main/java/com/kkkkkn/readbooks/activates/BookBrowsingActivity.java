@@ -71,13 +71,13 @@ public class BookBrowsingActivity extends BaseActivity {
                 long currentHour = totalHour % 24;
                 //开始设置浏览界面时间
                 String timeStr=currentHour+":"+currentMinute;
-                browsingVIew.setTimeStr(timeStr);
+                //browsingVIew.setTimeStr(timeStr);
             }else if(action.equals(Intent.ACTION_BATTERY_CHANGED)){
                 //获取当前电量
                 int level = intent.getIntExtra("level", 0);
                 Log.i(TAG, "onReceive: 电量变化广播接收"+level);
                 //开始设置浏览界面电量
-                browsingVIew.setBatteryStr(level+"%");
+                //browsingVIew.setBatteryStr(level+"%");
             }
         }
     };

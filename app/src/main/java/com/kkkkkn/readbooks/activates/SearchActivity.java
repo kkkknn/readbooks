@@ -118,6 +118,7 @@ public class SearchActivity extends BaseActivity {
                 //解析搜索结果并填充到arrayList中
                 JSONObject jsonObject=new JSONObject(str);
                 JSONArray jsonArray=jsonObject.getJSONArray("data");
+                arrayList.clear();
                 for(int i=0;i<jsonArray.length();i++){
                     JSONObject object=(JSONObject) jsonArray.get(i);
                     SearchBookItem searchBookItem=new SearchBookItem();
@@ -127,7 +128,7 @@ public class SearchActivity extends BaseActivity {
                     arrayList.add(searchBookItem);
                 }
                 mHandle.sendEmptyMessage(SHOW_BOOKLIST);
-                System.out.println("搜索结果："+str);
+                //System.out.println("搜索结果："+str);
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }

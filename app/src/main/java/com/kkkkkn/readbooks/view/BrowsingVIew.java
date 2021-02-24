@@ -17,6 +17,8 @@ import androidx.annotation.Nullable;
 
 import com.kkkkkn.readbooks.R;
 
+import java.util.LinkedList;
+
 
      public class BrowsingVIew extends View {
     private final static String TAG="BrowsingVIew";
@@ -40,15 +42,13 @@ import com.kkkkkn.readbooks.R;
     private int mViewHeight = 0, mViewWidth = 0;
     //当前章节字符串
     private String[] contentArr;
-    //当前页面显示章节进度    textContent的count
-    private int textContentCount = 0;
     //文字大小
     private float textSize = 40f;
     //文字颜色
     private int textColor = Color.BLACK;
-    //每行文字数量
+    //每行最大显示文字数量
     private int textLineSum;
-    //每页行数
+    //每页最大显示行数
     private int linePageSum;
     //展示模式相关 true 左滑动绘制下一页  false 右滑动绘制上一页
     private int drawStyle = 0;
@@ -67,8 +67,9 @@ import com.kkkkkn.readbooks.R;
     private int this_arrCount;
     private int this_lineCount;
     //绘制翻页锚点
-    private int skip_arrCount;
-    private int skip_lineCount;
+    private LinkedList<int[]> skipList=new LinkedList<>();
+    //是否结尾
+    private boolean isEnd=false;
     //状态栏高度
     private int statusBarHeight;
     //绘图相关变量
@@ -177,15 +178,23 @@ import com.kkkkkn.readbooks.R;
                 if(drawStyle==1){
                     //下一页变当前页
                     Log.i(TAG, "onTouchEvent: 向左滑动抬起");
-                    /*while(mClipX>0){
+                    Log.i(TAG, "left  onTouchEvent: "+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
+                   /*while(mClipX>0){
                         mClipX--;
                         invalidate();
                     }*/
-                    //todo：要修改此处
-                    last_arrCount=this_arrCount;
-                    last_lineCount=this_lineCount;
-                    this_arrCount=skip_arrCount;
-                    this_lineCount=skip_lineCount;
+                    //锚点赋值
+                    /*if(next_lineCount==contentArr.length){
+                        isEnd=true;
+                    }else{
+
+                    }*/
+                    if(!isEnd){
+                        last_arrCount=this_arrCount;
+                        last_lineCount=this_lineCount;
+                        this_arrCount=next_arrCount;
+                        this_lineCount=next_lineCount;
+                    }
                 }else if(drawStyle==2) {
                     //上一页变当前页
                     Log.i(TAG, "onTouchEvent: 向右滑动抬起");
@@ -193,7 +202,26 @@ import com.kkkkkn.readbooks.R;
                         mClipX++;
                         invalidate();
                     }*/
-                    //textContentCount-=textLineSum*linePageSum;
+                    Log.i(TAG, "right11  onTouchEvent: "+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
+                    next_arrCount=this_arrCount;
+                    next_lineCount=this_lineCount;
+                    this_arrCount=last_arrCount;
+                    this_lineCount=last_lineCount;
+                    if(!skipList.isEmpty()){
+                        skipList.removeLast();
+                        int size=skipList.size();
+                        if(size>0){
+                            int[] arr=skipList.getLast();
+                            last_arrCount=arr[0];
+                            last_lineCount=arr[1];
+                        }
+                    }else{
+                        last_lineCount=0;
+                        last_arrCount=0;
+                    }
+                    isEnd=false;
+                    Log.i(TAG, "right22  onTouchEvent: "+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
+
                 }
                 mClipX = -1;
                 offsetX=0;
@@ -242,13 +270,15 @@ import com.kkkkkn.readbooks.R;
                 if (thisBitmap == null) {
                     thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
+
                 //判断是否需要绘制下一页面
-                if(next_lineCount<contentArr.length){
+                if(isEnd){
+                    //Log.i(TAG, "drawBitmap: 不要绘制下一页面");
+                    offsetX=0;
+                }else{
                     //绘制下一页面
                     canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
                     drawTextView(canvas,next_arrCount,next_lineCount,false);
-                }else{
-                    offsetX=0;
                 }
                 //绘制当前页面
                 canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
@@ -263,15 +293,14 @@ import com.kkkkkn.readbooks.R;
                 if (thisBitmap == null) {
                     thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
-
                 //判断是否绘制上一页面
                 if(this_lineCount>0){
                     //绘制当前页面
-                    canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
-                    canvas.translate(offsetX, 0);
+                    canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
                     drawTextView(canvas,this_arrCount,this_lineCount,true);
                     //绘制上一页面
-                    canvas.drawBitmap(lastBitmap, 0, 0, mPaint);
+                    canvas.drawBitmap(lastBitmap, offsetX, 0, mPaint);
+                    canvas.translate(offsetX, 0);
                     drawTextView(canvas,last_arrCount,last_lineCount,false);
                 }else {
                     canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
@@ -293,11 +322,17 @@ import com.kkkkkn.readbooks.R;
     }
 
     //绘制浏览文字
-    private void drawTextView(Canvas canvas, int arrCount, int lineCount,boolean isThis){
+    private void drawTextView(Canvas canvas, int count1, int count2,boolean isThis){
+        int arrCount=count1;
+        int lineCount=count2;
         canvas.save();
         int drawY=statusBarHeight;
         for (int i=0;i<linePageSum;i++){
             if(lineCount==contentArr.length){
+                //章节结尾锚点
+                if(isThis){
+                    isEnd=true;
+                }
                 return;
             }
             String str=contentArr[lineCount];
@@ -324,10 +359,28 @@ import com.kkkkkn.readbooks.R;
             }
         }
         if(isThis){
-            skip_lineCount=lineCount;
-            skip_arrCount=arrCount;
-        }
+            //获取最后一坐标，看是否需要写入
+            if(skipList.size()>0){
+                int[] last=skipList.getLast();
+                if(last[1]<this_lineCount){
+                    int[] arr=new int[2];
+                    arr[0]=this_arrCount;
+                    arr[1]=this_lineCount;
+                    skipList.add(arr);
+                    next_arrCount=arrCount;
+                    next_lineCount=lineCount;
+                    Log.i(TAG, "drawTextView lineCount:"+lineCount+"||contentArr"+contentArr.length);
+                }
+            }else{
+                int[] arr=new int[2];
+                arr[0]=this_arrCount;
+                arr[1]=this_lineCount;
+                skipList.add(arr);
+                next_arrCount=arrCount;
+                next_lineCount=lineCount;
+            }
 
+        }
         canvas.restore();
     }
 
