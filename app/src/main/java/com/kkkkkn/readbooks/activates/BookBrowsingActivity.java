@@ -59,7 +59,7 @@ public class BookBrowsingActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_TIME_TICK)) {
-                Log.i(TAG, "onReceive: 时间变化广播接收");
+                //Log.i(TAG, "onReceive: 时间变化广播接收");
                 //获得系统的时间，单位为毫秒,转换为妙
                 long totalMilliSeconds = System.currentTimeMillis();
                 long totalSeconds = totalMilliSeconds / 1000;
@@ -75,7 +75,7 @@ public class BookBrowsingActivity extends BaseActivity {
             }else if(action.equals(Intent.ACTION_BATTERY_CHANGED)){
                 //获取当前电量
                 int level = intent.getIntExtra("level", 0);
-                Log.i(TAG, "onReceive: 电量变化广播接收"+level);
+                //Log.i(TAG, "onReceive: 电量变化广播接收"+level);
                 //开始设置浏览界面电量
                 //browsingVIew.setBatteryStr(level+"%");
             }

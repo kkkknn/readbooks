@@ -173,28 +173,27 @@ import java.util.LinkedList;
                 mClipX = event.getX();
                 break;
             case MotionEvent.ACTION_UP:
-
                 //判断是否需要变化当前页
                 if(drawStyle==1){
                     //下一页变当前页
                     Log.i(TAG, "onTouchEvent: 向左滑动抬起");
-                    Log.i(TAG, "left  onTouchEvent: "+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
                    /*while(mClipX>0){
                         mClipX--;
                         invalidate();
                     }*/
                     //锚点赋值
-                    /*if(next_lineCount==contentArr.length){
-                        isEnd=true;
-                    }else{
-
-                    }*/
                     if(!isEnd){
+                        int[] arr=new int[2];
+                        arr[0]=this_arrCount;
+                        arr[1]=this_lineCount;
+                        skipList.add(arr);
                         last_arrCount=this_arrCount;
                         last_lineCount=this_lineCount;
                         this_arrCount=next_arrCount;
                         this_lineCount=next_lineCount;
                     }
+                    //Log.i(TAG, "left  onTouchEvent: "+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
+
                 }else if(drawStyle==2) {
                     //上一页变当前页
                     Log.i(TAG, "onTouchEvent: 向右滑动抬起");
@@ -202,26 +201,27 @@ import java.util.LinkedList;
                         mClipX++;
                         invalidate();
                     }*/
-                    Log.i(TAG, "right11  onTouchEvent: "+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
                     next_arrCount=this_arrCount;
                     next_lineCount=this_lineCount;
                     this_arrCount=last_arrCount;
                     this_lineCount=last_lineCount;
-                    if(!skipList.isEmpty()){
+                    if(!skipList.isEmpty() ){
                         skipList.removeLast();
-                        int size=skipList.size();
-                        if(size>0){
+                        if(!skipList.isEmpty()){
                             int[] arr=skipList.getLast();
                             last_arrCount=arr[0];
                             last_lineCount=arr[1];
+                        }else {
+                            last_lineCount=0;
+                            last_arrCount=0;
                         }
                     }else{
                         last_lineCount=0;
                         last_arrCount=0;
                     }
                     isEnd=false;
-                    Log.i(TAG, "right22  onTouchEvent: "+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
 
+                    //Log.i(TAG, "onTouchEvent: last"+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
                 }
                 mClipX = -1;
                 offsetX=0;
@@ -275,15 +275,19 @@ import java.util.LinkedList;
                 if(isEnd){
                     //Log.i(TAG, "drawBitmap: 不要绘制下一页面");
                     offsetX=0;
+                    //绘制当前页面
+                    canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
+                    canvas.translate(offsetX, 0);
+                    drawTextView(canvas,this_arrCount,this_lineCount,true);
                 }else{
                     //绘制下一页面
                     canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
                     drawTextView(canvas,next_arrCount,next_lineCount,false);
+                    //绘制当前页面
+                    canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
+                    canvas.translate(offsetX, 0);
+                    drawTextView(canvas,this_arrCount,this_lineCount,false);
                 }
-                //绘制当前页面
-                canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
-                canvas.translate(offsetX, 0);
-                drawTextView(canvas,this_arrCount,this_lineCount,true);
                 break;
 
             case 2:
@@ -297,7 +301,7 @@ import java.util.LinkedList;
                 if(this_lineCount>0){
                     //绘制当前页面
                     canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
-                    drawTextView(canvas,this_arrCount,this_lineCount,true);
+                    drawTextView(canvas,this_arrCount,this_lineCount,false);
                     //绘制上一页面
                     canvas.drawBitmap(lastBitmap, offsetX, 0, mPaint);
                     canvas.translate(offsetX, 0);
@@ -359,26 +363,10 @@ import java.util.LinkedList;
             }
         }
         if(isThis){
-            //获取最后一坐标，看是否需要写入
-            if(skipList.size()>0){
-                int[] last=skipList.getLast();
-                if(last[1]<this_lineCount){
-                    int[] arr=new int[2];
-                    arr[0]=this_arrCount;
-                    arr[1]=this_lineCount;
-                    skipList.add(arr);
-                    next_arrCount=arrCount;
-                    next_lineCount=lineCount;
-                    Log.i(TAG, "drawTextView lineCount:"+lineCount+"||contentArr"+contentArr.length);
-                }
-            }else{
-                int[] arr=new int[2];
-                arr[0]=this_arrCount;
-                arr[1]=this_lineCount;
-                skipList.add(arr);
-                next_arrCount=arrCount;
-                next_lineCount=lineCount;
-            }
+
+            next_arrCount=arrCount;
+            next_lineCount=lineCount;
+
 
         }
         canvas.restore();
