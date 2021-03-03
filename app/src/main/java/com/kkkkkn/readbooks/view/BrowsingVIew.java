@@ -43,7 +43,7 @@ import java.util.LinkedList;
     //当前章节字符串
     private String[] contentArr;
     //文字大小
-    private float textSize = 40f;
+    private float textSize = 50f;
     //文字颜色
     private int textColor = Color.BLACK;
     //每行最大显示文字数量
@@ -245,6 +245,7 @@ import java.util.LinkedList;
                         offsetX=-(mViewWidth-x);
                     }
                 }
+
                 mClipX = x;
                 break;
         }

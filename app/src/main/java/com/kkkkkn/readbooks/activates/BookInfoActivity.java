@@ -65,7 +65,6 @@ public class BookInfoActivity extends BaseActivity {
                     break;
                 case 100:
                     Bitmap bitmap=(Bitmap) message.obj;
-                    //todo::加载在线图片
                     if(bitmap!=null){
                         book_img.setImageBitmap(bitmap);
                         Log.i(TAG, "imgUrl:  图片不为空");

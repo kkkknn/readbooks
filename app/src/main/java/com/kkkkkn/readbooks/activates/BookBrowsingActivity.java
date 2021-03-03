@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -32,7 +33,7 @@ public class BookBrowsingActivity extends BaseActivity {
     private int arrayCount;
     private String[] chapterContent;
     private BrowsingVIew browsingVIew;
-    private Handler mHandler= new Handler(new Handler.Callback() {
+    private Handler mHandler= new Handler(Looper.getMainLooper(),new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch(msg.what){

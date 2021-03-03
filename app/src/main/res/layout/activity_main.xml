@@ -15,14 +15,13 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/main_SwipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <GridView
             android:id="@+id/main_booksGridView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:columnWidth="80dp"
-            android:numColumns="auto_fit"
+            android:numColumns="3"
             android:scrollbars="none" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

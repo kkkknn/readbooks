@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -46,6 +47,7 @@ public class BookShelfAdapter extends BaseAdapter {
         return position;
     }
 
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder=null;
@@ -53,6 +55,8 @@ public class BookShelfAdapter extends BaseAdapter {
             convertView=mInflater.inflate(R.layout.activity_main_item,parent,false);
             viewHolder=new ViewHolder();
             viewHolder.bookImg=(ImageView)convertView.findViewById(R.id.book_img);
+            viewHolder.bookName=(TextView) convertView.findViewById(R.id.book_name);
+            viewHolder.updateSum=(TextView)convertView.findViewById(R.id.book_replaceSum);
             convertView.setTag(viewHolder);
         }else {
             viewHolder=(ViewHolder) convertView.getTag();
@@ -62,6 +66,18 @@ public class BookShelfAdapter extends BaseAdapter {
         MainBooks mainBooks=mArrayList.get(position);
         if(mainBooks!=null){
             viewHolder.bookImg.setImageResource(R.drawable.bookimg);
+            viewHolder.bookName.setText(mainBooks.getName());
+            if(mainBooks.isUpdate()){
+                viewHolder.updateSum.setVisibility(View.VISIBLE);
+                int sum=mainBooks.getReplaceSum();
+                if(sum<=99){
+                    viewHolder.updateSum.setText(Integer.toString(sum));
+                }else{
+                    viewHolder.updateSum.setText("99+");
+                }
+            }else{
+                viewHolder.updateSum.setVisibility(View.GONE);
+            }
         }
 
         return convertView;
@@ -70,6 +86,7 @@ public class BookShelfAdapter extends BaseAdapter {
     public static class ViewHolder {
         public TextView bookName;
         public ImageView bookImg;
+        public TextView updateSum;
     }
 
 }
