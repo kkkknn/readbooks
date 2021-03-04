@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class JsoupUtilImp_xbqg implements JsoupUtil {
-    //来源网址
+    //来源网址 http://m.paoshuzw.com/
     private final static String URL="http://www.paoshuzw.com";
 
     @Override

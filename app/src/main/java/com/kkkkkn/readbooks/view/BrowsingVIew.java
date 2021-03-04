@@ -18,9 +18,7 @@ import androidx.annotation.Nullable;
 import com.kkkkkn.readbooks.R;
 
 import java.util.LinkedList;
-
-
-     public class BrowsingVIew extends View {
+public class BrowsingVIew extends View {
     private final static String TAG="BrowsingVIew";
     //当前时间字符串
     private String timeStr;
@@ -181,17 +179,21 @@ import java.util.LinkedList;
                         mClipX--;
                         invalidate();
                     }*/
-                    //锚点赋值
-                    if(!isEnd){
-                        int[] arr=new int[2];
-                        arr[0]=this_arrCount;
-                        arr[1]=this_lineCount;
-                        skipList.add(arr);
-                        last_arrCount=this_arrCount;
-                        last_lineCount=this_lineCount;
-                        this_arrCount=next_arrCount;
-                        this_lineCount=next_lineCount;
+                    //是否需要转到下一页
+                    if(Math.abs(offsetX) > mViewWidth / 6){
+                        //锚点赋值
+                        if(!isEnd){
+                            int[] arr=new int[2];
+                            arr[0]=this_arrCount;
+                            arr[1]=this_lineCount;
+                            skipList.add(arr);
+                            last_arrCount=this_arrCount;
+                            last_lineCount=this_lineCount;
+                            this_arrCount=next_arrCount;
+                            this_lineCount=next_lineCount;
+                        }
                     }
+
                     //Log.i(TAG, "left  onTouchEvent: "+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
 
                 }else if(drawStyle==2) {
@@ -201,25 +203,28 @@ import java.util.LinkedList;
                         mClipX++;
                         invalidate();
                     }*/
-                    next_arrCount=this_arrCount;
-                    next_lineCount=this_lineCount;
-                    this_arrCount=last_arrCount;
-                    this_lineCount=last_lineCount;
-                    if(!skipList.isEmpty() ){
-                        skipList.removeLast();
-                        if(!skipList.isEmpty()){
-                            int[] arr=skipList.getLast();
-                            last_arrCount=arr[0];
-                            last_lineCount=arr[1];
-                        }else {
+                    //是否需要转到上一页
+                    if((mViewWidth-Math.abs(offsetX)) > mViewWidth / 6){
+                        next_arrCount=this_arrCount;
+                        next_lineCount=this_lineCount;
+                        this_arrCount=last_arrCount;
+                        this_lineCount=last_lineCount;
+                        if(!skipList.isEmpty() ){
+                            skipList.removeLast();
+                            if(!skipList.isEmpty()){
+                                int[] arr=skipList.getLast();
+                                last_arrCount=arr[0];
+                                last_lineCount=arr[1];
+                            }else {
+                                last_lineCount=0;
+                                last_arrCount=0;
+                            }
+                        }else{
                             last_lineCount=0;
                             last_arrCount=0;
                         }
-                    }else{
-                        last_lineCount=0;
-                        last_arrCount=0;
+                        isEnd=false;
                     }
-                    isEnd=false;
 
                     //Log.i(TAG, "onTouchEvent: last"+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
                 }
@@ -229,23 +234,22 @@ import java.util.LinkedList;
                 performClick();
                 break;
             case MotionEvent.ACTION_MOVE:
-                //判断向左还是向右滑动
+                //判断向左还是向右滑动  1左  2右
                 float x = event.getX();
-                offsetX+=x-mClipX;
-                if (offsetX< 0) {
-                    //向左滑动
-                    if (drawStyle == 0) {
+                if(x<0||x>mViewWidth){
+                    break;
+                }
+                offsetX += x-mClipX;
+                if(drawStyle == 0){
+                    if(offsetX< 0){
                         drawStyle = 1;
-                    }
-                } else if (offsetX > 0) {
-                    //向右滑动
-                    if (drawStyle == 0) {
+                    }else if(offsetX > 0){
                         drawStyle = 2;
                         //计算初始锚点
                         offsetX=-(mViewWidth-x);
                     }
                 }
-
+                //offsetX = x;
                 mClipX = x;
                 break;
         }
@@ -262,6 +266,7 @@ import java.util.LinkedList;
             return;
         }
 
+        canvas.save();
         //根据drawstyle 决定绘制左边还是右边
         switch (drawStyle) {
             case 1:
@@ -273,14 +278,14 @@ import java.util.LinkedList;
                 }
 
                 //判断是否需要绘制下一页面
-                if(isEnd){
+                if(isEnd||offsetX>0){
                     //Log.i(TAG, "drawBitmap: 不要绘制下一页面");
                     offsetX=0;
                     //绘制当前页面
                     canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
                     canvas.translate(offsetX, 0);
                     drawTextView(canvas,this_arrCount,this_lineCount,true);
-                }else{
+                }else  {
                     //绘制下一页面
                     canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
                     drawTextView(canvas,next_arrCount,next_lineCount,false);
@@ -324,13 +329,13 @@ import java.util.LinkedList;
                 break;
         }
 
+        canvas.restore();
     }
 
     //绘制浏览文字
     private void drawTextView(Canvas canvas, int count1, int count2,boolean isThis){
         int arrCount=count1;
         int lineCount=count2;
-        canvas.save();
         int drawY=statusBarHeight;
         for (int i=0;i<linePageSum;i++){
             if(lineCount==contentArr.length){
@@ -370,7 +375,6 @@ import java.util.LinkedList;
 
 
         }
-        canvas.restore();
     }
 
 
