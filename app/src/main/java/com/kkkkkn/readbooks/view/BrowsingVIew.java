@@ -146,7 +146,7 @@ public class BrowsingVIew extends View {
 
         //计算页面 绘制的总字数，行数，每行字数
         textLineSum = mViewWidth / (int) textSize;
-        linePageSum = (mViewHeight - statusBarHeight) / (int) textSize;
+        linePageSum = (mViewHeight - statusBarHeight) / (int) (textSize*2);
     }
 
     public void setTextColor(int textColor) {
@@ -365,7 +365,7 @@ public class BrowsingVIew extends View {
                     arrCount=0;
                     lineCount++;
                 }
-                drawY+=textSize;
+                drawY+=textSize*2;
             }
         }
         if(isThis){

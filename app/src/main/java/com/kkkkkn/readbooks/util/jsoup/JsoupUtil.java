@@ -13,5 +13,6 @@ public interface JsoupUtil {
     String getBookInfo(String book_url) throws IOException, JSONException;
     //获取章节内容,返回json字符串
     JSONObject getChapterContent(String chapter_url) throws IOException, JSONException;
-    //
+    //获取指定页章节列表
+    String getBookChapterList(String url) throws IOException, JSONException;
 }

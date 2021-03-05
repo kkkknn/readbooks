@@ -45,8 +45,7 @@ public class BookChaptersAdapter extends BaseAdapter {
         ViewHolder viewHolder=null;
         if(convertView==null){
             convertView=mInflater.inflate(R.layout.activity_book_info_chapter_item,parent,false);
-            viewHolder=new ViewHolder();
-            viewHolder.chapterName=(TextView) convertView.findViewById(R.id.book_info_chapter_item_chapterName);
+            viewHolder=new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         }else {
             viewHolder=(ViewHolder) convertView.getTag();
@@ -61,7 +60,12 @@ public class BookChaptersAdapter extends BaseAdapter {
         return convertView;
     }
 
+
     private static class ViewHolder{
+        public ViewHolder(View viewRoot) {
+            chapterName=(TextView) viewRoot.findViewById(R.id.book_info_chapter_item_chapterName);
+        }
+
         public TextView chapterName;
     }
 }

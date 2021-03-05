@@ -11,15 +11,17 @@ import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.BookChaptersAdapter;
-import com.kkkkkn.readbooks.util.ImageLoaderUtil;
+import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
 
@@ -32,6 +34,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BookInfoActivity extends BaseActivity {
@@ -41,19 +44,21 @@ public class BookInfoActivity extends BaseActivity {
     private ArrayList<String[]> chapterList=new ArrayList<>();;
     private ListView chapter_listView;
     private BookChaptersAdapter chaptersAdapter;
+    private boolean isRun=false;
+    private LinkedList<String> linkedList=new LinkedList<>();
     private Handler mHandler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
             switch (message.what){
-                case 90:
-                    JSONArray chapterArray=(JSONArray) message.obj;
-                    chapterList.clear();
-                    for (int i = 0; i < chapterArray.length(); i++) {
+                case 100:
+                    //更新当前页面数据
+                    JSONArray array=(JSONArray) message.obj;
+                    for (int i = 0; i < array.length(); i++) {
                         try {
-                            JSONObject jsonObject=(JSONObject)chapterArray.get(i);
+                            JSONObject jsonObject=(JSONObject)array.get(i);
                             String[] arr=new String[2];
-                            arr[0]=jsonObject.getString("chapterName");
-                            arr[1]=jsonObject.getString("chapterUrl");
+                            arr[0]=(String) jsonObject.get("chapterName");
+                            arr[1]=(String) jsonObject.get("chapterUrl");
                             chapterList.add(arr);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -62,14 +67,8 @@ public class BookInfoActivity extends BaseActivity {
                     if(chaptersAdapter!=null){
                         chaptersAdapter.notifyDataSetChanged();
                     }
-                    break;
-                case 100:
-                    Bitmap bitmap=(Bitmap) message.obj;
-                    if(bitmap!=null){
-                        book_img.setImageBitmap(bitmap);
-                        Log.i(TAG, "imgUrl:  图片不为空");
-                    }
-                    Log.i(TAG, "imgUrl:  显示图片");
+                    Log.i(TAG, "handleMessage: 获取到了  666666666");
+                    isRun=false;
                     break;
             }
             return false;
@@ -81,6 +80,26 @@ public class BookInfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_info);
 
+        initView();
+
+        //查找图书信息是否存在
+        Intent intent=getIntent();
+        BookInfo bookInfo=(BookInfo)intent.getSerializableExtra("bookInfo");
+
+        //获取图书信息
+        if(bookInfo.isEmpty()){
+            Log.i(TAG, "onCreate: 2222222222");
+            finish();
+            return;
+        }
+        author_name.setText(bookInfo.getAuthorName());
+        book_name.setText(bookInfo.getBookName());
+        Glide.with(getApplicationContext()).load(bookInfo.getBookImgUrl()).into(book_img);
+        new RequestThread(bookInfo.getBookUrl()).start();
+    }
+
+    //初始化绑定控件
+    private void initView(){
         //绑定控件
         book_name=findViewById(R.id.bookInfo_bookName);
         author_name=findViewById(R.id.bookInfo_authorName);
@@ -101,26 +120,24 @@ public class BookInfoActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
-        //查找图书信息是否存在
-        Intent intent=getIntent();
-        Bundle bundle=intent.getExtras();
-        if(bundle==null){
-            //不存在直接结束程序，或者弹窗显示
-            finish();
-            return;
-        }
-        String url=bundle.getString("bookUrl");
-        String authorName=bundle.getString("bookAuthorName");
-        String bookName=bundle.getString("bookName");
-        //获取图书信息
-        if(url==null||url.isEmpty()||authorName==null||authorName.isEmpty()||bookName==null||bookName.isEmpty()){
-            finish();
-            return;
-        }
-        author_name.setText(authorName);
-        book_name.setText(bookName);
+        chapter_listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
 
-        new RequestThread(url).start();
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+                if(i+i1==i2){
+                    Log.i(TAG, "onScroll: 滑动到底部");
+                    //开始请求下一页面章节
+                    if(linkedList.size()>0&&!isRun){
+                        isRun=true;
+                        new NextPageRequestThread().start();
+                    }
+                }
+            }
+        });
     }
 
     private class RequestThread extends Thread{
@@ -133,42 +150,46 @@ public class BookInfoActivity extends BaseActivity {
         public void run() {
             JsoupUtil jsoupUtil=new JsoupUtilImp_xbqg();
             try {
+                chapterList.clear();
                 String str=jsoupUtil.getBookInfo(url);
-                Log.i(TAG, "run: "+str);
                 //解析返回的json数据 chapterList
                 JSONObject jsonObject=new JSONObject(str);
-                String bookImgUrl=(String) jsonObject.getString("bookImgUrl");
-                JSONArray jsonArray=(JSONArray) jsonObject.get("chapterInfo");
-
-                //handler发送消息，同时获取章节目录
-                Message msgChapter=mHandler.obtainMessage();
-                msgChapter.what=90;
-                msgChapter.obj=jsonArray;
-                mHandler.sendMessage(msgChapter);
-
-                Message obtainMessage=mHandler.obtainMessage();
-                Bitmap bitmap=getBitmap(bookImgUrl);
-                obtainMessage.what=100;
-                obtainMessage.obj=bitmap;
-                mHandler.sendMessage(obtainMessage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+                JSONArray jsonArray=(JSONArray) jsonObject.get("chapterPages");
+                for (int i=0;i<jsonArray.length();i++){
+                    JSONObject object=(JSONObject)jsonArray.get(i);
+                    linkedList.add((String) object.get("chapterPageUrl"));
+                }
+                if(!isRun){
+                    isRun=true;
+                    new NextPageRequestThread().start();
+                }
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    private class NextPageRequestThread extends Thread{
+        @Override
+        public void run() {
+            JsoupUtil jsoupUtil=new JsoupUtilImp_xbqg();
+            try {
+                //取当前页
+                String jsStr=jsoupUtil.getBookChapterList(linkedList.getFirst());
+                if(!jsStr.isEmpty()){
+                    linkedList.removeFirst();
+                    JSONObject jsonObject2=new JSONObject(jsStr);
+                    //handler发送消息，同时获取章节目录
+                    Message msgChapter=mHandler.obtainMessage();
+                    msgChapter.what=100;
+                    msgChapter.obj=(JSONArray) jsonObject2.get("chapters");
+                    mHandler.sendMessage(msgChapter);
+                }
 
-    public Bitmap getBitmap(String path) throws IOException {
-        URL url = new URL(path);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(5000);
-        conn.setRequestMethod("GET");
-        if (conn.getResponseCode() == 200){
-            InputStream inputStream = conn.getInputStream();
-            return BitmapFactory.decodeStream(inputStream);
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
     }
+
 }

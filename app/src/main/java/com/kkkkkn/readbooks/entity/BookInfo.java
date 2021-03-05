@@ -1,15 +1,31 @@
 package com.kkkkkn.readbooks.entity;
 
-import android.graphics.Bitmap;
+import java.io.Serializable;
 
-//图书实体类
-public class BookInfo {
+/**
+ * 图书实体类
+ *     private String bookName; 图书名字
+ *     private String bookUrl;  图书连接
+ *     private String authorName;   作者名字
+ *     private String bookAbout;    图书介绍
+ *     private String bookImgUrl;   图书图片链接
+ *     private String newChapterName;   最新章节名字
+ */
+public class BookInfo implements Serializable {
     private String bookName;
     private String bookUrl;
     private String authorName;
-    private Bitmap bookImg;
     private String bookAbout;
     private String bookImgUrl;
+    private String newChapterName;
+
+    public String getNewChapterName() {
+        return newChapterName;
+    }
+
+    public void setNewChapterName(String newChapterName) {
+        this.newChapterName = newChapterName;
+    }
 
     public String getBookImgUrl() {
         return bookImgUrl;
@@ -51,21 +67,21 @@ public class BookInfo {
         this.authorName = authorName;
     }
 
-    public Bitmap getBookImg() {
-        return bookImg;
-    }
-
-    public void setBookImg(Bitmap bookImg) {
-        this.bookImg = bookImg;
-    }
-
     @Override
     public String toString() {
-        return "BookInfoActivity{" +
+        return "BookInfo{" +
                 "bookName='" + bookName + '\'' +
                 ", bookUrl='" + bookUrl + '\'' +
                 ", authorName='" + authorName + '\'' +
                 ", bookAbout='" + bookAbout + '\'' +
+                ", bookImgUrl='" + bookImgUrl + '\'' +
+                ", newChapterName='" + newChapterName + '\'' +
                 '}';
+    }
+    public boolean isEmpty(){
+        if(bookName.isEmpty()||bookUrl.isEmpty()){
+            return true;
+        }
+        return false;
     }
 }

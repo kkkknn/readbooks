@@ -5,19 +5,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.entity.SearchBookItem;
+import com.kkkkkn.readbooks.entity.BookInfo;
 
 import java.util.ArrayList;
 
 public class SearchBookResultAdapter extends BaseAdapter {
-    private ArrayList<SearchBookItem> resultList;
+    private ArrayList<BookInfo> resultList;
     private Context mContext;
     private LayoutInflater mInflater;
 
-    public SearchBookResultAdapter(ArrayList<SearchBookItem> resultList, Context mContext) {
+    public SearchBookResultAdapter(ArrayList<BookInfo> resultList, Context mContext) {
         this.resultList = resultList;
         this.mInflater=LayoutInflater.from(mContext);
         this.mContext = mContext;
@@ -46,15 +48,17 @@ public class SearchBookResultAdapter extends BaseAdapter {
             viewHolder=new ViewHolder();
             viewHolder.authorName=convertView.findViewById(R.id.fragment_search_item_book_author_name);
             viewHolder.bookName=convertView.findViewById(R.id.fragment_search_item_book_name);
+            viewHolder.bookImg=convertView.findViewById(R.id.fragment_search_item_book_img);
             convertView.setTag(viewHolder);
         }else {
             viewHolder=(ViewHolder) convertView.getTag();
 
         }
-        SearchBookItem book=resultList.get(position);
+        BookInfo book=resultList.get(position);
         if(book!=null){
             viewHolder.authorName.setText(book.getAuthorName());
             viewHolder.bookName.setText(book.getBookName());
+            Glide.with(mContext).load(book.getBookImgUrl()).into(viewHolder.bookImg);;
         }
         return convertView;
     }
@@ -62,5 +66,6 @@ public class SearchBookResultAdapter extends BaseAdapter {
     public static class ViewHolder {
         public TextView bookName;
         public TextView authorName;
+        public ImageView bookImg;
     }
 }

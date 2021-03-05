@@ -12,31 +12,38 @@ import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class JsoupUtilImp_xbqg implements JsoupUtil {
     //来源网址 http://m.paoshuzw.com/
-    private final static String URL="http://www.paoshuzw.com";
+    private final static String URL="http://m.paoshuzw.com";
+    private final static int TIMEOUT =8000;
 
     @Override
     public String searchBook(String str) throws IOException, JSONException {
         Document document=Jsoup.connect(URL+"/modules/article/waps.php")
                 .data("searchkey",str)
                 .ignoreContentType(true)
-                .timeout(8000)
+                .timeout(TIMEOUT)
                 .post();
         JSONObject retObject=new JSONObject();
         JSONArray jsonArray=new JSONArray();
-        Elements elements=document.body().select(".grid>tbody tr");
-        Log.i("TAG", "searchBook: "+elements.size());
-        for (int i = 1; i < elements.size(); i++) {
+        Elements elements=document.body().select(".block");
+
+        for (int i = 0; i < elements.size(); i++) {
             Element element=elements.get(i);
-            Elements items=element.select("td");
+            String bookImgUrl=element.select(".block_img a img").attr("src");
+            String bookName=element.select(".block_txt h2 a").text();
+            String bookUrl=element.select(".block_txt h2 a").attr("href");
+            String bookAuthor=element.select(".block_txt p").get(3).text().split("：")[1];
+            String newChapterName=element.select(".block_txt p").last().select("a").text();
             JSONObject jsonObject=new JSONObject();
-            jsonObject.put("authorName",items.get(2).text());
-            jsonObject.put("bookName",items.get(0).select("a").text());
-            jsonObject.put("bookUrl",items.get(0).select("a").attr("href"));
+            jsonObject.put("authorName",bookAuthor);
+            jsonObject.put("bookName",bookName);
+            jsonObject.put("bookUrl",bookUrl);
+            jsonObject.put("bookImgUrl",bookImgUrl);
+            jsonObject.put("newChapterName",newChapterName);
             jsonArray.put(jsonObject);
         }
         retObject.put("data",jsonArray);
@@ -45,58 +52,96 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
 
     @Override
     public String getBookInfo(String book_url) throws IOException, JSONException {
-        Document document=Jsoup.connect(book_url)
-                .timeout(8000)
+        Document document=Jsoup.connect(URL+book_url)
+                .timeout(TIMEOUT)
                 .ignoreContentType(true)
                 .get();
         JSONObject retObject=new JSONObject();
-        String name=document.body().select("#info h1").text();
+        String name=document.body().select(".block_txt2 h2>a").text();
         retObject.put("bookName",name);
         retObject.put("bookUrl",book_url);
-        Elements elements=document.body().select("#info p");
-        String author_name=elements.get(0).text().split("：")[1];
-        String update_time=elements.get(2).text().split("：")[1];
+        Elements elements=document.body().select(".block_txt2 p");
+        String author_name=elements.get(2).text().split("：")[1];
+        String update_time=elements.get(5).text().split("：")[1];
         String latest_chapter=elements.get(3).select("a").text();
-        String img_url=document.body().select("#fmimg img").attr("src");
+        String img_url=document.body().select(".block_img2 img").attr("src");
         retObject.put("bookImgUrl",img_url);
         retObject.put("authorName",author_name);
         retObject.put("updateTime",update_time);
         retObject.put("latestChapter",latest_chapter);
-        //循环添加所有章节
-        Elements elementsChapters=document.body().select("#list>dl>dd");
-        JSONArray jsonArray=new JSONArray();
-        for (int i=0;i<elementsChapters.size();i++) {
-            Elements item=elementsChapters.get(i).getElementsByTag("a");
-            String chapterUrl=item.attr("href");
-            String chapterName=item.text();
-            JSONObject object=new JSONObject();
-            object.put("chapterName",chapterName);
-            object.put("chapterUrl",chapterUrl);
-            jsonArray.put(i,object);
+        String about=document.body().select(".intro_info").html().split("<br>")[0];
+        retObject.put("bookAbout",about);
 
+        //循环添加所有分页地址
+        Elements elementsPages=document.body().select(".listpage .middle select option");
+        JSONArray jsonArray=new JSONArray();
+        for (int i=0;i<elementsPages.size();i++) {
+            String url=elementsPages.get(i).attr("value");
+            JSONObject object=new JSONObject();
+            object.put("chapterPage",i);
+            object.put("chapterPageUrl",url);
+            jsonArray.put(i,object);
         }
-        retObject.put("chapterInfo",jsonArray);
+        retObject.put("chapterPages",jsonArray);
         return retObject.toString();
     }
 
     @Override
     public JSONObject getChapterContent(String chapter_url) throws IOException, JSONException {
         Document document=Jsoup.connect(URL+chapter_url)
-                .timeout(8000)
+                .timeout(TIMEOUT)
                 .ignoreContentType(true)
                 .get();
         JSONObject retObject=new JSONObject();
-        String chapter_name=document.body().select(".bookname>h1").text();
+        String chapter_name=document.body().select("#_bqgmb_h1").text();
         retObject.put("chapterName",chapter_name);
         //过滤字符串
-        String contentHtml=document.body().select("#content").html();
-        String footHtml=document.body().select("#content>p").html();
-        String valueHtml=contentHtml.replace(footHtml,"");
-        String valStr=Jsoup.clean(valueHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+        String contentHtml=document.body().select("#nr1").html();
+        String valStr=Jsoup.clean(contentHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
         String contentStr=valStr.replaceAll("\\n \\n","");
         String[] strArr=contentStr.split("&nbsp;&nbsp;&nbsp;&nbsp;");
-        retObject.put("chapterContent",strArr);
-        Log.i("TAG", "getChapterContent: "+strArr.length);
+        LinkedList<String> linkedList = new LinkedList<>(Arrays.asList(strArr));
+        //判断当前页和总页数
+        while (true){
+            //todo 这里判断有问题，需要修改
+            String url=document.body().select(".nr_page>table>tbody>tr>.next>a").attr("href");
+            String[] arr=url.split("_\\d*?_\\d*?.html");
+            if(arr.length<2){
+                break;
+            }
+            document=Jsoup.connect(URL+chapter_url)
+                    .timeout(TIMEOUT)
+                    .ignoreContentType(true)
+                    .get();
+            contentHtml=document.body().select("#nr1").html();
+            valStr=Jsoup.clean(contentHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+            contentStr=valStr.replaceAll("\\n \\n","");
+            strArr=contentStr.split("&nbsp;&nbsp;&nbsp;&nbsp;");
+            linkedList.addAll(Arrays.asList(strArr));
+        }
+        retObject.put("chapterContent",linkedList.toArray(new String[0]));
+        Log.i("TAG", "getChapterContent: "+linkedList.size());
         return retObject;
+    }
+
+    @Override
+    public String getBookChapterList(String url) throws IOException, JSONException {
+        Document document = Jsoup.connect(URL+url)
+                    .timeout(TIMEOUT)
+                    .ignoreContentType(true)
+                    .get();
+        JSONObject retObject=new JSONObject();
+        JSONArray jsonArray=new JSONArray();
+        Elements lists=document.body().select(".cover .chapter").last().select("li a");
+        for(int i=0;i<lists.size();i++){
+            JSONObject object=new JSONObject();
+            String chapterName=lists.get(i).text();
+            String chapterUrl=lists.get(i).attr("href");
+            object.put("chapterName",chapterName);
+            object.put("chapterUrl",chapterUrl);
+            jsonArray.put(i,object);
+        }
+        retObject.put("chapters",jsonArray);
+        return retObject.toString();
     }
 }

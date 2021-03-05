@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.SearchBookResultAdapter;
+import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.entity.SearchBookItem;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
@@ -34,7 +35,7 @@ public class SearchActivity extends BaseActivity {
     private final static String TAG="SearchActivity";
     private SearchView searchView;
     private static final int SHOW_BOOKLIST=11,LOAD_NEXTPAGE=12;
-    private ArrayList<SearchBookItem> arrayList=new ArrayList<SearchBookItem>();
+    private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
     private SearchBookResultAdapter adapter;
     private Handler mHandle=new Handler(new Handler.Callback(){
         @Override
@@ -65,13 +66,9 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //点击选项进行跳转图书详情
-                SearchBookItem item=arrayList.get(position);
+                BookInfo item=arrayList.get(position);
                 Intent intent=new Intent(getApplicationContext(),BookInfoActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("bookUrl",item.getBookUrl());
-                bundle.putString("bookAuthorName",item.getAuthorName());
-                bundle.putString("bookName",item.getBookName());
-                intent.putExtras(bundle);
+                intent.putExtra("bookInfo",item);
                 startActivity(intent);
             }
         });
@@ -121,11 +118,13 @@ public class SearchActivity extends BaseActivity {
                 arrayList.clear();
                 for(int i=0;i<jsonArray.length();i++){
                     JSONObject object=(JSONObject) jsonArray.get(i);
-                    SearchBookItem searchBookItem=new SearchBookItem();
-                    searchBookItem.setBookUrl(object.getString("bookUrl"));
-                    searchBookItem.setBookName(object.getString("bookName"));
-                    searchBookItem.setAuthorName(object.getString("authorName"));
-                    arrayList.add(searchBookItem);
+                    BookInfo bookInfo=new BookInfo();
+                    bookInfo.setAuthorName(object.getString("authorName"));
+                    bookInfo.setBookName(object.getString("bookName"));
+                    bookInfo.setBookUrl(object.getString("bookUrl"));
+                    bookInfo.setBookImgUrl(object.getString("bookImgUrl"));
+                    bookInfo.setNewChapterName(object.getString("newChapterName"));
+                    arrayList.add(bookInfo);
                 }
                 mHandle.sendEmptyMessage(SHOW_BOOKLIST);
                 //System.out.println("搜索结果："+str);
