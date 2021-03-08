@@ -12,6 +12,7 @@ import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -97,27 +98,34 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
         retObject.put("chapterName",chapter_name);
         //过滤字符串
         String contentHtml=document.body().select("#nr1").html();
-        String valStr=Jsoup.clean(contentHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
-        String contentStr=valStr.replaceAll("\\n \\n","");
-        String[] strArr=contentStr.split("&nbsp;&nbsp;&nbsp;&nbsp;");
-        LinkedList<String> linkedList = new LinkedList<>(Arrays.asList(strArr));
+        //String valStr=Jsoup.clean(contentHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+        String contentStr=contentHtml.replaceAll("&nbsp;&nbsp;&nbsp;&nbsp;","    ");
+        String[] strArr=contentStr.split("<br>");
+        String[] result1=new String[strArr.length-2];
+        System.arraycopy(strArr,1,result1,0,result1.length);
+        LinkedList<String> linkedList = new LinkedList<>(Arrays.asList(result1));
+
         //判断当前页和总页数
         while (true){
-            //todo 这里判断有问题，需要修改
-            String url=document.body().select(".nr_page>table>tbody>tr>.next>a").attr("href");
-            String[] arr=url.split("_\\d*?_\\d*?.html");
-            if(arr.length<2){
+            String url=document.body().select("#pb_next").attr("href");
+            String[] arr=url.split("_\\d*?_\\d*?\\.html*?");
+            if(arr.length==1){
                 break;
             }
-            document=Jsoup.connect(URL+chapter_url)
+            Log.i("123", "getChapterContent: "+Arrays.toString(arr));;
+            document=Jsoup.connect(URL+url)
                     .timeout(TIMEOUT)
                     .ignoreContentType(true)
                     .get();
+
             contentHtml=document.body().select("#nr1").html();
-            valStr=Jsoup.clean(contentHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
-            contentStr=valStr.replaceAll("\\n \\n","");
-            strArr=contentStr.split("&nbsp;&nbsp;&nbsp;&nbsp;");
-            linkedList.addAll(Arrays.asList(strArr));
+            //valStr=Jsoup.clean(contentHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+            contentStr=contentHtml.replaceAll("&nbsp;&nbsp;&nbsp;&nbsp;","    ");
+            //strArr=valStr.split("&nbsp;&nbsp;&nbsp;&nbsp;");
+            strArr=contentStr.split("<br>");
+            String[] result2=new String[strArr.length-2];
+            System.arraycopy(strArr,1,result2,0,result2.length);
+            linkedList.addAll(Arrays.asList(result2));
         }
         retObject.put("chapterContent",linkedList.toArray(new String[0]));
         Log.i("TAG", "getChapterContent: "+linkedList.size());
