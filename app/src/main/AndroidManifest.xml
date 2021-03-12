@@ -10,7 +10,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
         <activity android:name=".activates.SearchActivity" />
-        <activity android:name=".activates.BookBrowsingActivity" />
+        <activity android:name=".activates.BookBrowsingActivity" android:screenOrientation="portrait" />
         <activity android:name=".activates.BookInfoActivity" />
         <activity android:name=".activates.MainActivity">
             <intent-filter>

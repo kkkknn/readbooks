@@ -90,6 +90,22 @@ public class BookBrowsingActivity extends BaseActivity {
 
         browsingVIew=findViewById(R.id.browView);
 
+        browsingVIew.setListener(new BookCallback() {
+            @Override
+            public void jump2nextChapter() {
+                if(arrayCount<chapterList.size()){
+                    new GetContentThread(chapterList.get(arrayCount++)[1]).start();
+                }
+            }
+
+            @Override
+            public void jump2lastChapter() {
+                if(arrayCount>0){
+                    new GetContentThread(chapterList.get(arrayCount--)[1]).start();
+                }
+            }
+        });
+
         //获取携带信息
         Bundle bundle=getIntent().getExtras();
         if(bundle==null){
@@ -143,5 +159,10 @@ public class BookBrowsingActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         //取消注册静态广播
+    }
+
+    public interface BookCallback{
+        void jump2nextChapter();
+        void jump2lastChapter();
     }
 }

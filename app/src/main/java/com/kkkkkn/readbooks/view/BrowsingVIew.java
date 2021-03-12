@@ -16,6 +16,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.activates.BookBrowsingActivity;
 
 import java.util.LinkedList;
 public class BrowsingVIew extends View {
@@ -72,6 +73,7 @@ public class BrowsingVIew extends View {
     private int statusBarHeight;
     //绘图相关变量
     private TextPaint mTextPaint;
+    private BookBrowsingActivity.BookCallback bookCallback;
 
     private Paint mPaint;
     private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
@@ -126,8 +128,8 @@ public class BrowsingVIew extends View {
 
     //初始化view
     private void initView(Context context) {
-        mViewWidth = getWidth();
-        mViewHeight = getHeight();
+        mViewWidth = getMeasuredWidth();
+        mViewHeight = getMeasuredHeight();
         statusBarHeight = getStatusBarHeight(context);
         mTextPaint = new TextPaint();
         mPaint = new Paint();
@@ -146,7 +148,7 @@ public class BrowsingVIew extends View {
 
         //计算页面 绘制的总字数，行数，每行字数
         textLineSum = mViewWidth / (int) textSize;
-        linePageSum = (mViewHeight - statusBarHeight) / (int) textSize;
+        linePageSum = (int)((mViewHeight - statusBarHeight) / textSize);
     }
 
     public void setTextColor(int textColor) {
@@ -174,12 +176,7 @@ public class BrowsingVIew extends View {
                 //判断是否需要变化当前页
                 if(drawStyle==1){
                     //下一页变当前页
-                    Log.i(TAG, "onTouchEvent: 向左滑动抬起");
-                   /*while(mClipX>0){
-                        mClipX--;
-                        invalidate();
-                    }*/
-                    //是否需要转到下一页
+                    //是否需要转到下一页 小于6分之1不执行
                     if(Math.abs(offsetX) > mViewWidth / 6){
                         //锚点赋值
                         if(!isEnd){
@@ -191,19 +188,16 @@ public class BrowsingVIew extends View {
                             last_lineCount=this_lineCount;
                             this_arrCount=next_arrCount;
                             this_lineCount=next_lineCount;
+                        }else {
+                            //通知activity跳转下一章节
+                            if(bookCallback!=null){
+                                bookCallback.jump2nextChapter();
+                            }
                         }
                     }
 
-                    //Log.i(TAG, "left  onTouchEvent: "+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
-
                 }else if(drawStyle==2) {
-                    //上一页变当前页
-                    Log.i(TAG, "onTouchEvent: 向右滑动抬起");
-                    /*while(mClipX<mViewWidth){
-                        mClipX++;
-                        invalidate();
-                    }*/
-                    //是否需要转到上一页
+                    //是否需要转到上一页 小于6分之1不执行
                     if((mViewWidth-Math.abs(offsetX)) > mViewWidth / 6){
                         next_arrCount=this_arrCount;
                         next_lineCount=this_lineCount;
@@ -222,11 +216,14 @@ public class BrowsingVIew extends View {
                         }else{
                             last_lineCount=0;
                             last_arrCount=0;
+                            //通知activity跳转下一章节
+                            if(bookCallback!=null){
+                                bookCallback.jump2lastChapter();
+                            }
                         }
                         isEnd=false;
                     }
 
-                    //Log.i(TAG, "onTouchEvent: last"+last_lineCount+"||"+this_lineCount+"||"+next_lineCount);
                 }
                 mClipX = -1;
                 offsetX=0;
@@ -279,7 +276,6 @@ public class BrowsingVIew extends View {
 
                 //判断是否需要绘制下一页面
                 if(isEnd||offsetX>0){
-                    //Log.i(TAG, "drawBitmap: 不要绘制下一页面");
                     offsetX=0;
                     //绘制当前页面
                     canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
@@ -346,7 +342,7 @@ public class BrowsingVIew extends View {
                 return;
             }
             String str=contentArr[lineCount];
-            int drawLen=str.length();
+            int drawLen=str.length()-arrCount;
             if(drawLen==0){
                 lineCount++;
                 continue;
@@ -358,6 +354,9 @@ public class BrowsingVIew extends View {
                     arrCount+=textLineSum;
                     if(drawLen!=0){
                         i++;
+                        if(i==linePageSum){
+                            break;
+                        }
                     }
                 }else{
                     canvas.drawText(str,arrCount,str.length(), (float) 0,drawY,mTextPaint);
@@ -369,11 +368,8 @@ public class BrowsingVIew extends View {
             }
         }
         if(isThis){
-
             next_arrCount=arrCount;
             next_lineCount=lineCount;
-
-
         }
     }
 
@@ -386,20 +382,21 @@ public class BrowsingVIew extends View {
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBitmap(canvas);
+
     }
-
-
-
 
     private int getStatusBarHeight(Context context) {
         Resources resources = context.getResources();
         int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
         return resources.getDimensionPixelSize(resourceId);
+    }
+
+    public void setListener(BookBrowsingActivity.BookCallback callback){
+        bookCallback=callback;
     }
 
 }

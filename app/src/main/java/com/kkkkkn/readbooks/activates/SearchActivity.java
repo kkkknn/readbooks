@@ -78,8 +78,6 @@ public class SearchActivity extends BaseActivity {
             public boolean onQueryTextSubmit(String query) {
                 //请求字符串不为空，开始进行网络请求
                 if(!query.isEmpty()){
-                    //读取缓存数据，获取当前图书来源设置
-
                     //请求搜索
                     new RequestThread(query,1).start();
                     //防止抬起落下都触发此事件

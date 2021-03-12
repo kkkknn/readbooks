@@ -40,18 +40,18 @@ public class MainActivity extends BaseActivity  {
         //读取本地目录，生成已下载图书列表
         GridView mGridView=findViewById(R.id.main_booksGridView);
         ArrayList<MainBooks> list=new ArrayList<MainBooks>();
-        list.add(new MainBooks(R.drawable.user,"图书11",10));
-        list.add(new MainBooks(R.drawable.user,"图书222",10));
-        list.add(new MainBooks(R.drawable.user,"图书3222",10));
-        list.add(new MainBooks(R.drawable.user,"图书4",12));
-        list.add(new MainBooks(R.drawable.user,"图书5",13));
-        list.add(new MainBooks(R.drawable.user,"图书6",30));
-        list.add(new MainBooks(R.drawable.user,"图书7",0));
-        list.add(new MainBooks(R.drawable.user,"图书8",0));
-        list.add(new MainBooks(R.drawable.user,"图书9",0));
-        list.add(new MainBooks(R.drawable.user,"图书4",0));
-        list.add(new MainBooks(R.drawable.user,"图书5",0));
-        list.add(new MainBooks(R.drawable.user,"图书6",0));
+        list.add(new MainBooks(R.drawable.bookimg,"图书11",10));
+        list.add(new MainBooks(R.drawable.bookimg,"图书222",10));
+        list.add(new MainBooks(R.drawable.bookimg,"图书3222",10));
+        list.add(new MainBooks(R.drawable.bookimg,"图书4",12));
+        list.add(new MainBooks(R.drawable.bookimg,"图书5",13));
+        list.add(new MainBooks(R.drawable.bookimg,"图书6",30));
+        list.add(new MainBooks(R.drawable.bookimg,"图书7",0));
+        list.add(new MainBooks(R.drawable.bookimg,"图书8",0));
+        list.add(new MainBooks(R.drawable.bookimg,"图书9",0));
+        list.add(new MainBooks(R.drawable.bookimg,"图书4",0));
+        list.add(new MainBooks(R.drawable.bookimg,"图书5",0));
+        list.add(new MainBooks(R.drawable.bookimg,"图书6",0));
         BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
         mGridView.setAdapter(mAdapter);
 

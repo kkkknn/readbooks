@@ -39,8 +39,9 @@ import java.util.List;
 
 public class BookInfoActivity extends BaseActivity {
     private final static String TAG="BookInfoActivity";
-    private TextView book_name,author_name;
+    private TextView book_name,author_name,book_about;
     private ImageView book_img;
+    private BookInfo bookInfo;
     private ArrayList<String[]> chapterList=new ArrayList<>();;
     private ListView chapter_listView;
     private BookChaptersAdapter chaptersAdapter;
@@ -67,8 +68,14 @@ public class BookInfoActivity extends BaseActivity {
                     if(chaptersAdapter!=null){
                         chaptersAdapter.notifyDataSetChanged();
                     }
-                    Log.i(TAG, "handleMessage: 获取到了  666666666");
                     isRun=false;
+                    break;
+                case 200:
+                    String about=(String) message.obj;
+                    if(about!=null&&bookInfo!=null){
+                        book_about.setText(about);
+                        bookInfo.setBookAbout(about);
+                    }
                     break;
             }
             return false;
@@ -84,11 +91,10 @@ public class BookInfoActivity extends BaseActivity {
 
         //查找图书信息是否存在
         Intent intent=getIntent();
-        BookInfo bookInfo=(BookInfo)intent.getSerializableExtra("bookInfo");
+        bookInfo=(BookInfo)intent.getSerializableExtra("bookInfo");
 
         //获取图书信息
         if(bookInfo.isEmpty()){
-            Log.i(TAG, "onCreate: 2222222222");
             finish();
             return;
         }
@@ -104,6 +110,7 @@ public class BookInfoActivity extends BaseActivity {
         book_name=findViewById(R.id.bookInfo_bookName);
         author_name=findViewById(R.id.bookInfo_authorName);
         book_img=findViewById(R.id.bookInfo_bookImg);
+        book_about=findViewById(R.id.bookInfo_bookAbout);
         chapter_listView=findViewById(R.id.bookInfo_chapters_listView);
         chaptersAdapter=new BookChaptersAdapter(chapterList,getApplicationContext());
         chapter_listView.setAdapter(chaptersAdapter);
@@ -159,6 +166,12 @@ public class BookInfoActivity extends BaseActivity {
                     JSONObject object=(JSONObject)jsonArray.get(i);
                     linkedList.add((String) object.get("chapterPageUrl"));
                 }
+                //handel 通知UI更新图书详情
+                Message msgChapter=mHandler.obtainMessage();
+                msgChapter.what=200;
+                msgChapter.obj=(String)jsonObject.get("bookAbout");
+                mHandler.sendMessage(msgChapter);
+
                 if(!isRun){
                     isRun=true;
                     new NextPageRequestThread().start();

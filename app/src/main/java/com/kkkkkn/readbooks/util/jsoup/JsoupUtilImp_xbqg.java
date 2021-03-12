@@ -17,9 +17,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class JsoupUtilImp_xbqg implements JsoupUtil {
-    //来源网址 http://m.paoshuzw.com/
-    private final static String URL="http://m.paoshuzw.com";
+    //来源网址 http://m.paoshuzw.com/  http://m.xbiquge.la/
+    private final static String URL="http://m.xbiquge.la";
     private final static int TIMEOUT =8000;
+    private static final String TAG = "JsoupUtilImp_xbqg";
 
     @Override
     public String searchBook(String str) throws IOException, JSONException {
@@ -27,6 +28,7 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
                 .data("searchkey",str)
                 .ignoreContentType(true)
                 .timeout(TIMEOUT)
+                .header("Connection", "close")
                 .post();
         JSONObject retObject=new JSONObject();
         JSONArray jsonArray=new JSONArray();
@@ -97,12 +99,24 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
         String chapter_name=document.body().select("#_bqgmb_h1").text();
         retObject.put("chapterName",chapter_name);
         //过滤字符串
-        String contentHtml=document.body().select("#nr1").html();
-        //String valStr=Jsoup.clean(contentHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
-        String contentStr=contentHtml.replaceAll("&nbsp;&nbsp;&nbsp;&nbsp;","    ");
-        String[] strArr=contentStr.split("<br>");
-        String[] result1=new String[strArr.length-2];
-        System.arraycopy(strArr,1,result1,0,result1.length);
+        String[] strArr=document.body().select("#nr1").html().replaceAll("&nbsp;","").replace("\\n\\n","\\n").split("<br>");
+        int start=0,end=0;
+        for (int i = 0; i < strArr.length; i++) {
+            if(strArr[i].endsWith("页)\n")){
+                start=i+1;
+                if(strArr[i+1].startsWith("\n")){
+                    start=i+2;
+                }
+            }
+        }
+
+        if(strArr[strArr.length-1].endsWith("读）")){
+            end=1;
+        }
+
+        Log.i(TAG, "getChapterContent: "+start+"||"+end);
+        String[] result1=new String[strArr.length-start-end];
+        System.arraycopy(strArr,start,result1,0,result1.length);
         LinkedList<String> linkedList = new LinkedList<>(Arrays.asList(result1));
 
         //判断当前页和总页数
@@ -112,19 +126,39 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
             if(arr.length==1){
                 break;
             }
-            Log.i("123", "getChapterContent: "+Arrays.toString(arr));;
             document=Jsoup.connect(URL+url)
                     .timeout(TIMEOUT)
                     .ignoreContentType(true)
                     .get();
 
-            contentHtml=document.body().select("#nr1").html();
-            //valStr=Jsoup.clean(contentHtml,"", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
-            contentStr=contentHtml.replaceAll("&nbsp;&nbsp;&nbsp;&nbsp;","    ");
-            //strArr=valStr.split("&nbsp;&nbsp;&nbsp;&nbsp;");
-            strArr=contentStr.split("<br>");
-            String[] result2=new String[strArr.length-2];
-            System.arraycopy(strArr,1,result2,0,result2.length);
+            strArr=document.body().select("#nr1").html().replaceAll("&nbsp;","").replace("\\n\\n","\\n").split("<br>");
+            start=end=0;
+            for (int i = 0; i < strArr.length; i++) {
+                if(strArr[i].endsWith("页)\n")){
+                    start=i+1;
+                    if(strArr[i+1].startsWith("\n")){
+                        start=i+2;
+                    }
+                    break;
+                }
+            }
+            if(strArr[strArr.length-1].endsWith("读）")){
+                end=1;
+            }
+            Log.i(TAG, "getChapterContent: "+start+"||"+end);
+            String[] result2=new String[strArr.length-start-end];
+            System.arraycopy(strArr,start,result2,0,result2.length);
+            //判断上一页字符串是否已标点符号结尾
+            String strEnd=linkedList.getLast();
+            if(!strEnd.substring(strEnd.length()-1).matches(".*\\p{Punct}")){
+                linkedList.removeLast();
+                for (int i = 0; i < result2.length; i++) {
+                    if(strArr[i].length()>2){
+                        result2[i]=strEnd+result2[i];
+                        break;
+                    }
+                }
+            }
             linkedList.addAll(Arrays.asList(result2));
         }
         retObject.put("chapterContent",linkedList.toArray(new String[0]));
