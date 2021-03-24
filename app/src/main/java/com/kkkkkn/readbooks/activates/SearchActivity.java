@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -37,7 +38,7 @@ public class SearchActivity extends BaseActivity {
     private static final int SHOW_BOOKLIST=11,LOAD_NEXTPAGE=12;
     private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
     private SearchBookResultAdapter adapter;
-    private Handler mHandle=new Handler(new Handler.Callback(){
+    private Handler mHandle=new Handler(Looper.getMainLooper(),new Handler.Callback(){
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what){

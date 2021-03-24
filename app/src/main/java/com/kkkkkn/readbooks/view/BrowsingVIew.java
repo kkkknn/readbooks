@@ -41,6 +41,8 @@ public class BrowsingVIew extends View {
     private int mViewHeight = 0, mViewWidth = 0;
     //当前章节字符串
     private String[] contentArr;
+    //当前章节页码数量
+    private int chapter_pageSum=0;
     //文字大小
     private float textSize = 50f;
     //文字颜色
@@ -149,6 +151,9 @@ public class BrowsingVIew extends View {
         //计算页面 绘制的总字数，行数，每行字数
         textLineSum = mViewWidth / (int) textSize;
         linePageSum = (int)((mViewHeight - statusBarHeight) / textSize);
+
+        //重新计算当前章节文字数量及相关信息
+        setChapterFlags();
     }
 
     public void setTextColor(int textColor) {
@@ -156,8 +161,37 @@ public class BrowsingVIew extends View {
         this.textColor = textColor;
     }
 
+    //根据章节计算页面数量和标志位置并添加到list中
+    private void setChapterFlags(){
+        //当前总文字数
+        int chapterText_sum=0;
+        for (String str:this.contentArr) {
+            chapterText_sum+=str.length();
+        }
+        //每页行数
+        //this.linePageSum;
+        //每行文字数量
+        //this.textLineSum;
+
+    }
     public void setTextContent(String[] content) {
         this.contentArr=content;
+
+        //根据章节重新设置3个页面的进度
+        next_arrCount=0;
+        next_lineCount=0;
+        this_lineCount=0;
+        this_arrCount=0;
+        last_lineCount=0;
+        last_arrCount=0;
+        mClipX = -1;
+        offsetX=0;
+        drawStyle=0;
+        isEnd=false;
+
+        //根据章节计算页面数量和标志位置并添加到list中
+        setChapterFlags();
+
     }
 
     @Override
@@ -188,16 +222,17 @@ public class BrowsingVIew extends View {
                             last_lineCount=this_lineCount;
                             this_arrCount=next_arrCount;
                             this_lineCount=next_lineCount;
-                        }else {
-                            //通知activity跳转下一章节
-                            if(bookCallback!=null){
-                                bookCallback.jump2nextChapter();
-                            }
+                        }
+                    }else {
+                        Log.i(TAG, "onTouchEvent: 22222222222"+"||"+next_lineCount+"||"+this_lineCount+"||"+contentArr.length);
+                        //通知activity跳转下一章节
+                        if(next_lineCount==this_lineCount&&bookCallback!=null){
+                            bookCallback.jump2nextChapter();
                         }
                     }
 
                 }else if(drawStyle==2) {
-                    //是否需要转到上一页 小于6分之1不执行
+                    //滑动大于6分之1执行翻页逻辑
                     if((mViewWidth-Math.abs(offsetX)) > mViewWidth / 6){
                         next_arrCount=this_arrCount;
                         next_lineCount=this_lineCount;
@@ -209,6 +244,15 @@ public class BrowsingVIew extends View {
                                 int[] arr=skipList.getLast();
                                 last_arrCount=arr[0];
                                 last_lineCount=arr[1];
+                                //通知activity跳转上一章节, 判断条件：list last大于 thiscount
+                                if(bookCallback!=null){
+                                    int[] last1=skipList.getLast();
+                                    int[] last2=skipList.get(skipList.size()-2);
+                                    if(last2[1]>last1[1]){
+                                        bookCallback.jump2lastChapter();
+                                        Log.i(TAG, "onTouchEvent: 开始回调上一页");
+                                    }
+                                }
                             }else {
                                 last_lineCount=0;
                                 last_arrCount=0;
@@ -216,11 +260,8 @@ public class BrowsingVIew extends View {
                         }else{
                             last_lineCount=0;
                             last_arrCount=0;
-                            //通知activity跳转下一章节
-                            if(bookCallback!=null){
-                                bookCallback.jump2lastChapter();
-                            }
                         }
+
                         isEnd=false;
                     }
 

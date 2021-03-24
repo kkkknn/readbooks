@@ -26,11 +26,12 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class BookBrowsingActivity extends BaseActivity {
     private final static String TAG="BookBrowsingActivity";
     private ArrayList<String[]> chapterList=new ArrayList<>();
-    private int arrayCount;
+    private int arrayCount=0;
     private String[] chapterContent;
     private BrowsingVIew browsingVIew;
     private Handler mHandler= new Handler(Looper.getMainLooper(),new Handler.Callback() {
@@ -94,15 +95,19 @@ public class BookBrowsingActivity extends BaseActivity {
             @Override
             public void jump2nextChapter() {
                 if(arrayCount<chapterList.size()){
-                    new GetContentThread(chapterList.get(arrayCount++)[1]).start();
+                    new GetContentThread(chapterList.get(++arrayCount)[1],1).start();
+                    Log.i(TAG, "jump2nextChapter: arrayCount："+arrayCount);
                 }
+                Log.i(TAG, "jump2nextChapter: 222222222");
             }
 
             @Override
             public void jump2lastChapter() {
                 if(arrayCount>0){
-                    new GetContentThread(chapterList.get(arrayCount--)[1]).start();
+                    new GetContentThread(chapterList.get(--arrayCount)[1],2).start();
+                    Log.i(TAG, "jump2lastChapter: arrayCount"+arrayCount);
                 }
+                Log.i(TAG, "jump2lastChapter: 2222222222");
             }
         });
 
@@ -120,7 +125,8 @@ public class BookBrowsingActivity extends BaseActivity {
                 }
             }
             arrayCount=bundle.getInt("chapterPoint");
-            new GetContentThread(chapterList.get(arrayCount)[1]).start();
+            Log.i(TAG, "onCreate: arrayCount: "+arrayCount);
+            new GetContentThread(chapterList.get(arrayCount)[1],0).start();
             browsingVIew.setChapterNameStr(chapterList.get(arrayCount)[0]);
             browsingVIew.setProgressStr(arrayCount+"/"+chapterList.size());
         }
@@ -134,9 +140,11 @@ public class BookBrowsingActivity extends BaseActivity {
     //获取章节文字的网络线程
     private class GetContentThread extends Thread{
         private String url;
+        private int type;
 
-        public GetContentThread(String url){
+        public GetContentThread(String url,int type){
             this.url=url;
+            this.type=type;
         }
         @Override
         public void run() {
@@ -145,12 +153,18 @@ public class BookBrowsingActivity extends BaseActivity {
             try {
                 JSONObject jsonObject=util.getChapterContent(url);
                 String[] arr_text=(String[])jsonObject.get("chapterContent");
-                Message msg=mHandler.obtainMessage();
-                msg.obj=arr_text;
-                msg.what=22;
-                mHandler.sendMessage(msg);
-            } catch (IOException | JSONException e) {
+                if(arr_text!=null&&arr_text.length>0){
+                    Message msg=mHandler.obtainMessage();
+                    msg.obj=arr_text;
+                    msg.what=22;
+                    mHandler.sendMessage(msg);
+
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
+                Log.i(TAG, "run: "+e.getMessage());
+            }catch (JSONException e){
+                Log.e(TAG, "run: 123123123"+ e.getMessage());
             }
         }
     }

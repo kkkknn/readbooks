@@ -52,8 +52,6 @@
                     android:text="作者名字"/>
             </LinearLayout>
 
-
-
             <TextView
                 android:id="@+id/bookInfo_bookAbout"
                 android:textSize="12sp"
@@ -67,26 +65,29 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_marginHorizontal="20dp"
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/tab_checked"
+                    android:background="@drawable/btn"
                     android:textAlignment="center"
-                    android:paddingHorizontal="40dp"
+                    android:paddingHorizontal="30dp"
+                    android:layout_marginHorizontal="10dp"
                     android:text="加入书架"/>
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/tab_checked"
+                    android:background="@drawable/btn"
                     android:textAlignment="center"
-                    android:paddingHorizontal="40dp"
+                    android:paddingHorizontal="30dp"
+                    android:layout_marginHorizontal="10dp"
                     android:text="开始阅读"/>
             </LinearLayout>
+
         </LinearLayout>
 
 
@@ -96,4 +97,5 @@
         android:id="@+id/bookInfo_chapters_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
 </LinearLayout>

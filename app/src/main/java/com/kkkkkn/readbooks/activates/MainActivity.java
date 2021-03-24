@@ -54,7 +54,7 @@ public class MainActivity extends BaseActivity  {
         list.add(new MainBooks(R.drawable.bookimg,"图书6",0));
         BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
         mGridView.setAdapter(mAdapter);
-
+        
     }
 
     //监听返回键，连续按2次直接退出程序
