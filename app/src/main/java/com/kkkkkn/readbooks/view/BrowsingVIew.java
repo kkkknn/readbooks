@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.activates.BookBrowsingActivity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 public class BrowsingVIew extends View {
     private final static String TAG="BrowsingVIew";
@@ -55,6 +56,8 @@ public class BrowsingVIew extends View {
     private int drawStyle = 0;
     //是否需要进行吸附处理
     private boolean isAdsorb = false;
+    //当前页起止标志
+    private int thisPage_flag=0;
     //上一页bitmap
     private static Bitmap lastBitmap;
     private int last_arrCount;
@@ -68,7 +71,7 @@ public class BrowsingVIew extends View {
     private int this_arrCount;
     private int this_lineCount;
     //绘制翻页锚点
-    private LinkedList<int[]> skipList=new LinkedList<>();
+    private ArrayList<int[]> skipList=new ArrayList<>();
     //是否结尾
     private boolean isEnd=false;
     //状态栏高度
@@ -163,17 +166,34 @@ public class BrowsingVIew extends View {
 
     //根据章节计算页面数量和标志位置并添加到list中
     private void setChapterFlags(){
-        //当前总文字数
-        int chapterText_sum=0;
-        for (String str:this.contentArr) {
-            chapterText_sum+=str.length();
-        }
+
         //每页行数
         //this.linePageSum;
         //每行文字数量
         //this.textLineSum;
+        //计算页面绘制完成后的锚点
+        int line_count=0;
+        int char_count=0;
+        for (int i = 0; i < contentArr.length; i++) {
+            String str=contentArr[i];
+            double line=Math.ceil(str.length()/this.textLineSum);
+            if(line>0){
+                line_count+=line;
+            }
+
+            if(line_count>=this.linePageSum){
+                //多出的行数
+                int line_offset=(int)line-(line_count-this.linePageSum);
+                char_count=line_offset;
+                int[] arr=new int[2];
+                arr[0]=char_count;
+                arr[1]=line_count;
+                skipList.add(arr);
+            }
+        }
 
     }
+
     public void setTextContent(String[] content) {
         this.contentArr=content;
 
@@ -214,14 +234,7 @@ public class BrowsingVIew extends View {
                     if(Math.abs(offsetX) > mViewWidth / 6){
                         //锚点赋值
                         if(!isEnd){
-                            int[] arr=new int[2];
-                            arr[0]=this_arrCount;
-                            arr[1]=this_lineCount;
-                            skipList.add(arr);
-                            last_arrCount=this_arrCount;
-                            last_lineCount=this_lineCount;
-                            this_arrCount=next_arrCount;
-                            this_lineCount=next_lineCount;
+                            thisPage_flag++;
                         }
                     }else {
                         Log.i(TAG, "onTouchEvent: 22222222222"+"||"+next_lineCount+"||"+this_lineCount+"||"+contentArr.length);
@@ -234,33 +247,7 @@ public class BrowsingVIew extends View {
                 }else if(drawStyle==2) {
                     //滑动大于6分之1执行翻页逻辑
                     if((mViewWidth-Math.abs(offsetX)) > mViewWidth / 6){
-                        next_arrCount=this_arrCount;
-                        next_lineCount=this_lineCount;
-                        this_arrCount=last_arrCount;
-                        this_lineCount=last_lineCount;
-                        if(!skipList.isEmpty() ){
-                            skipList.removeLast();
-                            if(!skipList.isEmpty()){
-                                int[] arr=skipList.getLast();
-                                last_arrCount=arr[0];
-                                last_lineCount=arr[1];
-                                //通知activity跳转上一章节, 判断条件：list last大于 thiscount
-                                if(bookCallback!=null){
-                                    int[] last1=skipList.getLast();
-                                    int[] last2=skipList.get(skipList.size()-2);
-                                    if(last2[1]>last1[1]){
-                                        bookCallback.jump2lastChapter();
-                                        Log.i(TAG, "onTouchEvent: 开始回调上一页");
-                                    }
-                                }
-                            }else {
-                                last_lineCount=0;
-                                last_arrCount=0;
-                            }
-                        }else{
-                            last_lineCount=0;
-                            last_arrCount=0;
-                        }
+                        thisPage_flag--;
 
                         isEnd=false;
                     }
@@ -321,15 +308,18 @@ public class BrowsingVIew extends View {
                     //绘制当前页面
                     canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
                     canvas.translate(offsetX, 0);
-                    drawTextView(canvas,this_arrCount,this_lineCount,true);
+                    int[] arr=skipList.get(thisPage_flag);
+                    drawTextView(canvas,arr[0],arr[1],true);
                 }else  {
                     //绘制下一页面
                     canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
-                    drawTextView(canvas,next_arrCount,next_lineCount,false);
+                    int[] arr=skipList.get(thisPage_flag+1);
+                    drawTextView(canvas,arr[0],arr[1],true);
                     //绘制当前页面
                     canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
                     canvas.translate(offsetX, 0);
-                    drawTextView(canvas,this_arrCount,this_lineCount,false);
+                    int[] arr2=skipList.get(thisPage_flag);
+                    drawTextView(canvas,arr2[0],arr2[1],true);
                 }
                 break;
 
@@ -344,15 +334,18 @@ public class BrowsingVIew extends View {
                 if(this_lineCount>0){
                     //绘制当前页面
                     canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
-                    drawTextView(canvas,this_arrCount,this_lineCount,false);
+                    int[] arr2=skipList.get(thisPage_flag);
+                    drawTextView(canvas,arr2[0],arr2[1],true);
                     //绘制上一页面
                     canvas.drawBitmap(lastBitmap, offsetX, 0, mPaint);
                     canvas.translate(offsetX, 0);
-                    drawTextView(canvas,last_arrCount,last_lineCount,false);
+                    int[] arr=skipList.get(thisPage_flag-1);
+                    drawTextView(canvas,arr[0],arr[1],true);
                 }else {
                     canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
                     canvas.translate(0, 0);
-                    drawTextView(canvas,this_arrCount,this_lineCount,true);
+                    int[] arr2=skipList.get(thisPage_flag);
+                    drawTextView(canvas,arr2[0],arr2[1],true);
                 }
                 break;
             default:
@@ -362,7 +355,8 @@ public class BrowsingVIew extends View {
                 }
                 canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
                 canvas.translate(offsetX, 0);
-                drawTextView(canvas,this_arrCount,this_lineCount,true);
+                int[] arr2=skipList.get(thisPage_flag);
+                drawTextView(canvas,arr2[0],arr2[1],true);
                 break;
         }
 
@@ -407,10 +401,6 @@ public class BrowsingVIew extends View {
                 }
                 drawY+=textSize;
             }
-        }
-        if(isThis){
-            next_arrCount=arrCount;
-            next_lineCount=lineCount;
         }
     }
 
