@@ -19,7 +19,6 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.activates.BookBrowsingActivity;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 public class BrowsingVIew extends View {
     private final static String TAG="BrowsingVIew";
     //当前时间字符串
@@ -59,21 +58,13 @@ public class BrowsingVIew extends View {
     //当前页起止标志
     private int thisPage_flag=0;
     //上一页bitmap
-    private static Bitmap lastBitmap;
-    private int last_arrCount;
-    private int last_lineCount;
+    private static Bitmap lastBitmap = null;
     //下一页bitmap
-    private static Bitmap nextBitmap;
-    private int next_arrCount;
-    private int next_lineCount;
+    private static Bitmap nextBitmap = null;
     //当前页bitmap
-    private static Bitmap thisBitmap;
-    private int this_arrCount;
-    private int this_lineCount;
+    private static Bitmap thisBitmap = null;
     //绘制翻页锚点
     private ArrayList<int[]> skipList=new ArrayList<>();
-    //是否结尾
-    private boolean isEnd=false;
     //状态栏高度
     private int statusBarHeight;
     //绘图相关变量
@@ -145,6 +136,11 @@ public class BrowsingVIew extends View {
         mTextPaint.setTextSize(textSize);
         mTextPaint.setColor(textColor);
         mTextPaint.setAntiAlias(true);
+
+        //初始化bitmap
+        lastBitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+        thisBitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+        nextBitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
     }
 
     public void setTextSize(float textSize) {
@@ -166,29 +162,32 @@ public class BrowsingVIew extends View {
 
     //根据章节计算页面数量和标志位置并添加到list中
     private void setChapterFlags(){
-
-        //每页行数
-        //this.linePageSum;
-        //每行文字数量
-        //this.textLineSum;
+        if(this.textLineSum==0){
+            return;
+        }
+        skipList.clear();
+        thisPage_flag=0;
         //计算页面绘制完成后的锚点
         int line_count=0;
-        int char_count=0;
+        int[] arr=new int[2];
+        skipList.add(arr);
         for (int i = 0; i < contentArr.length; i++) {
             String str=contentArr[i];
-            double line=Math.ceil(str.length()/this.textLineSum);
+            double line=Math.ceil((double)str.length()/this.textLineSum);
             if(line>0){
                 line_count+=line;
             }
 
             if(line_count>=this.linePageSum){
                 //多出的行数
-                int line_offset=(int)line-(line_count-this.linePageSum);
-                char_count=line_offset;
-                int[] arr=new int[2];
-                arr[0]=char_count;
-                arr[1]=line_count;
+                int line_offset=(line_count-this.linePageSum);
+                arr=new int[2];
+                arr[0]=line_offset*this.textLineSum;
+                arr[1]=i;
                 skipList.add(arr);
+                line_count=0;
+                Log.i(TAG, "setChapterFlags: 页面标签  "+arr[0]+" || "+arr[1]);
+
             }
         }
 
@@ -198,16 +197,9 @@ public class BrowsingVIew extends View {
         this.contentArr=content;
 
         //根据章节重新设置3个页面的进度
-        next_arrCount=0;
-        next_lineCount=0;
-        this_lineCount=0;
-        this_arrCount=0;
-        last_lineCount=0;
-        last_arrCount=0;
         mClipX = -1;
         offsetX=0;
         drawStyle=0;
-        isEnd=false;
 
         //根据章节计算页面数量和标志位置并添加到list中
         setChapterFlags();
@@ -233,13 +225,10 @@ public class BrowsingVIew extends View {
                     //是否需要转到下一页 小于6分之1不执行
                     if(Math.abs(offsetX) > mViewWidth / 6){
                         //锚点赋值
-                        if(!isEnd){
+                        if((thisPage_flag+1)<skipList.size()){
                             thisPage_flag++;
-                        }
-                    }else {
-                        Log.i(TAG, "onTouchEvent: 22222222222"+"||"+next_lineCount+"||"+this_lineCount+"||"+contentArr.length);
-                        //通知activity跳转下一章节
-                        if(next_lineCount==this_lineCount&&bookCallback!=null){
+                        }else if(bookCallback!=null){
+                            //通知activity跳转下一章节
                             bookCallback.jump2nextChapter();
                         }
                     }
@@ -247,9 +236,12 @@ public class BrowsingVIew extends View {
                 }else if(drawStyle==2) {
                     //滑动大于6分之1执行翻页逻辑
                     if((mViewWidth-Math.abs(offsetX)) > mViewWidth / 6){
-                        thisPage_flag--;
-
-                        isEnd=false;
+                        if(thisPage_flag>0){
+                            thisPage_flag--;
+                        }else if(bookCallback!=null){
+                            //通知activity跳转上一章节
+                            bookCallback.jump2lastChapter();
+                        }
                     }
 
                 }
@@ -295,26 +287,26 @@ public class BrowsingVIew extends View {
         //根据drawstyle 决定绘制左边还是右边
         switch (drawStyle) {
             case 1:
-                if (nextBitmap == null) {
+                /*if (nextBitmap == null) {
                     nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
                 if (thisBitmap == null) {
                     thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }
+                }*/
 
                 //判断是否需要绘制下一页面
-                if(isEnd||offsetX>0){
+                if((thisPage_flag+1)==skipList.size()||offsetX>0){
                     offsetX=0;
                     //绘制当前页面
                     canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
                     canvas.translate(offsetX, 0);
                     int[] arr=skipList.get(thisPage_flag);
                     drawTextView(canvas,arr[0],arr[1],true);
-                }else  {
+                }else {
                     //绘制下一页面
                     canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
                     int[] arr=skipList.get(thisPage_flag+1);
-                    drawTextView(canvas,arr[0],arr[1],true);
+                    drawTextView(canvas,arr[0],arr[1],false);
                     //绘制当前页面
                     canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
                     canvas.translate(offsetX, 0);
@@ -324,14 +316,14 @@ public class BrowsingVIew extends View {
                 break;
 
             case 2:
-                if (lastBitmap == null) {
+                /*if (lastBitmap == null) {
                     lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 }
                 if (thisBitmap == null) {
                     thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }
+                }*/
                 //判断是否绘制上一页面
-                if(this_lineCount>0){
+                if(thisPage_flag>0){
                     //绘制当前页面
                     canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
                     int[] arr2=skipList.get(thisPage_flag);
@@ -340,7 +332,7 @@ public class BrowsingVIew extends View {
                     canvas.drawBitmap(lastBitmap, offsetX, 0, mPaint);
                     canvas.translate(offsetX, 0);
                     int[] arr=skipList.get(thisPage_flag-1);
-                    drawTextView(canvas,arr[0],arr[1],true);
+                    drawTextView(canvas,arr[0],arr[1],false);
                 }else {
                     canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
                     canvas.translate(0, 0);
@@ -369,11 +361,8 @@ public class BrowsingVIew extends View {
         int lineCount=count2;
         int drawY=statusBarHeight;
         for (int i=0;i<linePageSum;i++){
+           // Log.i(TAG, "drawTextView: lineCount  "+lineCount);
             if(lineCount==contentArr.length){
-                //章节结尾锚点
-                if(isThis){
-                    isEnd=true;
-                }
                 return;
             }
             String str=contentArr[lineCount];
