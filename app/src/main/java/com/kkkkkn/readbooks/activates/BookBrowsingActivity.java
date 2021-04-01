@@ -2,8 +2,10 @@ package com.kkkkkn.readbooks.activates;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -12,6 +14,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
@@ -34,6 +37,7 @@ public class BookBrowsingActivity extends BaseActivity {
     private int arrayCount=0;
     private String[] chapterContent;
     private BrowsingVIew browsingVIew;
+    private ProgressDialog progressDialog;
     private Handler mHandler= new Handler(Looper.getMainLooper(),new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -44,12 +48,39 @@ public class BookBrowsingActivity extends BaseActivity {
                         browsingVIew.setTextContent(chapterContent);
                         browsingVIew.setTextColor(Color.BLACK);
                         browsingVIew.setTextSize(20f);
+                        browsingVIew.setProgress(0,false);
                         browsingVIew.invalidate();
+                    }
+                    //接收完成,隐藏遮罩层
+                    if(progressDialog!=null){
+                        progressDialog.dismiss();
                     }
                     break;
                 case 23:
-
+                    chapterContent=(String[])msg.obj;
+                    if(chapterContent!=null && chapterContent.length>0 ){
+                        browsingVIew.setTextContent(chapterContent);
+                        browsingVIew.setTextColor(Color.BLACK);
+                        browsingVIew.setTextSize(20f);
+                        browsingVIew.setProgress(0,true);
+                        browsingVIew.invalidate();
+                    }
+                    //接收完成,隐藏遮罩层
+                    if(progressDialog!=null){
+                        progressDialog.dismiss();
+                    }
                     break;
+                case 11://显示加载框遮罩层
+                    if(progressDialog!=null){
+                        progressDialog.show();
+                    }
+                    break;
+                case 12://出错，隐藏加载框遮罩层
+                    if(progressDialog!=null){
+                        progressDialog.dismiss();
+                    }
+                    break;
+
             }
             return false;
         }
@@ -98,7 +129,6 @@ public class BookBrowsingActivity extends BaseActivity {
                     new GetContentThread(chapterList.get(++arrayCount)[1],1).start();
                     Log.i(TAG, "jump2nextChapter: arrayCount："+arrayCount);
                 }
-                Log.i(TAG, "jump2nextChapter: 222222222");
             }
 
             @Override
@@ -107,9 +137,16 @@ public class BookBrowsingActivity extends BaseActivity {
                     new GetContentThread(chapterList.get(--arrayCount)[1],2).start();
                     Log.i(TAG, "jump2lastChapter: arrayCount"+arrayCount);
                 }
-                Log.i(TAG, "jump2lastChapter: 2222222222");
             }
         });
+        //加载框设置
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);//转盘
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle("提示");
+        progressDialog.setMessage("正在加载，请稍后……");
+
 
         //获取携带信息
         Bundle bundle=getIntent().getExtras();
@@ -148,23 +185,28 @@ public class BookBrowsingActivity extends BaseActivity {
         }
         @Override
         public void run() {
+            //利用handle 通知显示加载框
+            mHandler.sendEmptyMessage(11);
             //获取当前点击章节文字
             JsoupUtil util=new JsoupUtilImp_xbqg();
             try {
                 JSONObject jsonObject=util.getChapterContent(url);
                 String[] arr_text=(String[])jsonObject.get("chapterContent");
-                if(arr_text!=null&&arr_text.length>0){
-                    Message msg=mHandler.obtainMessage();
-                    msg.obj=arr_text;
-                    msg.what=22;
-                    mHandler.sendMessage(msg);
-
+                if(arr_text.length>0){
+                    Message suc_msg=mHandler.obtainMessage();
+                    suc_msg.obj=arr_text;
+                    if(type==2){
+                        suc_msg.what=23;
+                    }else {
+                        suc_msg.what=22;
+                    }
+                    mHandler.sendMessage(suc_msg);
                 }
-            } catch (IOException e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
-                Log.i(TAG, "run: "+e.getMessage());
-            }catch (JSONException e){
-                Log.e(TAG, "run: 123123123"+ e.getMessage());
+            } finally {
+                //取消显示加载框
+                mHandler.sendEmptyMessage(12);
             }
         }
     }

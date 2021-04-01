@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.activates.BookBrowsingActivity;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 public class BrowsingVIew extends View {
@@ -27,10 +28,6 @@ public class BrowsingVIew extends View {
     private String chapterNameStr;
     //当前章节/总章节字符串
     private String progressStr;
-    //当前章节
-    private int mChapterCount;
-    //总章节数量
-    private int mChapterLen;
     //当前电量字符串
     private String batteryStr;
     //当前划屏位置
@@ -41,8 +38,6 @@ public class BrowsingVIew extends View {
     private int mViewHeight = 0, mViewWidth = 0;
     //当前章节字符串
     private String[] contentArr;
-    //当前章节页码数量
-    private int chapter_pageSum=0;
     //文字大小
     private float textSize = 50f;
     //文字颜色
@@ -57,10 +52,6 @@ public class BrowsingVIew extends View {
     private boolean isAdsorb = false;
     //当前页起止标志
     private int thisPage_flag=0;
-    //上一页bitmap
-    private static Bitmap lastBitmap = null;
-    //下一页bitmap
-    private static Bitmap nextBitmap = null;
     //当前页bitmap
     private static Bitmap thisBitmap = null;
     //绘制翻页锚点
@@ -106,6 +97,12 @@ public class BrowsingVIew extends View {
         this.batteryStr = batteryStr;
     }
 
+    public void setProgress(int count,boolean isReverse){
+        if(count<=skipList.size()){
+            this.thisPage_flag = isReverse ? (skipList.size()-1) : count;
+        }
+    }
+
     public BrowsingVIew(Context context) {
         super(context);
         initView(context);
@@ -136,11 +133,6 @@ public class BrowsingVIew extends View {
         mTextPaint.setTextSize(textSize);
         mTextPaint.setColor(textColor);
         mTextPaint.setAntiAlias(true);
-
-        //初始化bitmap
-        lastBitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-        thisBitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-        nextBitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
     }
 
     public void setTextSize(float textSize) {
@@ -186,8 +178,6 @@ public class BrowsingVIew extends View {
                 arr[1]=i;
                 skipList.add(arr);
                 line_count=0;
-                Log.i(TAG, "setChapterFlags: 页面标签  "+arr[0]+" || "+arr[1]);
-
             }
         }
 
@@ -227,10 +217,13 @@ public class BrowsingVIew extends View {
                         //锚点赋值
                         if((thisPage_flag+1)<skipList.size()){
                             thisPage_flag++;
+                            Logger.d("thisPage_flag:"+thisPage_flag+"   skipList.size() "+skipList.size());
                         }else if(bookCallback!=null){
                             //通知activity跳转下一章节
                             bookCallback.jump2nextChapter();
+                            Logger.d("跳跃");
                         }
+
                     }
 
                 }else if(drawStyle==2) {
@@ -283,28 +276,25 @@ public class BrowsingVIew extends View {
             return;
         }
 
+        //初始化bitmap
+        if(thisBitmap==null&&mViewWidth>0&&mViewHeight>0){
+            thisBitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+        }
+
         canvas.save();
         //根据drawstyle 决定绘制左边还是右边
         switch (drawStyle) {
             case 1:
-                /*if (nextBitmap == null) {
-                    nextBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }
-                if (thisBitmap == null) {
-                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }*/
-
                 //判断是否需要绘制下一页面
                 if((thisPage_flag+1)==skipList.size()||offsetX>0){
-                    offsetX=0;
                     //绘制当前页面
-                    canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
-                    canvas.translate(offsetX, 0);
+                    canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
+                    canvas.translate(0, 0);
                     int[] arr=skipList.get(thisPage_flag);
                     drawTextView(canvas,arr[0],arr[1],true);
                 }else {
                     //绘制下一页面
-                    canvas.drawBitmap(nextBitmap, 0, 0, mPaint);
+                    canvas.drawBitmap(thisBitmap, 0, 0, mPaint);
                     int[] arr=skipList.get(thisPage_flag+1);
                     drawTextView(canvas,arr[0],arr[1],false);
                     //绘制当前页面
@@ -316,12 +306,6 @@ public class BrowsingVIew extends View {
                 break;
 
             case 2:
-                /*if (lastBitmap == null) {
-                    lastBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }
-                if (thisBitmap == null) {
-                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }*/
                 //判断是否绘制上一页面
                 if(thisPage_flag>0){
                     //绘制当前页面
@@ -329,7 +313,7 @@ public class BrowsingVIew extends View {
                     int[] arr2=skipList.get(thisPage_flag);
                     drawTextView(canvas,arr2[0],arr2[1],true);
                     //绘制上一页面
-                    canvas.drawBitmap(lastBitmap, offsetX, 0, mPaint);
+                    canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
                     canvas.translate(offsetX, 0);
                     int[] arr=skipList.get(thisPage_flag-1);
                     drawTextView(canvas,arr[0],arr[1],false);
@@ -341,10 +325,6 @@ public class BrowsingVIew extends View {
                 }
                 break;
             default:
-                //绘制当前页面
-                if (thisBitmap == null) {
-                    thisBitmap = Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                }
                 canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
                 canvas.translate(offsetX, 0);
                 int[] arr2=skipList.get(thisPage_flag);
@@ -361,7 +341,6 @@ public class BrowsingVIew extends View {
         int lineCount=count2;
         int drawY=statusBarHeight;
         for (int i=0;i<linePageSum;i++){
-           // Log.i(TAG, "drawTextView: lineCount  "+lineCount);
             if(lineCount==contentArr.length){
                 return;
             }

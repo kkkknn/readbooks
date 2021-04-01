@@ -3,16 +3,19 @@ package com.kkkkkn.readbooks.activates;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -46,8 +49,9 @@ public class BookInfoActivity extends BaseActivity {
     private ListView chapter_listView;
     private BookChaptersAdapter chaptersAdapter;
     private boolean isRun=false;
+    private Button btnStartRead,btnAddEnjoy;
     private LinkedList<String> linkedList=new LinkedList<>();
-    private Handler mHandler=new Handler(new Handler.Callback() {
+    private Handler mHandler=new Handler(Looper.getMainLooper(),new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
             switch (message.what){
@@ -114,6 +118,27 @@ public class BookInfoActivity extends BaseActivity {
         chapter_listView=findViewById(R.id.bookInfo_chapters_listView);
         chaptersAdapter=new BookChaptersAdapter(chapterList,getApplicationContext());
         chapter_listView.setAdapter(chaptersAdapter);
+        btnStartRead=findViewById(R.id.btn_StartRead);
+        btnAddEnjoy=findViewById(R.id.btn_AddEnjoy);
+        btnStartRead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //跳转到浏览界面，从第一章开始阅读
+                Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("chapterList",chapterList);
+                bundle.putInt("chapterPoint",0);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        btnAddEnjoy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         //设置章节点击跳转
         chapter_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
