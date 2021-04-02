@@ -69,7 +69,7 @@ public class BookInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "BookInfo{" +
+        return "SQLBookInfo{" +
                 "bookName='" + bookName + '\'' +
                 ", bookUrl='" + bookUrl + '\'' +
                 ", authorName='" + authorName + '\'' +

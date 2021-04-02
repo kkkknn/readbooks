@@ -1,6 +1,6 @@
 package com.kkkkkn.readbooks.util.sqlite.entity;
 
-import java.util.LinkedList;
+
 
 public class SQLBookInfo {
     public int book_id;
@@ -8,7 +8,15 @@ public class SQLBookInfo {
     public String book_url;
     public String book_img_url;
     public String book_author_name;
+    public boolean book_isEnjoy;
 
+    public boolean isBook_isEnjoy() {
+        return book_isEnjoy;
+    }
+
+    public void setBook_isEnjoy(boolean book_isEnjoy) {
+        this.book_isEnjoy = book_isEnjoy;
+    }
 
     public int getBook_id() {
         return book_id;
@@ -58,6 +66,8 @@ public class SQLBookInfo {
                 ", book_url='" + book_url + '\'' +
                 ", book_img_url='" + book_img_url + '\'' +
                 ", book_author_name='" + book_author_name + '\'' +
+                ", book_isEnjoy=" + book_isEnjoy +
                 '}';
     }
+
 }

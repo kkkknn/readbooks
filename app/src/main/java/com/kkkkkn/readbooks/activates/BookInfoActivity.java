@@ -120,10 +120,11 @@ public class BookInfoActivity extends BaseActivity {
         chapter_listView.setAdapter(chaptersAdapter);
         btnStartRead=findViewById(R.id.btn_StartRead);
         btnAddEnjoy=findViewById(R.id.btn_AddEnjoy);
+
+        //跳转到浏览界面，从第一章开始阅读
         btnStartRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //跳转到浏览界面，从第一章开始阅读
                 Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("chapterList",chapterList);
@@ -132,6 +133,8 @@ public class BookInfoActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+        //添加到主页书架
         btnAddEnjoy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

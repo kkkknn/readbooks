@@ -128,6 +128,9 @@ public class BookBrowsingActivity extends BaseActivity {
                 if(arrayCount<chapterList.size()){
                     new GetContentThread(chapterList.get(++arrayCount)[1],1).start();
                     Log.i(TAG, "jump2nextChapter: arrayCount："+arrayCount);
+                }else{
+                    //弹窗或者提示阅读已经完成
+
                 }
             }
 
@@ -137,6 +140,7 @@ public class BookBrowsingActivity extends BaseActivity {
                     new GetContentThread(chapterList.get(--arrayCount)[1],2).start();
                     Log.i(TAG, "jump2lastChapter: arrayCount"+arrayCount);
                 }
+
             }
         });
         //加载框设置
