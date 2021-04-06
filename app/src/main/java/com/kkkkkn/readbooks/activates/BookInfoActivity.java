@@ -27,6 +27,8 @@ import com.kkkkkn.readbooks.adapter.BookChaptersAdapter;
 import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
+import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -138,7 +140,11 @@ public class BookInfoActivity extends BaseActivity {
         btnAddEnjoy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                SqlBookUtil util=SqlBookUtil.getInstance(getApplicationContext());
+                util.initDataBase();
+                if(util.addEnjoyBook(bookInfo,1)){
+                    Logger.d("牛皮");
+                }
             }
         });
 

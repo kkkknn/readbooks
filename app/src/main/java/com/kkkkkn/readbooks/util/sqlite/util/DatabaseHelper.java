@@ -11,25 +11,25 @@ import androidx.annotation.Nullable;
 
 import static android.content.ContentValues.TAG;
 
-public class SQLiteUtil extends SQLiteOpenHelper {
-    private final String BookTableName="book";
-    private final String BookTable_field_bookId="book_id";
-    private final String BookTable_field_bookName="book_name";
-    private final String BookTable_field_bookUrl="book_url";
-    private final String BookTable_field_bookImgUrl="book_img_url";
-    private final String BookTable_field_bookAuthorName="book_author_name";
-    private final String BookTable_field_bookIsEnjoy="book_isEnjoy";
+public class DatabaseHelper extends SQLiteOpenHelper {
+    public static final String BookTableName="book";
+    public static final String BookTable_field_bookId="book_id";
+    public static final String BookTable_field_bookName="book_name";
+    public static final String BookTable_field_bookUrl="book_url";
+    public static final String BookTable_field_bookImgUrl="book_img_url";
+    public static final String BookTable_field_bookAuthorName="book_author_name";
+    public static final String BookTable_field_bookIsEnjoy="book_isEnjoy";
 
-    private final String ChapterTableName="chapter";
-    private final String ChapterTable_field_chapterId="chapter_id";
-    private final String ChapterTable_field_chapterName="chapter_name";
-    private final String ChapterTable_field_chapterUrl="chapter_url";
-    private final String ChapterTable_field_chapterContent="chapter_content";
-    private final String ChapterTable_field_chapterBookId="chapter_book_id";
-    private final String ChapterTable_field_chapterIsDownload="chapter_isDownload";
+    public static final String ChapterTableName="chapter";
+    public static final String ChapterTable_field_chapterId="chapter_id";
+    public static final String ChapterTable_field_chapterName="chapter_name";
+    public static final String ChapterTable_field_chapterUrl="chapter_url";
+    public static final String ChapterTable_field_chapterContent="chapter_content";
+    public static final String ChapterTable_field_chapterBookId="chapter_book_id";
+    public static final String ChapterTable_field_chapterIsDownload="chapter_isDownload";
 
-    public SQLiteUtil(@Nullable Context context, @Nullable String name, int version, @NonNull SQLiteDatabase.OpenParams openParams) {
-        super(context, name, version, openParams);
+    public DatabaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
     }
 
 
@@ -72,4 +72,6 @@ public class SQLiteUtil extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+
+
 }

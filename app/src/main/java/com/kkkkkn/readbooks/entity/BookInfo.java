@@ -10,6 +10,7 @@ import java.io.Serializable;
  *     private String bookAbout;    图书介绍
  *     private String bookImgUrl;   图书图片链接
  *     private String newChapterName;   最新章节名字
+ *     private String isEnjoy;     图书是否已收藏
  */
 public class BookInfo implements Serializable {
     private String bookName;
@@ -18,6 +19,15 @@ public class BookInfo implements Serializable {
     private String bookAbout;
     private String bookImgUrl;
     private String newChapterName;
+    private String isEnjoy;
+
+    public String getIsEnjoy() {
+        return isEnjoy;
+    }
+
+    public void setIsEnjoy(String isEnjoy) {
+        this.isEnjoy = isEnjoy;
+    }
 
     public String getNewChapterName() {
         return newChapterName;
