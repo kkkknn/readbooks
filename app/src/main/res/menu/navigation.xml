@@ -5,8 +5,8 @@
         android:icon="@drawable/ic_search_book_24"
         android:id="@+id/navigation_dashboard"
         app:showAsAction="ifRoom"
-        android:title="@string/menu_search" />
 
+        android:title="@string/menu_search" />
 
     <item
         android:icon="@drawable/ic_book_setting_24"

@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.activates.BookBrowsingActivity;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 public class BrowsingVIew extends View {
@@ -217,11 +216,10 @@ public class BrowsingVIew extends View {
                         //锚点赋值
                         if((thisPage_flag+1)<skipList.size()){
                             thisPage_flag++;
-                            Logger.d("thisPage_flag:"+thisPage_flag+"   skipList.size() "+skipList.size());
+
                         }else if(bookCallback!=null){
                             //通知activity跳转下一章节
                             bookCallback.jump2nextChapter();
-                            Logger.d("跳跃");
                         }
 
                     }

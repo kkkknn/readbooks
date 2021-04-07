@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
+import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
 import com.kkkkkn.readbooks.view.BrowsingVIew;
 
@@ -192,7 +193,7 @@ public class BookBrowsingActivity extends BaseActivity {
             //利用handle 通知显示加载框
             mHandler.sendEmptyMessage(11);
             //获取当前点击章节文字
-            JsoupUtil util=new JsoupUtilImp_xbqg();
+            JsoupUtilImp util=JsoupUtilImp.getInstance().setSource(1);
             try {
                 JSONObject jsonObject=util.getChapterContent(url);
                 String[] arr_text=(String[])jsonObject.get("chapterContent");

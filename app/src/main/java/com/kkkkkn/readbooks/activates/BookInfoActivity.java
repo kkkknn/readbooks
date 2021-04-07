@@ -28,7 +28,6 @@ import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
 import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
-import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +38,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,7 +52,8 @@ public class BookInfoActivity extends BaseActivity {
     private BookChaptersAdapter chaptersAdapter;
     private boolean isRun=false;
     private Button btnStartRead,btnAddEnjoy;
-    private LinkedList<String> linkedList=new LinkedList<>();
+    private ArrayList<String> arrayList=new ArrayList<>();
+    private int countPage=0;
     private Handler mHandler=new Handler(Looper.getMainLooper(),new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -140,10 +141,12 @@ public class BookInfoActivity extends BaseActivity {
         btnAddEnjoy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                bookInfo.setEnjoy(true);
+                bookInfo.setChapterPageUrlStr(arrayList.toString());
                 SqlBookUtil util=SqlBookUtil.getInstance(getApplicationContext());
                 util.initDataBase();
-                if(util.addEnjoyBook(bookInfo,1)){
-                    Logger.d("牛皮");
+                if(util.addEnjoyBook(bookInfo)){
+                    Log.i(TAG, "onClick: 牛皮");
                 }
             }
         });
@@ -172,7 +175,7 @@ public class BookInfoActivity extends BaseActivity {
                 if(i+i1==i2){
                     Log.i(TAG, "onScroll: 滑动到底部");
                     //开始请求下一页面章节
-                    if(linkedList.size()>0&&!isRun){
+                    if(countPage<arrayList.size()&&!isRun){
                         isRun=true;
                         new NextPageRequestThread().start();
                     }
@@ -198,7 +201,7 @@ public class BookInfoActivity extends BaseActivity {
                 JSONArray jsonArray=(JSONArray) jsonObject.get("chapterPages");
                 for (int i=0;i<jsonArray.length();i++){
                     JSONObject object=(JSONObject)jsonArray.get(i);
-                    linkedList.add((String) object.get("chapterPageUrl"));
+                    arrayList.add((String) object.get("chapterPageUrl"));
                 }
                 //handel 通知UI更新图书详情
                 Message msgChapter=mHandler.obtainMessage();
@@ -222,9 +225,9 @@ public class BookInfoActivity extends BaseActivity {
             JsoupUtil jsoupUtil=new JsoupUtilImp_xbqg();
             try {
                 //取当前页
-                String jsStr=jsoupUtil.getBookChapterList(linkedList.getFirst());
+                String jsStr=jsoupUtil.getBookChapterList(arrayList.get(countPage));
                 if(!jsStr.isEmpty()){
-                    linkedList.removeFirst();
+                    countPage++;
                     JSONObject jsonObject2=new JSONObject(jsStr);
                     //handler发送消息，同时获取章节目录
                     Message msgChapter=mHandler.obtainMessage();

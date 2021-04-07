@@ -19,6 +19,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String BookTable_field_bookImgUrl="book_img_url";
     public static final String BookTable_field_bookAuthorName="book_author_name";
     public static final String BookTable_field_bookIsEnjoy="book_isEnjoy";
+    public static final String BookTable_field_bookAbout="book_about";
+    public static final String BookTable_field_bookNewChapterName="book_newChapterName";
+    public static final String BookTable_field_bookFromType="book_fromType";
+    public static final String BookTable_field_bookChapterPagesUrl="book_chapterPagesUrl";
 
     public static final String ChapterTableName="chapter";
     public static final String ChapterTable_field_chapterId="chapter_id";
@@ -43,7 +47,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 BookTable_field_bookUrl + " varchar(60) ," +
                 BookTable_field_bookImgUrl + " varchar(60) ," +
                 BookTable_field_bookAuthorName + " varchar(60) ," +
-                BookTable_field_bookIsEnjoy + " boolean " +
+                BookTable_field_bookIsEnjoy + " boolean ," +
+                BookTable_field_bookAbout + " varchar(60) ," +
+                BookTable_field_bookNewChapterName + " varchar(60) ," +
+                BookTable_field_bookFromType + " integer ," +
+                BookTable_field_bookChapterPagesUrl + " varchar(60) " +
                 ");";
 
         String chapter_table_sql = "CREATE TABLE " + ChapterTableName + "(" +

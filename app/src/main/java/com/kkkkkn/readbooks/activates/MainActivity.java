@@ -1,23 +1,33 @@
 package com.kkkkkn.readbooks.activates;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.BookShelfAdapter;
+import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.entity.MainBooks;
+import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
+import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
 
 import java.util.ArrayList;
 
@@ -29,7 +39,6 @@ public class MainActivity extends BaseActivity  {
     private final static String TAG="主界面";
     private long lastBackClick;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,24 +46,44 @@ public class MainActivity extends BaseActivity  {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //读取本地目录，生成已下载图书列表
         GridView mGridView=findViewById(R.id.main_booksGridView);
-        ArrayList<MainBooks> list=new ArrayList<MainBooks>();
-        list.add(new MainBooks(R.drawable.bookimg,"图书11",10));
-        list.add(new MainBooks(R.drawable.bookimg,"图书222",10));
-        list.add(new MainBooks(R.drawable.bookimg,"图书3222",10));
-        list.add(new MainBooks(R.drawable.bookimg,"图书4",12));
-        list.add(new MainBooks(R.drawable.bookimg,"图书5",13));
-        list.add(new MainBooks(R.drawable.bookimg,"图书6",30));
-        list.add(new MainBooks(R.drawable.bookimg,"图书7",0));
-        list.add(new MainBooks(R.drawable.bookimg,"图书8",0));
-        list.add(new MainBooks(R.drawable.bookimg,"图书9",0));
-        list.add(new MainBooks(R.drawable.bookimg,"图书4",0));
-        list.add(new MainBooks(R.drawable.bookimg,"图书5",0));
-        list.add(new MainBooks(R.drawable.bookimg,"图书6",0));
+        SwipeRefreshLayout swipeRefreshLayout=findViewById(R.id.main_SwipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
+                ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
+                if(list!=null){
+                    BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
+                    mGridView.setAdapter(mAdapter);
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        //读取本地数据库，获取已加入收藏的图书 并添加到主页相应位置
+        SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
+        ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
         BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
         mGridView.setAdapter(mAdapter);
-        
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
+                Log.i(TAG, "onItemClick: "+bookInfo.getBookName());
+                //todo:获取当前图书章节列表后，进行跳转浏览
+                SharedPreferences sharedPreferences=getApplicationContext().getSharedPreferences("readSetting", Context.MODE_PRIVATE);
+                //获取页码路径， 获取来源
+                //sharedPreferences.getString("")
+                JsoupUtilImp util=JsoupUtilImp.getInstance().setSource(1);
+                /*Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("chapterList",chapterList);
+                bundle.putInt("chapterPoint",0);
+                intent.putExtras(bundle);
+                startActivity(intent);*/
+            }
+        });
     }
 
     //监听返回键，连续按2次直接退出程序

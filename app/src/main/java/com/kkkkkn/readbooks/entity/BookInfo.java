@@ -13,20 +13,48 @@ import java.io.Serializable;
  *     private String isEnjoy;     图书是否已收藏
  */
 public class BookInfo implements Serializable {
+    private int bookId;
     private String bookName;
     private String bookUrl;
     private String authorName;
     private String bookAbout;
     private String bookImgUrl;
     private String newChapterName;
-    private String isEnjoy;
+    private boolean enjoy;
+    private int bookFromType;
+    private String chapterPagesUrlStr;
 
-    public String getIsEnjoy() {
-        return isEnjoy;
+    public String getChapterPagesUrlStr() {
+        return chapterPagesUrlStr;
     }
 
-    public void setIsEnjoy(String isEnjoy) {
-        this.isEnjoy = isEnjoy;
+    public void setChapterPagesUrlStr(String chapterPageUrlStr) {
+        this.chapterPagesUrlStr = chapterPageUrlStr;
+    }
+
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public boolean getEnjoy() {
+        return enjoy;
+    }
+
+    public void setEnjoy(boolean enjoy) {
+        this.enjoy = enjoy;
+    }
+
+    public int getBookFromType() {
+        return bookFromType;
+    }
+
+    public void setBookFromType(int bookFromType) {
+        this.bookFromType = bookFromType;
     }
 
     public String getNewChapterName() {

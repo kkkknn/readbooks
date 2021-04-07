@@ -13,6 +13,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.entity.MainBooks;
@@ -21,11 +22,11 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class BookShelfAdapter extends BaseAdapter {
-    private ArrayList<MainBooks> mArrayList;
+    private ArrayList<BookInfo> mArrayList;
     private Context mContext;
     private LayoutInflater mInflater;
 
-    public BookShelfAdapter(Context context, ArrayList<MainBooks> lxrs) {
+    public BookShelfAdapter(Context context, ArrayList<BookInfo> lxrs) {
         mContext = context;
         this.mArrayList = lxrs;
         mInflater = LayoutInflater.from(context);
@@ -63,21 +64,23 @@ public class BookShelfAdapter extends BaseAdapter {
 
         }
 
-        MainBooks mainBooks=mArrayList.get(position);
-        if(mainBooks!=null){
-            viewHolder.bookImg.setImageResource(R.drawable.bookimg);
-            viewHolder.bookName.setText(mainBooks.getName());
-            if(mainBooks.isUpdate()){
+        BookInfo books=mArrayList.get(position);
+        if(books!=null){
+            Glide.with(mContext).load(books.getBookImgUrl()).into(viewHolder.bookImg);
+            viewHolder.bookName.setText(books.getBookName());
+            viewHolder.updateSum.setVisibility(View.GONE);
+            /*if(books.isUpdate()){
                 viewHolder.updateSum.setVisibility(View.VISIBLE);
-                int sum=mainBooks.getReplaceSum();
+                int sum=books.getReplaceSum();
                 if(sum<=99){
                     viewHolder.updateSum.setText(Integer.toString(sum));
                 }else{
                     viewHolder.updateSum.setText("99+");
                 }
             }else{
-                viewHolder.updateSum.setVisibility(View.GONE);
-            }
+
+            }*/
+
         }
 
         return convertView;

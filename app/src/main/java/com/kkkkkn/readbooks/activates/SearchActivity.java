@@ -18,7 +18,6 @@ import android.widget.ListView;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.entity.BookInfo;
-import com.kkkkkn.readbooks.entity.SearchBookItem;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
 
@@ -123,6 +122,7 @@ public class SearchActivity extends BaseActivity {
                     bookInfo.setBookUrl(object.getString("bookUrl"));
                     bookInfo.setBookImgUrl(object.getString("bookImgUrl"));
                     bookInfo.setNewChapterName(object.getString("newChapterName"));
+                    bookInfo.setBookFromType(1);
                     arrayList.add(bookInfo);
                 }
                 mHandle.sendEmptyMessage(SHOW_BOOKLIST);
