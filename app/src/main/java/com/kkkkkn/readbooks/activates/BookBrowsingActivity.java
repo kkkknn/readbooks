@@ -1,11 +1,8 @@
 package com.kkkkkn.readbooks.activates;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -14,31 +11,28 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
+import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
 import com.kkkkkn.readbooks.view.BrowsingVIew;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.helper.ChangeNotifyingArrayList;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 public class BookBrowsingActivity extends BaseActivity {
     private final static String TAG="BookBrowsingActivity";
     private ArrayList<String[]> chapterList=new ArrayList<>();
-    private int arrayCount=0;
+    private int arrayFlag =0;
+    private int lineFlag =0;
     private String[] chapterContent;
     private BrowsingVIew browsingVIew;
     private ProgressDialog progressDialog;
+    private BookInfo bookInfo;
     private Handler mHandler= new Handler(Looper.getMainLooper(),new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -126,20 +120,21 @@ public class BookBrowsingActivity extends BaseActivity {
         browsingVIew.setListener(new BookCallback() {
             @Override
             public void jump2nextChapter() {
-                if(arrayCount<chapterList.size()){
-                    new GetContentThread(chapterList.get(++arrayCount)[1],1).start();
-                    Log.i(TAG, "jump2nextChapter: arrayCount："+arrayCount);
+                if(arrayFlag <chapterList.size()){
+                    new GetContentThread(chapterList.get(++arrayFlag)[1],1).start();
+                    Log.i(TAG, "jump2nextChapter: arrayFlag："+ arrayFlag);
                 }else{
                     //弹窗或者提示阅读已经完成
+                    //查看是否还有下一页面，并添加到chapterList内
 
                 }
             }
 
             @Override
             public void jump2lastChapter() {
-                if(arrayCount>0){
-                    new GetContentThread(chapterList.get(--arrayCount)[1],2).start();
-                    Log.i(TAG, "jump2lastChapter: arrayCount"+arrayCount);
+                if(arrayFlag >0){
+                    new GetContentThread(chapterList.get(--arrayFlag)[1],2).start();
+                    Log.i(TAG, "jump2lastChapter: arrayFlag"+ arrayFlag);
                 }
 
             }
@@ -159,18 +154,16 @@ public class BookBrowsingActivity extends BaseActivity {
             //没有携带信息
             finish();
         }else{
+            //todo 序列化接收需要修改
             //序列化处理，防止转换警告
-            Object obj=(Object) bundle.getSerializable("chapterList");
-            if (obj instanceof ArrayList<?>) {
-                for (Object o : (List<?>) obj) {
-                    chapterList.add((String[]) o);
-                }
-            }
-            arrayCount=bundle.getInt("chapterPoint");
-            Log.i(TAG, "onCreate: arrayCount: "+arrayCount);
-            new GetContentThread(chapterList.get(arrayCount)[1],0).start();
-            browsingVIew.setChapterNameStr(chapterList.get(arrayCount)[0]);
-            browsingVIew.setProgressStr(arrayCount+"/"+chapterList.size());
+            bookInfo=(BookInfo) bundle.getSerializable("bookInfo");
+            arrayFlag=bundle.getInt("chapterFlag");
+            lineFlag=bundle.getInt("lineFlag");
+
+            Log.i(TAG, "onCreate: arrayFlag: "+ arrayFlag+"  || lineFlag"+lineFlag);
+            new GetContentThread(chapterList.get(arrayFlag)[1],0).start();
+            browsingVIew.setChapterNameStr(chapterList.get(arrayFlag)[0]);
+            browsingVIew.setProgressStr(arrayFlag +"/"+chapterList.size());
         }
         //注册静态广播
         IntentFilter filter=new IntentFilter();

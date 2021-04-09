@@ -3,6 +3,7 @@ package com.kkkkkn.readbooks.util.sqlite;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteCursor;
@@ -14,6 +15,10 @@ import android.util.Log;
 
 import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.util.sqlite.util.DatabaseHelper;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,13 +126,62 @@ public class SqlBookUtil {
         return true;
     }
 
-    public boolean setReadProgress(int chapterCount, int charCount, int bookId) {
-        if(this.databaseHelper==null){
+    //设置图书浏览进度
+    public boolean setReadProgress(int chapterPageCount,int chapterCount, int charCount, int bookId) {
+        if(this.databaseHelper==null||bookId==0){
             return false;
         }
+        //查询当前书籍有无浏览记录
+        SQLiteDatabase db=databaseHelper.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put(DatabaseHelper.ReadTable_field_chapterCharCount,charCount);
+        values.put(DatabaseHelper.ReadTable_field_chapterCount,chapterCount);
+        values.put(DatabaseHelper.ReadTable_field_chapterPageCount,chapterPageCount);
+        String where="where "+
+                DatabaseHelper.ReadTable_field_bookId+
+                " = ?";
+        int ret=db.update(DatabaseHelper.ReadTableName,values,where,new String[]{Integer.toString(bookId)});
+        if(ret==0){
+            //开始设置浏览目录到数据库
+            ContentValues progress=new ContentValues();
+            progress.put(DatabaseHelper.ReadTable_field_bookId,bookId);
+            progress.put(DatabaseHelper.ReadTable_field_chapterPageCount,chapterPageCount);
+            progress.put(DatabaseHelper.ReadTable_field_chapterCount,chapterCount);
+            progress.put(DatabaseHelper.ReadTable_field_chapterCharCount,charCount);
+            long id=db.insert(DatabaseHelper.ReadTableName,null,progress);
+            Log.i(TAG, "setReadProgress: 添加成功，主键为： "+id);
 
-        return false;
+        }
+
+        return true;
     }
+
+    //读取图书浏览进度
+    public String getReadProgress(int bookId){
+        if(this.databaseHelper==null||bookId==0){
+            return null;
+        }
+        SQLiteDatabase db=databaseHelper.getWritableDatabase();
+        String sql="select * from "+
+                DatabaseHelper.ReadTableName+
+                " where "+
+                DatabaseHelper.ReadTable_field_bookId+
+                " =?";
+        Cursor cursor=db.rawQuery(sql,new String[]{Integer.toString(bookId)});
+        if(cursor.getCount()==1){
+            JSONObject jsonObject=new JSONObject();
+            try {
+                jsonObject.put("chapterLineCount",cursor.getString(cursor.getColumnIndex(DatabaseHelper.ReadTable_field_chapterCharCount)));
+                jsonObject.put("chapterCount",cursor.getString(cursor.getColumnIndex(DatabaseHelper.ReadTable_field_chapterCount)));
+                jsonObject.put("chapterPageCount",cursor.getString(cursor.getColumnIndex(DatabaseHelper.ReadTable_field_chapterPageCount)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return jsonObject.toString();
+        }
+        return null;
+    }
+
 
     public boolean delEnjoyBook(int bookId) {
         if(this.databaseHelper==null){

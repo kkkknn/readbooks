@@ -29,7 +29,14 @@ import com.kkkkkn.readbooks.entity.MainBooks;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.security.auth.login.LoginException;
 
 
 /**
@@ -70,20 +77,50 @@ public class MainActivity extends BaseActivity  {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
-                Log.i(TAG, "onItemClick: "+bookInfo.getBookName());
-                //todo:获取当前图书章节列表后，进行跳转浏览
-                SharedPreferences sharedPreferences=getApplicationContext().getSharedPreferences("readSetting", Context.MODE_PRIVATE);
-                //获取页码路径， 获取来源
-                //sharedPreferences.getString("")
-                JsoupUtilImp util=JsoupUtilImp.getInstance().setSource(1);
-                /*Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putSerializable("chapterList",chapterList);
-                bundle.putInt("chapterPoint",0);
-                intent.putExtras(bundle);
-                startActivity(intent);*/
+                if(bookInfo!=null){
+                    jump2ReadView(bookInfo);
+                    Log.i(TAG, "onItemClick: "+bookInfo.getBookId());
+                }
             }
         });
+    }
+
+    //跳转到阅读页面
+    private void jump2ReadView(BookInfo info){
+        //根据图书ID确定当前读书进度
+        SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
+        String str=sqlBookUtil.getReadProgress(info.getBookId());
+        int pageCount=0;
+        int chapterCount=0;
+        int lineFlag=0;
+        try {
+            if(str!=null){
+                JSONObject jsonObject=new JSONObject(str);
+                pageCount=jsonObject.getInt("chapterPageCount");
+                chapterCount=jsonObject.getInt("chapterCount");
+                lineFlag=jsonObject.getInt("chapterLineCount");
+                Log.i(TAG, "jump2ReadView: pageCount "+pageCount+" || "+chapterCount+" || "+lineFlag);
+            }
+            //获取图书章节页码列表
+            String chaptersUrl=info.getChapterPagesUrlStr();
+            String[] urls=chaptersUrl.substring(1,(chaptersUrl.length()-1)).split(", ");
+            Log.i(TAG, "jump2ReadView: "+Arrays.toString(urls));
+            //设置来源并爬取章节列表
+            JsoupUtilImp util=JsoupUtilImp.getInstance().setSource(info.getBookFromType());
+            String valueStr=util.getBookChapterList(urls[pageCount]);
+            //跳转到阅读页面
+            Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
+            Bundle bundle=new Bundle();
+            bundle.putSerializable("bookInfo",info);
+            bundle.putInt("chapterFlag",chapterCount);
+            bundle.putInt("lineFlag",lineFlag);
+            bundle.putInt("pageFlag",pageCount);
+            intent.putExtras(bundle);
+            startActivity(intent);
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     //监听返回键，连续按2次直接退出程序

@@ -11,6 +11,8 @@ import java.io.Serializable;
  *     private String bookImgUrl;   图书图片链接
  *     private String newChapterName;   最新章节名字
  *     private String isEnjoy;     图书是否已收藏
+ *     private int bookFromType;    图书来源
+ *     private String chapterPagesUrlStr;   图书章节页码 网页版
  */
 public class BookInfo implements Serializable {
     private int bookId;

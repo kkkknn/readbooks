@@ -168,6 +168,9 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
 
     @Override
     public String getBookChapterList(String url) throws IOException, JSONException {
+        if(url==null||url.isEmpty()){
+            return null;
+        }
         Document document = Jsoup.connect(URL+url)
                     .timeout(TIMEOUT)
                     .ignoreContentType(true)

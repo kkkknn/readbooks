@@ -26,6 +26,7 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.BookChaptersAdapter;
 import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
+import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
 import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
 
@@ -52,8 +53,8 @@ public class BookInfoActivity extends BaseActivity {
     private BookChaptersAdapter chaptersAdapter;
     private boolean isRun=false;
     private Button btnStartRead,btnAddEnjoy;
-    private ArrayList<String> arrayList=new ArrayList<>();
     private int countPage=0;
+    private int pageSum=0;
     private Handler mHandler=new Handler(Looper.getMainLooper(),new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -142,7 +143,6 @@ public class BookInfoActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 bookInfo.setEnjoy(true);
-                bookInfo.setChapterPageUrlStr(arrayList.toString());
                 SqlBookUtil util=SqlBookUtil.getInstance(getApplicationContext());
                 util.initDataBase();
                 if(util.addEnjoyBook(bookInfo)){
@@ -158,8 +158,10 @@ public class BookInfoActivity extends BaseActivity {
                 //跳转到浏览界面，携带章节列表及点击项
                 Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putSerializable("chapterList",chapterList);
-                bundle.putInt("chapterPoint",i);
+                bundle.putSerializable("bookInfo",bookInfo);
+                //todo 章节跳转需要修改
+                bundle.putInt("chapterFlag",i);
+                bundle.putInt("chapterFlag",i);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -175,7 +177,7 @@ public class BookInfoActivity extends BaseActivity {
                 if(i+i1==i2){
                     Log.i(TAG, "onScroll: 滑动到底部");
                     //开始请求下一页面章节
-                    if(countPage<arrayList.size()&&!isRun){
+                    if(countPage<pageSum&&!isRun){
                         isRun=true;
                         new NextPageRequestThread().start();
                     }
@@ -184,6 +186,7 @@ public class BookInfoActivity extends BaseActivity {
         });
     }
 
+    //获取图书信息
     private class RequestThread extends Thread{
         String url;
         public RequestThread(String str){
@@ -192,17 +195,17 @@ public class BookInfoActivity extends BaseActivity {
 
         @Override
         public void run() {
-            JsoupUtil jsoupUtil=new JsoupUtilImp_xbqg();
+            JsoupUtil jsoupUtil=JsoupUtilImp.getInstance().setSource(bookInfo.getBookFromType());
             try {
                 chapterList.clear();
                 String str=jsoupUtil.getBookInfo(url);
                 //解析返回的json数据 chapterList
                 JSONObject jsonObject=new JSONObject(str);
                 JSONArray jsonArray=(JSONArray) jsonObject.get("chapterPages");
-                for (int i=0;i<jsonArray.length();i++){
-                    JSONObject object=(JSONObject)jsonArray.get(i);
-                    arrayList.add((String) object.get("chapterPageUrl"));
-                }
+                pageSum=jsonArray.length();
+                bookInfo.setChapterPagesUrlStr(jsonArray.toString());
+                Log.i(TAG, "RequestThread: "+jsonArray.toString());
+
                 //handel 通知UI更新图书详情
                 Message msgChapter=mHandler.obtainMessage();
                 msgChapter.what=200;
@@ -222,17 +225,17 @@ public class BookInfoActivity extends BaseActivity {
     private class NextPageRequestThread extends Thread{
         @Override
         public void run() {
-            JsoupUtil jsoupUtil=new JsoupUtilImp_xbqg();
+            JsoupUtil jsoupUtil=JsoupUtilImp.getInstance().setSource(bookInfo.getBookFromType());
             try {
                 //取当前页
-                String jsStr=jsoupUtil.getBookChapterList(arrayList.get(countPage));
-                if(!jsStr.isEmpty()){
+                String jsStr=jsoupUtil.getBookChapterList(getPageUrl(bookInfo,countPage));
+                if(jsStr!=null&&!jsStr.isEmpty()){
                     countPage++;
-                    JSONObject jsonObject2=new JSONObject(jsStr);
+                    JSONObject jsonObject=new JSONObject(jsStr);
                     //handler发送消息，同时获取章节目录
                     Message msgChapter=mHandler.obtainMessage();
                     msgChapter.what=100;
-                    msgChapter.obj=(JSONArray) jsonObject2.get("chapters");
+                    msgChapter.obj=(JSONArray) jsonObject.get("chapters");
                     mHandler.sendMessage(msgChapter);
                 }
 
@@ -242,4 +245,13 @@ public class BookInfoActivity extends BaseActivity {
         }
     }
 
+    //获取当前页章节链接
+    private String getPageUrl(BookInfo bookInfo,int count){
+        if(bookInfo==null||bookInfo.getChapterPagesUrlStr().isEmpty()){
+            return null;
+        }
+        String str=bookInfo.getChapterPagesUrlStr();
+        String[] values=str.substring(1,str.length()-1).split(", ");
+        return values[count];
+    }
 }

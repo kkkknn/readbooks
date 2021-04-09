@@ -12,25 +12,26 @@ import androidx.annotation.Nullable;
 import static android.content.ContentValues.TAG;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+    //图书表
     public static final String BookTableName="book";
-    public static final String BookTable_field_bookId="book_id";
-    public static final String BookTable_field_bookName="book_name";
-    public static final String BookTable_field_bookUrl="book_url";
-    public static final String BookTable_field_bookImgUrl="book_img_url";
-    public static final String BookTable_field_bookAuthorName="book_author_name";
-    public static final String BookTable_field_bookIsEnjoy="book_isEnjoy";
-    public static final String BookTable_field_bookAbout="book_about";
-    public static final String BookTable_field_bookNewChapterName="book_newChapterName";
-    public static final String BookTable_field_bookFromType="book_fromType";
-    public static final String BookTable_field_bookChapterPagesUrl="book_chapterPagesUrl";
+    public static final String BookTable_field_bookId="bookId";
+    public static final String BookTable_field_bookName="bookName";
+    public static final String BookTable_field_bookUrl="bookUrl";
+    public static final String BookTable_field_bookImgUrl="bookImgUrl";
+    public static final String BookTable_field_bookAuthorName="bookAuthorName";
+    public static final String BookTable_field_bookIsEnjoy="bookIsEnjoy";
+    public static final String BookTable_field_bookAbout="bookAbout";
+    public static final String BookTable_field_bookNewChapterName="bookNewChapterName";
+    public static final String BookTable_field_bookFromType="bookFromType";
+    public static final String BookTable_field_bookChapterPagesUrl="bookChapterPagesUrl";
 
-    public static final String ChapterTableName="chapter";
-    public static final String ChapterTable_field_chapterId="chapter_id";
-    public static final String ChapterTable_field_chapterName="chapter_name";
-    public static final String ChapterTable_field_chapterUrl="chapter_url";
-    public static final String ChapterTable_field_chapterContent="chapter_content";
-    public static final String ChapterTable_field_chapterBookId="chapter_book_id";
-    public static final String ChapterTable_field_chapterIsDownload="chapter_isDownload";
+    //阅读进度表
+    public static final String ReadTableName="read_progress";
+    public static final String ReadTable_field_id="progressId";
+    public static final String ReadTable_field_bookId="bookId";
+    public static final String ReadTable_field_chapterPageCount="chapterPageCount";
+    public static final String ReadTable_field_chapterCount="chapterCount";
+    public static final String ReadTable_field_chapterCharCount="chapterCharCount";
 
     public DatabaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -54,13 +55,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 BookTable_field_bookChapterPagesUrl + " varchar(60) " +
                 ");";
 
-        String chapter_table_sql = "CREATE TABLE " + ChapterTableName + "(" +
-                ChapterTable_field_chapterId + " integer primary key autoincrement , " +
-                ChapterTable_field_chapterName + " varchar(60) , " +
-                ChapterTable_field_chapterUrl + " varchar(60) , " +
-                ChapterTable_field_chapterContent + " text , " +
-                ChapterTable_field_chapterBookId + " integer , " +
-                ChapterTable_field_chapterIsDownload + " boolean " +
+        String chapter_table_sql = "CREATE TABLE " + ReadTableName + "(" +
+                ReadTable_field_id + " integer primary key autoincrement , " +
+                ReadTable_field_bookId + " integer, " +
+                ReadTable_field_chapterPageCount + " integer , " +
+                ReadTable_field_chapterCount + " integer , " +
+                ReadTable_field_chapterCharCount + " integer ," +
+                "foreign key ("+ReadTable_field_bookId+") references "+BookTableName+" ("+BookTable_field_bookId+")" +
                 ");";
 
         try {
@@ -68,8 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(chapter_table_sql);
         } catch (SQLException e) {
             Log.e(TAG, "onCreate " + BookTableName + "Error" + e.toString());
-            Log.e(TAG, "onCreate " + ChapterTableName + "Error" + e.toString());
-
+            Log.e(TAG, "onCreate " + ReadTableName + "Error" + e.toString());
         }
     }
 
@@ -81,5 +81,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if(!db.isReadOnly()) { //开启外键
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
+    }
 }
