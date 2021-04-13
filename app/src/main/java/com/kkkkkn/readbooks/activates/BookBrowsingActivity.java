@@ -17,22 +17,25 @@ import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.view.BrowsingVIew;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 public class BookBrowsingActivity extends BaseActivity {
     private final static String TAG="BookBrowsingActivity";
-    private ArrayList<String[]> chapterList=new ArrayList<>();
-    private int arrayFlag =0;
+    private LinkedList<String[]> chapterList=new LinkedList<>();
+    private int chapterFlag =0;
     private int lineFlag =0;
+    private int pageFlag =0;
     private String[] chapterContent;
     private BrowsingVIew browsingVIew;
     private ProgressDialog progressDialog;
     private BookInfo bookInfo;
+
     private Handler mHandler= new Handler(Looper.getMainLooper(),new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -120,21 +123,34 @@ public class BookBrowsingActivity extends BaseActivity {
         browsingVIew.setListener(new BookCallback() {
             @Override
             public void jump2nextChapter() {
-                if(arrayFlag <chapterList.size()){
-                    new GetContentThread(chapterList.get(++arrayFlag)[1],1).start();
-                    Log.i(TAG, "jump2nextChapter: arrayFlag："+ arrayFlag);
-                }else{
-                    //弹窗或者提示阅读已经完成
-                    //查看是否还有下一页面，并添加到chapterList内
-
+                if(chapterFlag <chapterList.size()){
+                    new GetContentThread(chapterList.get(++chapterFlag)[1],1).start();
+                    Log.i(TAG, "jump2nextChapter: chapterFlag："+ chapterFlag);
+                }else if(pageFlag<bookInfo.getPageSum()){
+                        //弹窗或者提示阅读已经完成
+                        //查看是否还有下一页面，并重置相关数据
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            resetChapterData(++pageFlag,2);
+                        }
+                    }.start();
                 }
             }
 
             @Override
             public void jump2lastChapter() {
-                if(arrayFlag >0){
-                    new GetContentThread(chapterList.get(--arrayFlag)[1],2).start();
-                    Log.i(TAG, "jump2lastChapter: arrayFlag"+ arrayFlag);
+                if(chapterFlag >0){
+                    new GetContentThread(chapterList.get(--chapterFlag)[1],2).start();
+                    Log.i(TAG, "jump2lastChapter: chapterFlag"+ chapterFlag);
+                }else if(pageFlag>0){
+                    //查看是否还有上一页面，并重置相关数据
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            resetChapterData(--pageFlag,1);
+                        }
+                    }.start();
                 }
 
             }
@@ -154,22 +170,70 @@ public class BookBrowsingActivity extends BaseActivity {
             //没有携带信息
             finish();
         }else{
-            //todo 序列化接收需要修改
             //序列化处理，防止转换警告
             bookInfo=(BookInfo) bundle.getSerializable("bookInfo");
-            arrayFlag=bundle.getInt("chapterFlag");
+            chapterFlag =bundle.getInt("chapterFlag");
             lineFlag=bundle.getInt("lineFlag");
+            pageFlag=bundle.getInt("pageFlag");
+            Log.i(TAG, "onCreate: chapterFlag: "+ chapterFlag +"  || lineFlag  "+lineFlag+" || "+pageFlag);
 
-            Log.i(TAG, "onCreate: arrayFlag: "+ arrayFlag+"  || lineFlag"+lineFlag);
-            new GetContentThread(chapterList.get(arrayFlag)[1],0).start();
-            browsingVIew.setChapterNameStr(chapterList.get(arrayFlag)[0]);
-            browsingVIew.setProgressStr(arrayFlag +"/"+chapterList.size());
+            //开启线程进行数据初始化
+            new Thread(){
+                @Override
+                public void run() {
+                    resetChapterData(pageFlag,0);
+                }
+            }.start();
+
+
         }
         //注册静态广播
         IntentFilter filter=new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(broadcastReceiver,filter);
+
+    }
+
+
+
+    //初始化相关数据:章节列表，文字内容
+    private void resetChapterData(int page,int type){
+        //获取图书的当前页章节名及链接并添加chapterList
+        String thisPageUrl=getPageUrl(bookInfo,page);
+        //开启线程，获取当前页章节列表
+        JsoupUtilImp util=JsoupUtilImp.getInstance().setSource(bookInfo.getBookFromType());
+        try {
+            String value=util.getBookChapterList(thisPageUrl);
+            JSONArray jsonArray= (JSONArray) new JSONObject(value).get("chapters");
+            chapterList.clear();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject= (JSONObject) jsonArray.get(i);
+                String[] arr=new String[2];
+                arr[0]= (String) jsonObject.get("chapterName");
+                arr[1]= (String) jsonObject.get("chapterUrl");
+                chapterList.add(arr);
+            }
+            if (type == 1) {
+                chapterFlag = chapterList.size() - 1;
+            } else {
+                chapterFlag = 0;
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        } finally {
+            //获取章节内容
+            if(chapterList.size()>0){
+                new GetContentThread(chapterList.get(chapterFlag)[1],bookInfo.getBookFromType()).start();
+                //只显示当前章节名字 和当前时间，
+                //browsingVIew.setChapterNameStr(chapterList.get(chapterFlag)[0]);
+                //browsingVIew.setProgressStr(chapterFlag +"/"+chapterList.size());
+
+            }
+
+        }
+
+
     }
 
     //获取章节文字的网络线程
@@ -186,7 +250,7 @@ public class BookBrowsingActivity extends BaseActivity {
             //利用handle 通知显示加载框
             mHandler.sendEmptyMessage(11);
             //获取当前点击章节文字
-            JsoupUtilImp util=JsoupUtilImp.getInstance().setSource(1);
+            JsoupUtilImp util=JsoupUtilImp.getInstance().setSource(type);
             try {
                 JSONObject jsonObject=util.getChapterContent(url);
                 String[] arr_text=(String[])jsonObject.get("chapterContent");
@@ -218,5 +282,15 @@ public class BookBrowsingActivity extends BaseActivity {
     public interface BookCallback{
         void jump2nextChapter();
         void jump2lastChapter();
+    }
+
+    //获取当前页章节链接
+    private String getPageUrl(BookInfo bookInfo,int count){
+        if(bookInfo==null||bookInfo.getChapterPagesUrlStr().isEmpty()){
+            return null;
+        }
+        String str=bookInfo.getChapterPagesUrlStr();
+        String[] values=str.substring(1,str.length()-1).split(", ");
+        return values[count];
     }
 }

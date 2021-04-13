@@ -14,9 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
@@ -35,6 +37,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import javax.security.auth.login.LoginException;
 
@@ -52,6 +55,11 @@ public class MainActivity extends BaseActivity  {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //隐藏APP title
+        /*ActionBar actionBar=getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayShowTitleEnabled(false);
+        }*/
 
         GridView mGridView=findViewById(R.id.main_booksGridView);
         SwipeRefreshLayout swipeRefreshLayout=findViewById(R.id.main_SwipeRefreshLayout);
@@ -101,13 +109,7 @@ public class MainActivity extends BaseActivity  {
                 lineFlag=jsonObject.getInt("chapterLineCount");
                 Log.i(TAG, "jump2ReadView: pageCount "+pageCount+" || "+chapterCount+" || "+lineFlag);
             }
-            //获取图书章节页码列表
-            String chaptersUrl=info.getChapterPagesUrlStr();
-            String[] urls=chaptersUrl.substring(1,(chaptersUrl.length()-1)).split(", ");
-            Log.i(TAG, "jump2ReadView: "+Arrays.toString(urls));
-            //设置来源并爬取章节列表
-            JsoupUtilImp util=JsoupUtilImp.getInstance().setSource(info.getBookFromType());
-            String valueStr=util.getBookChapterList(urls[pageCount]);
+
             //跳转到阅读页面
             Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
             Bundle bundle=new Bundle();
@@ -118,7 +120,7 @@ public class MainActivity extends BaseActivity  {
             intent.putExtras(bundle);
             startActivity(intent);
 
-        } catch (IOException | JSONException e) {
+        } catch ( JSONException e) {
             e.printStackTrace();
         }
     }

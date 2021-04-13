@@ -15,4 +15,6 @@ public interface JsoupUtil {
     JSONObject getChapterContent(String chapter_url) throws IOException, JSONException;
     //获取指定页章节列表
     String getBookChapterList(String url) throws IOException, JSONException;
+    //获取来源
+    int getSource();
 }

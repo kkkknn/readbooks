@@ -19,6 +19,7 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.entity.BookInfo;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
+import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
 
 import org.json.JSONArray;
@@ -107,7 +108,7 @@ public class SearchActivity extends BaseActivity {
 
         @Override
         public void run() {
-            JsoupUtil jsoupUtil=new JsoupUtilImp_xbqg();
+            JsoupUtil jsoupUtil=JsoupUtilImp.getInstance().setSource(1);
             try {
                 String str=jsoupUtil.searchBook(this.str);
                 //解析搜索结果并填充到arrayList中
@@ -122,7 +123,7 @@ public class SearchActivity extends BaseActivity {
                     bookInfo.setBookUrl(object.getString("bookUrl"));
                     bookInfo.setBookImgUrl(object.getString("bookImgUrl"));
                     bookInfo.setNewChapterName(object.getString("newChapterName"));
-                    bookInfo.setBookFromType(1);
+                    bookInfo.setBookFromType(jsoupUtil.getSource());
                     arrayList.add(bookInfo);
                 }
                 mHandle.sendEmptyMessage(SHOW_BOOKLIST);

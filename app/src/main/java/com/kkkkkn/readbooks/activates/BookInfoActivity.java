@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -48,7 +49,8 @@ public class BookInfoActivity extends BaseActivity {
     private TextView book_name,author_name,book_about;
     private ImageView book_img;
     private BookInfo bookInfo;
-    private ArrayList<String[]> chapterList=new ArrayList<>();;
+    private ArrayList<String[]> chapterList=new ArrayList<>();
+    private ArrayList<Integer> chapterSumByPage=new ArrayList<>();
     private ListView chapter_listView;
     private BookChaptersAdapter chaptersAdapter;
     private boolean isRun=false;
@@ -124,15 +126,17 @@ public class BookInfoActivity extends BaseActivity {
         chapter_listView.setAdapter(chaptersAdapter);
         btnStartRead=findViewById(R.id.btn_StartRead);
         btnAddEnjoy=findViewById(R.id.btn_AddEnjoy);
-
+        chapterSumByPage.clear();
         //跳转到浏览界面，从第一章开始阅读
         btnStartRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putSerializable("chapterList",chapterList);
-                bundle.putInt("chapterPoint",0);
+                bundle.putSerializable("bookInfo",bookInfo);
+                bundle.putInt("pageFlag",0);
+                bundle.putInt("chapterFlag",0);
+                bundle.putInt("lineFlag",0);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -159,9 +163,21 @@ public class BookInfoActivity extends BaseActivity {
                 Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("bookInfo",bookInfo);
-                //todo 章节跳转需要修改
-                bundle.putInt("chapterFlag",i);
-                bundle.putInt("chapterFlag",i);
+                bundle.putInt("pageFlag",countPage);
+                bundle.putInt("lineFlag",0);
+                //计算i所处章节位置
+                int sum=0,flag=0;
+                for (int j = 0; j < chapterSumByPage.size(); j++) {
+                    sum+=chapterSumByPage.get(j);
+                    if(sum>i){
+                        flag=(chapterSumByPage.get(j-1)-(sum-i));
+                        break;
+                    }else {
+                        flag=i;
+                    }
+                }
+                bundle.putInt("chapterFlag",flag);
+
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -201,10 +217,11 @@ public class BookInfoActivity extends BaseActivity {
                 String str=jsoupUtil.getBookInfo(url);
                 //解析返回的json数据 chapterList
                 JSONObject jsonObject=new JSONObject(str);
-                JSONArray jsonArray=(JSONArray) jsonObject.get("chapterPages");
-                pageSum=jsonArray.length();
-                bookInfo.setChapterPagesUrlStr(jsonArray.toString());
-                Log.i(TAG, "RequestThread: "+jsonArray.toString());
+                String object=(String) jsonObject.get("chapterPages");
+                pageSum=object.substring(1,object.length()-1).split(",").length;
+                bookInfo.setChapterPagesUrlStr(object);
+                bookInfo.setPageSum(pageSum);
+                //Log.i(TAG, "RequestThread: "+Arrays.toString(arr));
 
                 //handel 通知UI更新图书详情
                 Message msgChapter=mHandler.obtainMessage();
@@ -231,6 +248,7 @@ public class BookInfoActivity extends BaseActivity {
                 String jsStr=jsoupUtil.getBookChapterList(getPageUrl(bookInfo,countPage));
                 if(jsStr!=null&&!jsStr.isEmpty()){
                     countPage++;
+                    chapterSumByPage.add(chapterList.size());
                     JSONObject jsonObject=new JSONObject(jsStr);
                     //handler发送消息，同时获取章节目录
                     Message msgChapter=mHandler.obtainMessage();
@@ -252,6 +270,7 @@ public class BookInfoActivity extends BaseActivity {
         }
         String str=bookInfo.getChapterPagesUrlStr();
         String[] values=str.substring(1,str.length()-1).split(", ");
+        Log.i(TAG, "getPageUrl: "+values[count]);
         return values[count];
     }
 }

@@ -104,7 +104,7 @@ public class SqlBookUtil {
                 DatabaseHelper.BookTable_field_bookFromType+
                 "=?";
         ContentValues values=new ContentValues();
-        values.put(DatabaseHelper.BookTable_field_bookIsEnjoy,book.getEnjoy()?1:0);
+        values.put(DatabaseHelper.BookTable_field_bookIsEnjoy,book.isEnjoy()?1:0);
         int ret=db.update(DatabaseHelper.BookTableName,values,where,new String[]{book.getBookName(),book.getAuthorName(),Integer.toString(book.getBookFromType())});
         if(ret==0){
             //无此图书进行添加
@@ -113,7 +113,7 @@ public class SqlBookUtil {
             bookInfo.put(DatabaseHelper.BookTable_field_bookAuthorName,book.getAuthorName());
             bookInfo.put(DatabaseHelper.BookTable_field_bookImgUrl,book.getBookImgUrl());
             bookInfo.put(DatabaseHelper.BookTable_field_bookUrl,book.getBookUrl());
-            bookInfo.put(DatabaseHelper.BookTable_field_bookIsEnjoy,book.getEnjoy()?1:0);
+            bookInfo.put(DatabaseHelper.BookTable_field_bookIsEnjoy,book.isEnjoy()?1:0);
             bookInfo.put(DatabaseHelper.BookTable_field_bookAbout,book.getBookAbout());
             bookInfo.put(DatabaseHelper.BookTable_field_bookNewChapterName,book.getNewChapterName());
             bookInfo.put(DatabaseHelper.BookTable_field_bookFromType,book.getBookFromType());

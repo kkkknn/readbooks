@@ -12,6 +12,7 @@ import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -77,15 +78,11 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
 
         //循环添加所有分页地址
         Elements elementsPages=document.body().select(".listpage .middle select option");
-        JSONArray jsonArray=new JSONArray();
+        String[] arr=new String[elementsPages.size()];
         for (int i=0;i<elementsPages.size();i++) {
-            String url=elementsPages.get(i).attr("value");
-            JSONObject object=new JSONObject();
-            object.put("chapterPage",i);
-            object.put("chapterPageUrl",url);
-            jsonArray.put(i,object);
+            arr[i]=elementsPages.get(i).attr("value");
         }
-        retObject.put("chapterPages",jsonArray);
+        retObject.put("chapterPages", Arrays.toString(arr));
         return retObject.toString();
     }
 
@@ -188,5 +185,10 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
         }
         retObject.put("chapters",jsonArray);
         return retObject.toString();
+    }
+
+    @Override
+    public int getSource() {
+        return 1;
     }
 }

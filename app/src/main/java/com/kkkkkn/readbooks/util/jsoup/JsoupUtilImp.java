@@ -59,4 +59,9 @@ public class JsoupUtilImp implements JsoupUtil {
     public String getBookChapterList(String url) throws IOException, JSONException {
         return jsoupUtil.getBookChapterList(url);
     }
+
+    @Override
+    public int getSource() {
+        return jsoupUtil.getSource();
+    }
 }
