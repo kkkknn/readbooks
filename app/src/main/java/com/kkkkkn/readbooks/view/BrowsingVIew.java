@@ -222,6 +222,8 @@ public class BrowsingVIew extends View {
                             bookCallback.jump2nextChapter();
                         }
 
+                    }else {
+                        //落点在中央，显示阅读设置view
                     }
 
                 }else if(drawStyle==2) {
@@ -233,6 +235,8 @@ public class BrowsingVIew extends View {
                             //通知activity跳转上一章节
                             bookCallback.jump2lastChapter();
                         }
+                    }else {
+                        //落点在中央，显示阅读设置view
                     }
 
                 }

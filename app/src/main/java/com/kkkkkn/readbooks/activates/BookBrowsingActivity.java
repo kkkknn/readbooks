@@ -48,6 +48,7 @@ public class BookBrowsingActivity extends BaseActivity {
                         browsingVIew.setTextSize(20f);
                         browsingVIew.setProgress(0,false);
                         browsingVIew.invalidate();
+
                     }
                     //接收完成,隐藏遮罩层
                     if(progressDialog!=null){
@@ -277,6 +278,7 @@ public class BookBrowsingActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         //取消注册静态广播
+        unregisterReceiver(broadcastReceiver);
     }
 
     public interface BookCallback{
