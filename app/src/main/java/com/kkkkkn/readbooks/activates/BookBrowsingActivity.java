@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.activates;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +12,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.entity.BookInfo;
@@ -22,7 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class BookBrowsingActivity extends BaseActivity {
@@ -35,6 +41,7 @@ public class BookBrowsingActivity extends BaseActivity {
     private BrowsingVIew browsingVIew;
     private ProgressDialog progressDialog;
     private BookInfo bookInfo;
+    private ImageView imageView;
 
     private Handler mHandler= new Handler(Looper.getMainLooper(),new Handler.Callback() {
         @Override
@@ -45,7 +52,7 @@ public class BookBrowsingActivity extends BaseActivity {
                     if(chapterContent!=null && chapterContent.length>0 ){
                         browsingVIew.setTextContent(chapterContent);
                         browsingVIew.setTextColor(Color.BLACK);
-                        browsingVIew.setTextSize(20f);
+                        browsingVIew.setTextSize(40f);
                         browsingVIew.setProgress(0,false);
                         browsingVIew.invalidate();
 
@@ -60,7 +67,7 @@ public class BookBrowsingActivity extends BaseActivity {
                     if(chapterContent!=null && chapterContent.length>0 ){
                         browsingVIew.setTextContent(chapterContent);
                         browsingVIew.setTextColor(Color.BLACK);
-                        browsingVIew.setTextSize(20f);
+                        browsingVIew.setTextSize(40f);
                         browsingVIew.setProgress(0,true);
                         browsingVIew.invalidate();
                     }
@@ -127,6 +134,8 @@ public class BookBrowsingActivity extends BaseActivity {
                 if(chapterFlag <chapterList.size()){
                     new GetContentThread(chapterList.get(++chapterFlag)[1],1).start();
                     Log.i(TAG, "jump2nextChapter: chapterFlag："+ chapterFlag);
+                    //显示遮罩层
+
                 }else if(pageFlag<bookInfo.getPageSum()){
                         //弹窗或者提示阅读已经完成
                         //查看是否还有下一页面，并重置相关数据
@@ -155,6 +164,13 @@ public class BookBrowsingActivity extends BaseActivity {
                 }
 
             }
+
+            @Override
+            public void showSetting() {
+                Log.i(TAG, "showSetting: 展示弹窗111");
+                showSettingDialog();
+             }
+
         });
         //加载框设置
         progressDialog = new ProgressDialog(this);
@@ -284,6 +300,8 @@ public class BookBrowsingActivity extends BaseActivity {
     public interface BookCallback{
         void jump2nextChapter();
         void jump2lastChapter();
+        void showSetting();
+
     }
 
     //获取当前页章节链接
@@ -294,5 +312,46 @@ public class BookBrowsingActivity extends BaseActivity {
         String str=bookInfo.getChapterPagesUrlStr();
         String[] values=str.substring(1,str.length()-1).split(", ");
         return values[count];
+    }
+
+
+    //弹出设置dialog
+    private void showSettingDialog(){
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.setting_dialog);
+        WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
+        layoutParams.gravity = Gravity.BOTTOM;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setAttributes(layoutParams);
+        dialog.getWindow().setBackgroundDrawable(null);
+        dialog.show();
+        popUp(dialog.getWindow().findViewById(R.id.liner_test1));
+    }
+
+    private void popUp(View view){
+        Animation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF,0.0f,
+                Animation.RELATIVE_TO_SELF,0.0f,Animation.RELATIVE_TO_SELF,
+                1.0f,Animation.RELATIVE_TO_SELF,0.0f);
+        animation.setDuration(500);
+        animation.setFillAfter(true);
+        animation.setFillEnabled(true);
+        view.startAnimation(animation);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 }

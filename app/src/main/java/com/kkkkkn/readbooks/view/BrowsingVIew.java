@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -200,6 +201,7 @@ public class BrowsingVIew extends View {
         return super.performClick();
     }
 
+
     //手势判断
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -222,8 +224,6 @@ public class BrowsingVIew extends View {
                             bookCallback.jump2nextChapter();
                         }
 
-                    }else {
-                        //落点在中央，显示阅读设置view
                     }
 
                 }else if(drawStyle==2) {
@@ -235,10 +235,17 @@ public class BrowsingVIew extends View {
                             //通知activity跳转上一章节
                             bookCallback.jump2lastChapter();
                         }
-                    }else {
-                        //落点在中央，显示阅读设置view
                     }
 
+                }else{
+                    if(event.getX()>=mViewWidth/3*2){
+                        Toast.makeText(getContext(),"下一页面",Toast.LENGTH_SHORT).show();
+                    }else if(event.getX()<=mViewWidth/3){
+                        Toast.makeText(getContext(),"上一页面",Toast.LENGTH_SHORT).show();
+                    }else {
+                        //落点在中央，显示阅读设置view
+                        bookCallback.showSetting();
+                    }
                 }
                 mClipX = -1;
                 offsetX=0;
