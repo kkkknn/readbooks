@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,7 +29,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.adapter.BookShelfAdapter;
 import com.kkkkkn.readbooks.entity.BookInfo;
-import com.kkkkkn.readbooks.entity.MainBooks;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
 
@@ -40,6 +41,10 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import javax.security.auth.login.LoginException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 /**
@@ -91,6 +96,39 @@ public class MainActivity extends BaseActivity  {
                 }
             }
         });
+
+        //检查软件更新版本
+        checkUpdate();
+    }
+    private void checkUpdate(){
+        //获取当前应用版本号
+        try {
+            PackageManager manager = this.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
+            String version = info.versionName;
+            Log.i(TAG, "checkUpdate: "+version);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        new Thread(){
+            @Override
+            public void run() {
+                //在线获取最新版本号
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url("http://www.kkkkknn.com:8005/version/")
+                        .build();
+                try {
+                    Response response = client.newCall(request).execute();
+                    Log.i(TAG, "checkUpdate: "+response.body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+
     }
 
     //跳转到阅读页面
