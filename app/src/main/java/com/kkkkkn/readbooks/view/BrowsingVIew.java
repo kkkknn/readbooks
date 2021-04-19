@@ -97,6 +97,10 @@ public class BrowsingVIew extends View {
         this.batteryStr = batteryStr;
     }
 
+    public int getlineFlag(){
+        return thisPage_flag;
+    }
+
     public void setProgress(int count,boolean isReverse){
         if(count<=skipList.size()){
             this.thisPage_flag = isReverse ? (skipList.size()-1) : count;
@@ -211,10 +215,9 @@ public class BrowsingVIew extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 //判断是否需要变化当前页
-                if(drawStyle==1){
-                    //下一页变当前页
-                    //是否需要转到下一页 小于6分之1不执行
-                    if(Math.abs(offsetX) > mViewWidth / 6){
+                //首先判断滑动距离是否超出宽度1/6
+                if(Math.abs(offsetX) > mViewWidth / 6){
+                    if(drawStyle==1){
                         //锚点赋值
                         if((thisPage_flag+1)<skipList.size()){
                             thisPage_flag++;
@@ -223,12 +226,7 @@ public class BrowsingVIew extends View {
                             //通知activity跳转下一章节
                             bookCallback.jump2nextChapter();
                         }
-
-                    }
-
-                }else if(drawStyle==2) {
-                    //滑动大于6分之1执行翻页逻辑
-                    if((mViewWidth-Math.abs(offsetX)) > mViewWidth / 6){
+                    }else if(drawStyle==2){
                         if(thisPage_flag>0){
                             thisPage_flag--;
                         }else if(bookCallback!=null){
@@ -236,17 +234,19 @@ public class BrowsingVIew extends View {
                             bookCallback.jump2lastChapter();
                         }
                     }
-
-                }else{
+                }else {
                     if(event.getX()>=mViewWidth/3*2){
+                        showSlide(false,(int) event.getX());
                         Toast.makeText(getContext(),"下一页面",Toast.LENGTH_SHORT).show();
                     }else if(event.getX()<=mViewWidth/3){
+                        showSlide(true,(int)event.getX());
                         Toast.makeText(getContext(),"上一页面",Toast.LENGTH_SHORT).show();
                     }else {
                         //落点在中央，显示阅读设置view
                         bookCallback.showSetting();
                     }
                 }
+
                 mClipX = -1;
                 offsetX=0;
                 drawStyle=0;
@@ -265,7 +265,7 @@ public class BrowsingVIew extends View {
                     }else if(offsetX > 0){
                         drawStyle = 2;
                         //计算初始锚点
-                        offsetX=-(mViewWidth-x);
+                        //offsetX=-(mViewWidth-x);
                     }
                 }
                 //offsetX = x;
@@ -276,7 +276,23 @@ public class BrowsingVIew extends View {
         invalidate();
         return true;
     }
-
+    private void showSlide(boolean type,int x){
+        if(type){
+            //左滑动
+            while (offsetX>-mViewWidth){
+                offsetX--;
+                //重新绘制界面
+                invalidate();
+            }
+        }else{
+            //右滑动
+            while (offsetX<mViewWidth){
+                offsetX++;
+                //重新绘制界面
+                invalidate();
+            }
+        }
+    }
     //绘制阅读界面 2个页面  1，当前页面  2，根据当前手势判断绘制上一页/下一页
     private void drawBitmap(Canvas canvas) {
         //判断是否需要绘制
@@ -322,8 +338,8 @@ public class BrowsingVIew extends View {
                     int[] arr2=skipList.get(thisPage_flag);
                     drawTextView(canvas,arr2[0],arr2[1],true);
                     //绘制上一页面
-                    canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
-                    canvas.translate(offsetX, 0);
+                    canvas.drawBitmap(thisBitmap, offsetX-mViewWidth, 0, mPaint);
+                    canvas.translate(offsetX-mViewWidth, 0);
                     int[] arr=skipList.get(thisPage_flag-1);
                     drawTextView(canvas,arr[0],arr[1],false);
                 }else {

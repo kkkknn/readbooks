@@ -120,7 +120,15 @@ public class SqlBookUtil {
             bookInfo.put(DatabaseHelper.BookTable_field_bookChapterPagesUrl,book.getChapterPagesUrlStr());
             //此处返回的ret2值是插入成功后的主键ID
             long ret2=db.insert(DatabaseHelper.BookTableName,null,bookInfo);
+            book.setBookId((int)ret2);
             Log.i(TAG, "addEnjoyBook: "+ret2);
+            //添加章节记录
+            boolean flag=setReadProgress(0,0,0,(int)ret2);
+            if(flag){
+                Log.i(TAG, "addEnjoyBook: 添加成功");
+            }else{
+                Log.i(TAG, "addEnjoyBook: 添加失败");
+            }
         }
         db.close();
         return true;
@@ -129,6 +137,7 @@ public class SqlBookUtil {
     //设置图书浏览进度
     public boolean setReadProgress(int chapterPageCount,int chapterCount, int charCount, int bookId) {
         if(this.databaseHelper==null||bookId==0){
+            Log.i(TAG, "getReadProgress: 为空，写入失败 bookId "+bookId);
             return false;
         }
         //查询当前书籍有无浏览记录
@@ -137,8 +146,7 @@ public class SqlBookUtil {
         values.put(DatabaseHelper.ReadTable_field_chapterCharCount,charCount);
         values.put(DatabaseHelper.ReadTable_field_chapterCount,chapterCount);
         values.put(DatabaseHelper.ReadTable_field_chapterPageCount,chapterPageCount);
-        String where="where "+
-                DatabaseHelper.ReadTable_field_bookId+
+        String where=DatabaseHelper.ReadTable_field_bookId+
                 " = ?";
         int ret=db.update(DatabaseHelper.ReadTableName,values,where,new String[]{Integer.toString(bookId)});
         if(ret==0){
@@ -152,6 +160,7 @@ public class SqlBookUtil {
             Log.i(TAG, "setReadProgress: 添加成功，主键为： "+id);
 
         }
+        Log.i(TAG, "setReadProgress: ret "+ret);
 
         return true;
     }
@@ -159,6 +168,7 @@ public class SqlBookUtil {
     //读取图书浏览进度
     public String getReadProgress(int bookId){
         if(this.databaseHelper==null||bookId==0){
+            Log.i(TAG, "getReadProgress: 为空，获取失败");
             return null;
         }
         SQLiteDatabase db=databaseHelper.getWritableDatabase();
@@ -168,12 +178,12 @@ public class SqlBookUtil {
                 DatabaseHelper.ReadTable_field_bookId+
                 " =?";
         Cursor cursor=db.rawQuery(sql,new String[]{Integer.toString(bookId)});
-        if(cursor.getCount()==1){
+        if(cursor.moveToNext()){
             JSONObject jsonObject=new JSONObject();
             try {
-                jsonObject.put("chapterLineCount",cursor.getString(cursor.getColumnIndex(DatabaseHelper.ReadTable_field_chapterCharCount)));
-                jsonObject.put("chapterCount",cursor.getString(cursor.getColumnIndex(DatabaseHelper.ReadTable_field_chapterCount)));
-                jsonObject.put("chapterPageCount",cursor.getString(cursor.getColumnIndex(DatabaseHelper.ReadTable_field_chapterPageCount)));
+                jsonObject.put("chapterLineCount",cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ReadTable_field_chapterCharCount)));
+                jsonObject.put("chapterCount",cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ReadTable_field_chapterCount)));
+                jsonObject.put("chapterPageCount",cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ReadTable_field_chapterPageCount)));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
