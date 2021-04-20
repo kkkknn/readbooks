@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -75,7 +76,7 @@ public class MainActivity extends BaseActivity  {
     private String ApkDirPath="";
     private String ApkName="";
     private NotificationManager mNotifyManager;
-    private NotificationCompat.Builder mBuilder=null;
+    private Notification.Builder mBuilder=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,27 +123,22 @@ public class MainActivity extends BaseActivity  {
 
         initNotification();
 
-
     }
 
     //初始化通知栏
     private void initNotification(){
         mNotifyManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //ChannelId为"1",ChannelName为"Channel1"
-        /*NotificationChannel channel = null;
+        NotificationChannel channel = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel = new NotificationChannel("10","Channel1", IMPORTANCE_DEFAULT);
-            channel.enableLights(true); //是否在桌面icon右上角展示小红点
-            channel.setLightColor(Color.GREEN); //小红点颜色
-            channel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
-            mNotifyManager.createNotificationChannel(channel);
-        }*/
-        mBuilder = new NotificationCompat.Builder(this,"10");
+            mBuilder=new Notification.Builder(this,"1");
+        }else {
+            mBuilder=new Notification.Builder(this);
+        }
         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
         mBuilder.setContentTitle("正在下载");
         mBuilder.setContentText("Download in progress");
-
-        mNotifyManager.notify(10,mBuilder.build());
+        mNotifyManager.notify(1,mBuilder.build());
     }
 
     @Override
@@ -237,9 +233,19 @@ public class MainActivity extends BaseActivity  {
 
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    private void syncProgress(MessageEvent event){
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void syncProgress(MessageEvent event){
+        if(event.message==EventMessage.DOWNLOAD_PROGRESS){
+            mBuilder.setProgress(100,(int)event.value,false);
+            mNotifyManager.notify(1,mBuilder.build());
+            Log.i(TAG, "syncProgress: "+(int)event.value);
+        }else if(event.message==EventMessage.DOWNLOAD_SUCCESS){
+            //todo 跳转安装新版本APK
+            String path=(String) event.value;
+            Intent  intent = new Intent(this,SearchActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,0);
+            mBuilder.setContentIntent(pendingIntent);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -265,6 +271,7 @@ public class MainActivity extends BaseActivity  {
                     JSONObject jsonObject=new JSONObject(responseStr);
                     String versionStr=jsonObject.getString("version");
                     if(!version.equals(versionStr)){
+
                         String url=jsonObject.getString("downloadUrl");
                         EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_APK,url));
                     }
@@ -273,6 +280,7 @@ public class MainActivity extends BaseActivity  {
                 e.printStackTrace();
             }
         }else if(event.message== EventMessage.DOWNLOAD_APK){
+            //todo 弹窗显示是否下载APK
             String url=(String) event.value;
             //okhttp 进行下载，并通过eventbus发送消息通知UI更新通知栏下载进度
             OkHttpClient client=new OkHttpClient();
@@ -307,7 +315,7 @@ public class MainActivity extends BaseActivity  {
                             sum += len;
                             int progress = (int) (sum * 1.0f / total * 100);
                             //下载中更新进度条 eventbus 通知
-                            if(progress%20==0){
+                            if(progress%5==0){
                                 EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_PROGRESS,progress));
                             }
 
@@ -334,10 +342,6 @@ public class MainActivity extends BaseActivity  {
 
                 }
             });
-        }else if(event.message==EventMessage.DOWNLOAD_PROGRESS){
-            mBuilder.setProgress(100,(int)event.value,false);
-            mNotifyManager.notify(10,mBuilder.build());
-            Log.i(TAG, "syncProgress: "+(int)event.value);
         }
     }
 
