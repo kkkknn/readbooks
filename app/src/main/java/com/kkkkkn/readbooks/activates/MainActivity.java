@@ -1,19 +1,23 @@
 package com.kkkkkn.readbooks.activates;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -29,6 +33,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.view.MenuItemCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -137,7 +142,6 @@ public class MainActivity extends BaseActivity  {
         }
         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
         mBuilder.setContentTitle("正在下载");
-        mBuilder.setContentText("Download in progress");
         mNotifyManager.notify(1,mBuilder.build());
     }
 
@@ -145,7 +149,7 @@ public class MainActivity extends BaseActivity  {
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        //EventBus.getDefault().post(new MessageEvent(EventMessage.CHECK_VERSION,null));
+        EventBus.getDefault().post(new MessageEvent(EventMessage.CHECK_VERSION,null));
     }
 
     @Override
@@ -215,7 +219,6 @@ public class MainActivity extends BaseActivity  {
         switch (item.getItemId()){
             case R.id.navigation_notifications:
                 Toast.makeText(this,"点击了1",Toast.LENGTH_SHORT).show();
-                EventBus.getDefault().post(new MessageEvent(EventMessage.CHECK_VERSION,null));
 
                 break;
             case R.id.navigation_dashboard:
@@ -240,11 +243,53 @@ public class MainActivity extends BaseActivity  {
             mNotifyManager.notify(1,mBuilder.build());
             Log.i(TAG, "syncProgress: "+(int)event.value);
         }else if(event.message==EventMessage.DOWNLOAD_SUCCESS){
-            //todo 跳转安装新版本APK
-            String path=(String) event.value;
-            Intent  intent = new Intent(this,SearchActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,0);
-            mBuilder.setContentIntent(pendingIntent);
+            File apk=new File((String) event.value);
+            //File apk=new File("/sdcard/app-debug (1).apk");
+            Log.i(TAG, "syncProgress: "+(String) event.value);
+            if(apk.exists()){
+                installApk(apk);
+            }
+        }else if(event.message==EventMessage.SYNC_DIALOG){
+            JSONObject jsonObject=(JSONObject) event.value;
+            String code= null;
+            String url= null;
+            String verStr= null;
+            try {
+                code = jsonObject.getString("version");
+                url = jsonObject.getString("downloadUrl");
+                verStr = jsonObject.getString("message");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if(code!=null&&url!=null&&verStr!=null){
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("检测到新版本");
+                builder.setMessage(verStr);
+                builder.setIcon(R.mipmap.ic_launcher);
+                builder.setCancelable(false);            //点击对话框以外的区域是否让对话框消失
+
+                //设置正面按钮
+                String finalUrl = url;
+                builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_APK, finalUrl));
+                    }
+                });
+                //设置反面按钮
+                builder.setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertdialog = builder.create();
+
+                alertdialog.show();
+            }
+
+
         }
     }
 
@@ -271,9 +316,8 @@ public class MainActivity extends BaseActivity  {
                     JSONObject jsonObject=new JSONObject(responseStr);
                     String versionStr=jsonObject.getString("version");
                     if(!version.equals(versionStr)){
+                        EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_DIALOG,jsonObject));
 
-                        String url=jsonObject.getString("downloadUrl");
-                        EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_APK,url));
                     }
                 }
             } catch (IOException | JSONException | PackageManager.NameNotFoundException e) {
@@ -281,15 +325,16 @@ public class MainActivity extends BaseActivity  {
             }
         }else if(event.message== EventMessage.DOWNLOAD_APK){
             //todo 弹窗显示是否下载APK
+
             String url=(String) event.value;
             //okhttp 进行下载，并通过eventbus发送消息通知UI更新通知栏下载进度
             OkHttpClient client=new OkHttpClient();
             Request down_request = new Request.Builder()
                     .url(url)
                     .build();
-            initDir("");//初始化下载目录
+            //("/download");//初始化下载目录
             //拆分APK名字 http://www.aaa.com:8005/download/xxx.apk
-            ApkName=url.split("download")[1];
+            ApkName=url.split("download")[1].replace("/","");
             Log.i(TAG, "onMessageEvent: "+ApkName);
             client.newCall(down_request).enqueue(new Callback() {
                 @Override
@@ -304,25 +349,27 @@ public class MainActivity extends BaseActivity  {
                     int len = 0;
                     FileOutputStream fos = null;
                     //储存下载文件的目录
-                    File file = new File(ApkDirPath, ApkName);
+                    //File file = new File(ApkDirPath, ApkName);
+                    //Log.i(TAG, "onResponse: "+file.getAbsolutePath());
                     try {
                         is = response.body().byteStream();
                         long total = response.body().contentLength();
-                        fos = new FileOutputStream(file);
+                        fos = openFileOutput(ApkName,  Context.MODE_WORLD_READABLE+Context.MODE_WORLD_WRITEABLE); ;
                         long sum = 0;
+                        int progress=0;
                         while ((len = is.read(buf)) != -1) {
                             fos.write(buf, 0, len);
                             sum += len;
-                            int progress = (int) (sum * 1.0f / total * 100);
+                            int count = (int) (sum * 1.0f / total * 100);
                             //下载中更新进度条 eventbus 通知
-                            if(progress%5==0){
-                                EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_PROGRESS,progress));
+                            if(progress<count){
+                                progress=count;
+                                EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_PROGRESS,(int)progress));
                             }
-
                         }
                         fos.flush();
                         //下载完成
-                        EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_SUCCESS,file));
+                        EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_SUCCESS,getDir()+"/"+ApkName));
                         Log.i(TAG, "onResponse: DOWNLOAD_SUCCESS");
                     } catch (Exception e) {
                         EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_ERROR,e));
@@ -345,19 +392,69 @@ public class MainActivity extends BaseActivity  {
         }
     }
 
+    //安装APK
+    private void installApk(File apk){
+        if (!apk.exists()) {
+            Log.i(TAG, "installApk: apk不存在");
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (apk.getName().endsWith(".apk")) {
+            try {
+                //兼容7.0
+                Uri uri=null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    boolean hasInstallPermission = getPackageManager().canRequestPackageInstalls();
+                    if(!hasInstallPermission){
+                        startInstallPermissionSettingActivity();
+                    }
+                    uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", apk);//通过FileProvider创建一个content类型的Uri
+                    intent.setDataAndType(uri, "application/vnd.android.package-archive"); // 对应apk类型
+
+                } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){// 适配Android 7系统版本
+                    uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", apk);//通过FileProvider创建一个content类型的Uri
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+                    intent.setDataAndType(uri, "application/vnd.android.package-archive"); // 对应apk类型
+
+                }else{
+                    intent.setDataAndType(Uri.fromFile(apk), "application/vnd.android.package-archive");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //弹出安装界面
+                startActivity(intent);
+        } else {
+            Log.i(TAG, "installApk: 不是apk文件!");
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void startInstallPermissionSettingActivity() {
+        //注意这个是8.0新API
+        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     //初始化保存目录，没有进行创建
-    private void initDir(String path){
+    private String getDir(){
         //是否插入SD卡
         String status = Environment.getExternalStorageState();
         boolean isSDCard=status.equals(Environment.DIRECTORY_DOWNLOADS);
         if(isSDCard){
-            ApkDirPath=getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+path;
+            ApkDirPath=getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
         }else{
-            ApkDirPath=getApplicationContext().getFilesDir().getAbsolutePath()+path;
+            ApkDirPath=getApplicationContext().getFilesDir().getAbsolutePath();
         }
         File file=new File(ApkDirPath);
         if(!file.exists()){
             file.mkdirs();
         }
+        return ApkDirPath;
     }
 }
