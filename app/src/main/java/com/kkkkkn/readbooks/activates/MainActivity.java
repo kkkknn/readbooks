@@ -77,7 +77,7 @@ import static android.app.NotificationManager.IMPORTANCE_DEFAULT;
 public class MainActivity extends BaseActivity  {
     private final static String TAG="主界面";
     private long lastBackClick;
-    private final String requestUrl="http://www.kkkkknn.com:8005/version/";;
+    private final String requestUrl="http://www.kkkkknn.com:8005/version/";
     private String ApkDirPath="";
     private String ApkName="";
     private NotificationManager mNotifyManager;
@@ -306,7 +306,7 @@ public class MainActivity extends BaseActivity  {
                 //在线获取最新版本号
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
-                        .url("http://www.kkkkknn.com:8005/version/")
+                        .url(requestUrl)
                         .build();
                 Response response = client.newCall(request).execute();
                 if(response.code()==200){
@@ -354,7 +354,7 @@ public class MainActivity extends BaseActivity  {
                     try {
                         is = response.body().byteStream();
                         long total = response.body().contentLength();
-                        fos = openFileOutput(ApkName,  Context.MODE_WORLD_READABLE+Context.MODE_WORLD_WRITEABLE); ;
+                        fos = openFileOutput(ApkName,  Context.MODE_WORLD_READABLE+Context.MODE_WORLD_WRITEABLE);
                         long sum = 0;
                         int progress=0;
                         while ((len = is.read(buf)) != -1) {
@@ -404,7 +404,7 @@ public class MainActivity extends BaseActivity  {
         if (apk.getName().endsWith(".apk")) {
             try {
                 //兼容7.0
-                Uri uri=null;
+                Uri uri;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     boolean hasInstallPermission = getPackageManager().canRequestPackageInstalls();
                     if(!hasInstallPermission){
