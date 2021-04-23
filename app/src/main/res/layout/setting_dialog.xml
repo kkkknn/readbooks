@@ -1,15 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/liner_test1"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:gravity="center"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:background="#3D3636"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="#999"
-        android:textSize="25sp"
-        android:textColor="#FFF"
-        android:text="底部弹窗"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/read_setting_led" />
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:layout_width="wrap_content"
+            android:layout_weight="7"
+            android:layout_height="match_parent"
+            android:text="dadasd奥术大师大" />
+        <TextView
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:textColor="@color/colorWhite"
+            android:text="@string/read_system_led"
+            android:background="@drawable/textview_shape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:background="#3D3636"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:text="@string/read_setting_background" />
+
+        <com.kkkkkn.readbooks.view.BackgroundRadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:btnImg="#1C6DDE" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:background="#3D3636"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_height="match_parent"
+            android:text="@string/read_setting_font" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/textview_shape"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="—"
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="22sp" />
+
+            <TextView
+                android:paddingHorizontal="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/colorGray"
+                android:gravity="center"
+                android:text="22"
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/textview_shape"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="+"
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:background="#3D3636"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:gravity="center"
+            android:layout_marginEnd="10dp"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/read_setting_flag"/>
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:tooltipText="@string/read_setting_flag" />
+    </LinearLayout>
+
+
+
 </LinearLayout>

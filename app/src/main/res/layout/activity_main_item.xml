@@ -11,9 +11,9 @@
     <ImageView
         android:layout_marginVertical="5dp"
         android:id="@+id/book_img"
-        android:scaleType="centerInside"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:scaleType="matrix"
+        android:layout_width="80dp"
+        android:layout_height="100dp"/>
 
     <RelativeLayout
         android:layout_gravity="center"

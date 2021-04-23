@@ -280,6 +280,7 @@ public class BookBrowsingActivity extends BaseActivity {
                     } else {
                         suc_msg.what = 22;
                     }
+                    lineFlag=0;
                     mHandler.sendMessage(suc_msg);
                 }
             } catch (IOException | JSONException e) {

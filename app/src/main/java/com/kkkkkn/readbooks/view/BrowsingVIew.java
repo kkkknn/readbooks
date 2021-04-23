@@ -39,7 +39,7 @@ public class BrowsingVIew extends View {
     //当前章节字符串
     private String[] contentArr;
     //文字大小
-    private float textSize = 50f;
+    private float textSize = 40f;
     //文字颜色
     private int textColor = Color.BLACK;
     //每行最大显示文字数量
@@ -127,7 +127,7 @@ public class BrowsingVIew extends View {
     private void initView(Context context) {
         mViewWidth = getMeasuredWidth();
         mViewHeight = getMeasuredHeight();
-        statusBarHeight = getStatusBarHeight(context);
+        statusBarHeight = getStatusBarHeight(context)+30;
         mTextPaint = new TextPaint();
         mPaint = new Paint();
 

@@ -25,15 +25,19 @@
 
         <activity
             android:name=".activates.SearchActivity"
+            android:theme="@style/AppTheme.NoTitle_FullScreen"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activates.BookBrowsingActivity"
+            android:theme="@style/AppTheme.NoTitle_FullScreen"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activates.BookInfoActivity"
+            android:theme="@style/AppTheme.NoTitle_FullScreen"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activates.MainActivity"
+            android:theme="@style/AppTheme.NoTitle_FullScreen"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,10 +52,10 @@
         android:grantUriPermissions="true"
         android:exported="false">
 
-        <meta-data
-            android:name="android.support.FILE_PROVIDER_PATHS"
-            android:resource="@xml/file_paths" />
-    </provider>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

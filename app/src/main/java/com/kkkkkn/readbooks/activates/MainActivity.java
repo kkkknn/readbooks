@@ -44,6 +44,8 @@ import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.util.view.ViewUtil;
+import com.kkkkkn.readbooks.view.BookGridView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -82,6 +84,7 @@ public class MainActivity extends BaseActivity  {
     private String ApkName="";
     private NotificationManager mNotifyManager;
     private Notification.Builder mBuilder=null;
+    private GridView mGridView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,39 +97,43 @@ public class MainActivity extends BaseActivity  {
             actionBar.setDisplayShowTitleEnabled(false);
         }*/
 
-        GridView mGridView=findViewById(R.id.main_booksGridView);
+        mGridView=findViewById(R.id.main_booksGridView);
         SwipeRefreshLayout swipeRefreshLayout=findViewById(R.id.main_SwipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
-                ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
-                if(list!=null){
-                    BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
-                    mGridView.setAdapter(mAdapter);
-                }
+                flushBookShelf();
                 swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-        //读取本地数据库，获取已加入收藏的图书 并添加到主页相应位置
-        SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
-        ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
-        BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
-        mGridView.setAdapter(mAdapter);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
-                if(bookInfo!=null){
-                    jump2ReadView(bookInfo);
-                    Log.i(TAG, "onItemClick: "+bookInfo.getBookId());
-                }
             }
         });
 
 
         initNotification();
+        flushBookShelf();
+        ViewUtil.showToast(this,"哈哈哈");
+    }
+
+    private void flushBookShelf(){
+        //读取本地数据库，获取已加入收藏的图书 并添加到主页相应位置
+        SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
+        ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
+        if(mGridView.getAdapter()==null&&list!=null){
+            BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
+            mGridView.setAdapter(mAdapter);
+            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
+                    if(bookInfo!=null){
+                        jump2ReadView(bookInfo);
+                        Log.i(TAG, "onItemClick: "+bookInfo.getBookId());
+                    }
+                }
+            });
+        }else if(list!=null){
+            BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
+            mGridView.setAdapter(mAdapter);
+        }
 
     }
 
@@ -456,5 +463,13 @@ public class MainActivity extends BaseActivity  {
             file.mkdirs();
         }
         return ApkDirPath;
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        //返回时重新获取书架数据
+        flushBookShelf();
     }
 }

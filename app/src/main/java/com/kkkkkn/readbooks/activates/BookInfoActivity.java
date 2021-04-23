@@ -29,6 +29,7 @@ import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
 import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.util.view.ViewUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -150,7 +151,9 @@ public class BookInfoActivity extends BaseActivity {
                 SqlBookUtil util=SqlBookUtil.getInstance(getApplicationContext());
                 util.initDataBase();
                 if(util.addEnjoyBook(bookInfo)){
-                    Log.i(TAG, "onClick: 牛皮");
+                    ViewUtil.showToast(getApplicationContext(),"加入书架成功");
+                }else {
+                    ViewUtil.showToast(getApplicationContext(),"加入书架失败");
                 }
             }
         });
