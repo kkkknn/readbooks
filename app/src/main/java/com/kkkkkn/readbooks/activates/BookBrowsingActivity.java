@@ -231,10 +231,15 @@ public class BookBrowsingActivity extends BaseActivity {
                 arr[1] = (String) jsonObject.get("chapterUrl");
                 chapterList.add(arr);
             }
-            if (type == 1) {
-                chapterFlag = chapterList.size() - 1;
-            } else {
-                chapterFlag = 0;
+            switch (type){
+                case 1:
+                    chapterFlag = chapterList.size() - 1;
+                    break;
+                case 2:
+                    chapterFlag = 0;
+                    break;
+                default:
+                    break;
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
@@ -245,12 +250,8 @@ public class BookBrowsingActivity extends BaseActivity {
                 //只显示当前章节名字 和当前时间，
                 //browsingVIew.setChapterNameStr(chapterList.get(chapterFlag)[0]);
                 //browsingVIew.setProgressStr(chapterFlag +"/"+chapterList.size());
-
             }
-
         }
-
-
     }
 
     //获取章节文字的网络线程

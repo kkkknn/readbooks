@@ -110,7 +110,7 @@ public class MainActivity extends BaseActivity  {
 
         initNotification();
         flushBookShelf();
-        ViewUtil.showToast(this,"哈哈哈");
+
     }
 
     private void flushBookShelf(){

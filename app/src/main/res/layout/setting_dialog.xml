@@ -7,57 +7,61 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="10dp"
-        android:background="#3D3636"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="#3D3636"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
             android:gravity="center"
+            android:text="@string/read_setting_led"
             android:textAlignment="center"
-            android:textSize="16sp"
             android:textColor="@color/colorWhite"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/read_setting_led" />
+            android:textSize="16sp" />
+
         <androidx.appcompat.widget.AppCompatSeekBar
             android:layout_width="wrap_content"
-            android:layout_weight="7"
             android:layout_height="match_parent"
+            android:layout_weight="7"
             android:text="dadasd奥术大师大" />
+
         <TextView
-            android:textSize="16sp"
-            android:padding="10dp"
-            android:textColor="@color/colorWhite"
-            android:text="@string/read_system_led"
-            android:background="@drawable/textview_shape"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@drawable/read_setting_btn_select"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="10dp"
+            android:text="@string/read_system_led"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp" />
 
 
     </LinearLayout>
 
 
     <LinearLayout
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="10dp"
-        android:background="#3D3636"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="#3D3636"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
 
         <TextView
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textColor="@color/colorWhite"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
-            android:text="@string/read_setting_background" />
+            android:gravity="center"
+            android:text="@string/read_setting_background"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp" />
 
         <com.kkkkkn.readbooks.view.BackgroundRadioButton
             android:layout_width="wrap_content"
@@ -66,22 +70,22 @@
     </LinearLayout>
 
     <LinearLayout
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="10dp"
-        android:background="#3D3636"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="#3D3636"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
 
         <TextView
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textColor="@color/colorWhite"
             android:layout_width="wrap_content"
-            android:layout_marginEnd="10dp"
             android:layout_height="match_parent"
-            android:text="@string/read_setting_font" />
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:text="@string/read_setting_font"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -91,20 +95,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@drawable/textview_shape"
+                android:background="@drawable/read_setting_btn_select"
                 android:gravity="center"
                 android:paddingHorizontal="20dp"
                 android:text="—"
+                android:focusable="true"
+                android:clickable="true"
                 android:textAlignment="center"
                 android:textColor="@color/colorWhite"
                 android:textSize="22sp" />
 
             <TextView
-                android:paddingHorizontal="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@color/colorGray"
                 android:gravity="center"
+                android:paddingHorizontal="15dp"
                 android:text="22"
                 android:textAlignment="center"
                 android:textColor="@color/colorWhite"
@@ -113,13 +118,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@drawable/textview_shape"
+                android:background="@drawable/read_setting_btn_select"
+                android:clickable="true"
                 android:gravity="center"
                 android:paddingHorizontal="20dp"
                 android:text="+"
                 android:textAlignment="center"
                 android:textColor="@color/colorWhite"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:focusable="true" />
 
         </LinearLayout>
 
@@ -127,29 +134,40 @@
     </LinearLayout>
 
     <LinearLayout
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="10dp"
-        android:background="#3D3636"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="#3D3636"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
 
         <TextView
-            android:gravity="center"
-            android:layout_marginEnd="10dp"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textColor="@color/colorWhite"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/read_setting_flag"/>
-
-        <androidx.appcompat.widget.AppCompatSeekBar
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:text="@string/read_setting_flag"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp" />
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:tooltipText="@string/read_setting_flag" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <TextView
+                android:gravity="center"
+                android:text="章节1：小城之春扩展卡v"
+                android:textSize="14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <androidx.appcompat.widget.AppCompatSeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@android:style/Widget.DeviceDefault.SeekBar"
+                android:tooltipText="@string/read_setting_flag" />
+        </LinearLayout>
 
+    </LinearLayout>
 
 
 </LinearLayout>
