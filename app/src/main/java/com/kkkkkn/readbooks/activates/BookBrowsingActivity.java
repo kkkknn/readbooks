@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.entity.BookInfo;
@@ -254,7 +255,7 @@ public class BookBrowsingActivity extends BaseActivity {
         }
     }
 
-    //获取章节文字的网络线程
+    //获取章节文字的网络线程内部类
     private class GetContentThread extends Thread {
         private String url;
         private int type;
@@ -347,16 +348,14 @@ public class BookBrowsingActivity extends BaseActivity {
         dialog.getWindow().setAttributes(layoutParams);
         dialog.getWindow().setBackgroundDrawable(null);
         dialog.show();
-        popUp(dialog.getWindow().findViewById(R.id.liner_test1));
-    }
-
-    private void popUp(View view) {
+        //设置弹出属性动画
         Animation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
                 Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
                 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
         animation.setDuration(500);
         animation.setFillAfter(true);
         animation.setFillEnabled(true);
+        View view=dialog.getWindow().findViewById(R.id.liner_test1);
         view.startAnimation(animation);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -374,7 +373,25 @@ public class BookBrowsingActivity extends BaseActivity {
 
             }
         });
+        //获取相应的组件并添加相应的时间监听
+        TextView add_sizeTextView,subtract_sizeTextView,font_sizeTextView;
+        add_sizeTextView=dialog.getWindow().findViewById(R.id.add_fontSize);
+        font_sizeTextView=dialog.getWindow().findViewById(R.id.fontSize);
+        subtract_sizeTextView=dialog.getWindow().findViewById(R.id.subtract_fontSize);
+        add_sizeTextView.setOnClickListener(onClickListener);
+        subtract_sizeTextView.setOnClickListener(onClickListener);
     }
+    private View.OnClickListener onClickListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.add_fontSize:
+                    break;
+                case R.id.subtract_fontSize:
+                    break;
+            }
+        }
+    };
 
 
 }

@@ -2,6 +2,7 @@
 
 <resources>
     <declare-styleable name="BackgroundRadioButton">
-        <attr name="btnImg" format="color"/>
+        <attr name="colorLabel" format="color"/>
+        <attr name="imgLabel" format="reference"/>
     </declare-styleable>
 </resources>
