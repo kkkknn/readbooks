@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity  {
         }*/
 
         mGridView=findViewById(R.id.main_booksGridView);
-        SwipeRefreshLayout swipeRefreshLayout=findViewById(R.id.main_SwipeRefreshLayout);
+        final SwipeRefreshLayout swipeRefreshLayout=findViewById(R.id.main_SwipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -276,7 +276,7 @@ public class MainActivity extends BaseActivity  {
                 builder.setCancelable(false);            //点击对话框以外的区域是否让对话框消失
 
                 //设置正面按钮
-                String finalUrl = url;
+                final String finalUrl = url;
                 builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

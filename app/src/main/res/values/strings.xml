@@ -18,7 +18,7 @@
     <string name="version_info">此软件仅用于学习交流，禁止商业用途</string>
 
     <string name="read_setting_led">亮度</string>
-    <string name="read_system_led">系统亮度</string>
+    <string name="read_system_led">跟随系统亮度</string>
     <string name="read_setting_background">背景</string>
     <string name="read_setting_font">字号</string>
     <string name="read_setting_flag">进度</string>

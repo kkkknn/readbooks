@@ -212,6 +212,18 @@ public class BookBrowsingActivity extends BaseActivity {
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(broadcastReceiver, filter);
 
+        //读取存储设置信息
+        readSettingConfig();
+    }
+
+    //读取浏览设置 从 share_refence
+    private void readSettingConfig(){
+
+    }
+
+    //写入浏览设置，到share_refence
+    private void writeSettingConfig(){
+
     }
 
 
@@ -295,11 +307,12 @@ public class BookBrowsingActivity extends BaseActivity {
     }
 
     @Override
-        protected void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         //取消注册静态广播
         unregisterReceiver(broadcastReceiver);
-
+        //写入阅读设置
+        writeSettingConfig();
 
     }
 

@@ -28,8 +28,8 @@ public class BackgroundRadioButton extends AppCompatRadioButton {
     }
     public BackgroundRadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setButtonDrawable(android.R.drawable.btn_radio);
-        setGravity(Gravity.CENTER);
+        //setButtonDrawable(android.R.drawable.btn_radio);
+        //setGravity(Gravity.CENTER);
         setClickable(true);
         init(attrs);
     }
