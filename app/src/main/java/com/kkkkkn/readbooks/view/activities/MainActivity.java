@@ -1,18 +1,14 @@
-package com.kkkkkn.readbooks.activates;
+package com.kkkkkn.readbooks.view.activities;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,27 +21,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.view.MenuItemCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.adapter.BookShelfAdapter;
-import com.kkkkkn.readbooks.entity.BookInfo;
+import com.kkkkkn.readbooks.model.adapter.BookShelfAdapter;
+import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.presenter.Presenter_Main;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
-import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
-import com.kkkkkn.readbooks.util.view.ViewUtil;
-import com.kkkkkn.readbooks.view.BookGridView;
+import com.kkkkkn.readbooks.model.sqlite.SqlBookUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -59,10 +48,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
-
-import javax.security.auth.login.LoginException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -70,14 +56,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static android.app.NotificationManager.IMPORTANCE_DEFAULT;
-
 
 /**
  * 程序主界面，每次进入的时候获取读取本地图书并进行加载
  */
 public class MainActivity extends BaseActivity  {
     private final static String TAG="主界面";
+    private Presenter_Main presenterMain;
     private long lastBackClick;
     private final String requestUrl="http://www.kkkkknn.com:8005/version/";
     private String ApkDirPath="";
@@ -85,10 +70,18 @@ public class MainActivity extends BaseActivity  {
     private NotificationManager mNotifyManager;
     private Notification.Builder mBuilder=null;
     private GridView mGridView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
+        initView();
+
+    }
+    private void initView(){
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //隐藏APP title
@@ -96,49 +89,18 @@ public class MainActivity extends BaseActivity  {
         if(actionBar!=null){
             actionBar.setDisplayShowTitleEnabled(false);
         }*/
-
         mGridView=findViewById(R.id.main_booksGridView);
         final SwipeRefreshLayout swipeRefreshLayout=findViewById(R.id.main_SwipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                flushBookShelf();
+
+                Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-
-        initNotification();
-        flushBookShelf();
-
-    }
-
-    private void flushBookShelf(){
-        //读取本地数据库，获取已加入收藏的图书 并添加到主页相应位置
-        SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
-        ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
-        if(mGridView.getAdapter()==null&&list!=null){
-            BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
-            mGridView.setAdapter(mAdapter);
-            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
-                    if(bookInfo!=null){
-                        jump2ReadView(bookInfo);
-                        Log.i(TAG, "onItemClick: "+bookInfo.getBookId());
-                    }
-                }
-            });
-        }else if(list!=null){
-            BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(),list);
-            mGridView.setAdapter(mAdapter);
-        }
-
-    }
-
-    //初始化通知栏
-    private void initNotification(){
+        //初始化通知栏
         mNotifyManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //ChannelId为"1",ChannelName为"Channel1"
         NotificationChannel channel = null;
@@ -151,6 +113,30 @@ public class MainActivity extends BaseActivity  {
         mBuilder.setContentTitle("正在下载");
         mNotifyManager.notify(1,mBuilder.build());
     }
+
+
+    private void syncBookShelf(ArrayList<BookInfo> object){
+        if(mGridView.getAdapter()==null&& (ArrayList<BookInfo>) object !=null){
+            BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(), (ArrayList<BookInfo>) object);
+            mGridView.setAdapter(mAdapter);
+            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
+                    if(bookInfo!=null){
+                        jump2ReadView(bookInfo);
+                        Log.i(TAG, "onItemClick: "+bookInfo.getBookId());
+                    }
+                }
+            });
+        }else if((ArrayList<BookInfo>) object !=null){
+            BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(), (ArrayList<BookInfo>) object);
+            mGridView.setAdapter(mAdapter);
+        }
+
+    }
+
+
 
     @Override
     protected void onStart() {
@@ -245,58 +231,70 @@ public class MainActivity extends BaseActivity  {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void syncProgress(MessageEvent event){
-        if(event.message==EventMessage.DOWNLOAD_PROGRESS){
-            mBuilder.setProgress(100,(int)event.value,false);
-            mNotifyManager.notify(1,mBuilder.build());
-            Log.i(TAG, "syncProgress: "+(int)event.value);
-        }else if(event.message==EventMessage.DOWNLOAD_SUCCESS){
-            File apk=new File((String) event.value);
-            //File apk=new File("/sdcard/app-debug (1).apk");
-            Log.i(TAG, "syncProgress: "+(String) event.value);
-            if(apk.exists()){
-                installApk(apk);
-            }
-        }else if(event.message==EventMessage.SYNC_DIALOG){
-            JSONObject jsonObject=(JSONObject) event.value;
-            String code= null;
-            String url= null;
-            String verStr= null;
-            try {
-                code = jsonObject.getString("version");
-                url = jsonObject.getString("downloadUrl");
-                verStr = jsonObject.getString("message");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if(code!=null&&url!=null&&verStr!=null){
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("检测到新版本");
-                builder.setMessage(verStr);
-                builder.setIcon(R.mipmap.ic_launcher);
-                builder.setCancelable(false);            //点击对话框以外的区域是否让对话框消失
+        switch(event.message){
+            case DOWNLOAD_PROGRESS:
+                mBuilder.setProgress(100,(int)event.value,false);
+                mNotifyManager.notify(1,mBuilder.build());
+                Log.i(TAG, "syncProgress: "+(int)event.value);
+                break;
+            case DOWNLOAD_SUCCESS:
+                //下载完成后 调用安装APK
+                File apk=new File((String) event.value);
+                //File apk=new File("/sdcard/app-debug (1).apk");
+                Log.i(TAG, "syncProgress: "+(String) event.value);
+                if(apk.exists()){
+                    installApk(apk);
+                }
+                break;
+            case SYNC_DIALOG:
+                showUpdateDialog(event.value);
+                break;
+            case SYNC_BOOKSHELF:
+                ArrayList<BookInfo> list=(ArrayList<BookInfo>) event.value;
+                syncBookShelf(list);
+                break;
+        }
 
-                //设置正面按钮
-                final String finalUrl = url;
-                builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_APK, finalUrl));
-                    }
-                });
-                //设置反面按钮
-                builder.setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertdialog = builder.create();
+    }
 
-                alertdialog.show();
-            }
+    private void showUpdateDialog(Object object){
+        JSONObject jsonObject=(JSONObject)object;
+        String code= null;
+        String url= null;
+        String verStr= null;
+        try {
+            code = jsonObject.getString("version");
+            url = jsonObject.getString("downloadUrl");
+            verStr = jsonObject.getString("message");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(code!=null&&url!=null&&verStr!=null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("检测到新版本");
+            builder.setMessage(verStr);
+            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setCancelable(false);            //点击对话框以外的区域是否让对话框消失
 
+            //设置正面按钮
+            final String finalUrl = url;
+            builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_APK, finalUrl));
+                }
+            });
+            //设置反面按钮
+            builder.setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertdialog = builder.create();
 
+            alertdialog.show();
         }
     }
 
@@ -470,6 +468,6 @@ public class MainActivity extends BaseActivity  {
         super.onRestart();
 
         //返回时重新获取书架数据
-        flushBookShelf();
+        Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
     }
 }

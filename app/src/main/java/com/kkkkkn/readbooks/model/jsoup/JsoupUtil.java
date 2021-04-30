@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.util.jsoup;
+package com.kkkkkn.readbooks.model.jsoup;
 
 import org.json.JSONException;
 import org.json.JSONObject;

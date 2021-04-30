@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activates.BookBrowsingActivity"
+    tools:context=".view.activities.BookBrowsingActivity"
     android:orientation="horizontal">
 
-    <com.kkkkkn.readbooks.view.BrowsingVIew
+    <com.kkkkkn.readbooks.view.customView.BrowsingVIew
         android:id="@+id/browView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

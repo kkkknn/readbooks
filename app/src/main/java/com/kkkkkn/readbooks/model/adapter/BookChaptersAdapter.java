@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.adapter;
+package com.kkkkkn.readbooks.model.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.view.viewHolder.BookChaptersAdapter_ViewHolder;
 
 import java.util.ArrayList;
 
@@ -39,13 +40,13 @@ public class BookChaptersAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder=null;
+        BookChaptersAdapter_ViewHolder viewHolder=null;
         if(convertView==null){
             convertView=mInflater.inflate(R.layout.activity_book_info_chapter_item,parent,false);
-            viewHolder=new ViewHolder(convertView);
+            viewHolder=new BookChaptersAdapter_ViewHolder(convertView);
             convertView.setTag(viewHolder);
         }else {
-            viewHolder=(ViewHolder) convertView.getTag();
+            viewHolder=(BookChaptersAdapter_ViewHolder) convertView.getTag();
 
         }
 
@@ -58,11 +59,4 @@ public class BookChaptersAdapter extends BaseAdapter {
     }
 
 
-    private static class ViewHolder{
-        public ViewHolder(View viewRoot) {
-            chapterName=(TextView) viewRoot.findViewById(R.id.book_info_chapter_item_chapterName);
-        }
-
-        public TextView chapterName;
-    }
 }

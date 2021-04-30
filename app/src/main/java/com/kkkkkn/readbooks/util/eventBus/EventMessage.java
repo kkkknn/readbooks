@@ -1,7 +1,8 @@
 package com.kkkkkn.readbooks.util.eventBus;
 
 public enum EventMessage {
-
+    //更新书架
+    SYNC_BOOKSHELF,
     //更新窗口
     SYNC_DIALOG,
     //检查更新

@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.util.sqlite.util;
+package com.kkkkkn.readbooks.model.sqlite.util;
 
 import android.content.Context;
 import android.database.SQLException;
@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import static android.content.ContentValues.TAG;
@@ -69,7 +68,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(chapter_table_sql);
         } catch (SQLException e) {
             Log.e(TAG, "onCreate " + BookTableName + "Error" + e.toString());
-            Log.e(TAG, "onCreate " + ReadTableName + "Error" + e.toString());
         }
     }
 

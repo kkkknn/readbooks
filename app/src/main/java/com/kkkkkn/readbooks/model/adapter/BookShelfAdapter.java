@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.adapter;
+package com.kkkkkn.readbooks.model.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,7 +11,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.entity.BookInfo;
+import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.view.viewHolder.BookShelfAdapter_ViewHolder;
 
 import java.util.ArrayList;
 
@@ -45,16 +46,16 @@ public class BookShelfAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder=null;
+        BookShelfAdapter_ViewHolder viewHolder=null;
         if(convertView==null){
             convertView=mInflater.inflate(R.layout.activity_main_item,parent,false);
-            viewHolder=new ViewHolder();
+            viewHolder=new BookShelfAdapter_ViewHolder();
             viewHolder.bookImg=(ImageView)convertView.findViewById(R.id.book_img);
             viewHolder.bookName=(TextView) convertView.findViewById(R.id.book_name);
             viewHolder.updateSum=(TextView)convertView.findViewById(R.id.book_replaceSum);
             convertView.setTag(viewHolder);
         }else {
-            viewHolder=(ViewHolder) convertView.getTag();
+            viewHolder=(BookShelfAdapter_ViewHolder) convertView.getTag();
 
         }
 

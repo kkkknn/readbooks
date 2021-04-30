@@ -1,16 +1,15 @@
-package com.kkkkkn.readbooks.adapter;
+package com.kkkkkn.readbooks.model.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.entity.BookInfo;
+import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.view.viewHolder.SearchBookResultAdapter_ViewHolder;
 
 import java.util.ArrayList;
 
@@ -42,16 +41,16 @@ public class SearchBookResultAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder=null;
+        SearchBookResultAdapter_ViewHolder viewHolder=null;
         if(convertView==null){
             convertView=mInflater.inflate(R.layout.activity_search_item,parent,false);
-            viewHolder=new ViewHolder();
+            viewHolder=new SearchBookResultAdapter_ViewHolder();
             viewHolder.authorName=convertView.findViewById(R.id.fragment_search_item_book_author_name);
             viewHolder.bookName=convertView.findViewById(R.id.fragment_search_item_book_name);
             viewHolder.bookImg=convertView.findViewById(R.id.fragment_search_item_book_img);
             convertView.setTag(viewHolder);
         }else {
-            viewHolder=(ViewHolder) convertView.getTag();
+            viewHolder=(SearchBookResultAdapter_ViewHolder) convertView.getTag();
 
         }
         BookInfo book=resultList.get(position);
@@ -63,9 +62,4 @@ public class SearchBookResultAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public static class ViewHolder {
-        public TextView bookName;
-        public TextView authorName;
-        public ImageView bookImg;
-    }
 }

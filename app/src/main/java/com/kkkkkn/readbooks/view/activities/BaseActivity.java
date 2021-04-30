@@ -1,18 +1,21 @@
-package com.kkkkkn.readbooks.activates;
+package com.kkkkkn.readbooks.view.activities;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.kkkkkn.readbooks.R;
@@ -99,5 +102,21 @@ public class BaseActivity extends AppCompatActivity {
         if(logRun){
             logRun=false;
         }
+    }
+
+    public void showToast(Context context,String str) {
+        if(context==null){
+            return;
+        }
+
+        View view= LayoutInflater.from(context).inflate(R.layout.view_toast_custom,null);
+        TextView tv_msg = (TextView) view.findViewById(R.id.tvToast);
+        tv_msg.setText(str);
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.CENTER, 0, 20);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(view);
+        toast.show();
+
     }
 }

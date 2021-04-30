@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.activates;
+package com.kkkkkn.readbooks.view.activities;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -18,13 +18,14 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.entity.BookInfo;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
-import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
-import com.kkkkkn.readbooks.view.BrowsingVIew;
+import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
+import com.kkkkkn.readbooks.model.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -393,14 +394,27 @@ public class BookBrowsingActivity extends BaseActivity {
         subtract_sizeTextView=dialog.getWindow().findViewById(R.id.subtract_fontSize);
         add_sizeTextView.setOnClickListener(onClickListener);
         subtract_sizeTextView.setOnClickListener(onClickListener);
+        RadioGroup radioGroup=dialog.getWindow().findViewById(R.id.setting_radioGroup);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                Log.i(TAG, "onCheckedChanged: "+i);
+            }
+        });
     }
+    
     private View.OnClickListener onClickListener=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.add_fontSize:
+                    Log.i(TAG, "onClick: 文字增加");
+                    //通过eventbus通知修改文字大小，并重新绘制
                     break;
                 case R.id.subtract_fontSize:
+                    Log.i(TAG, "onClick: 文字减小");
+                    //通过eventbus通知修改文字大小，并重新绘制
+
                     break;
             }
         }

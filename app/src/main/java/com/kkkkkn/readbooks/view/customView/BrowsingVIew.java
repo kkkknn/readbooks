@@ -1,4 +1,4 @@
-     package com.kkkkkn.readbooks.view;
+     package com.kkkkkn.readbooks.view.customView;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,7 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.activates.BookBrowsingActivity;
+import com.kkkkkn.readbooks.view.activities.BookBrowsingActivity;
 
 import java.util.ArrayList;
 public class BrowsingVIew extends View {

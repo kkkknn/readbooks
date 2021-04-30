@@ -25,12 +25,14 @@
             android:textSize="16sp" />
 
         <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/setting_lightSeekBar"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="7"
             android:text="dadasd奥术大师大" />
 
         <TextView
+            android:id="@+id/setting_lightSystem_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/read_setting_btn_select"
@@ -64,18 +66,21 @@
             android:textSize="16sp" />
 
         <RadioGroup
+            android:id="@+id/setting_radioGroup"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
             android:layout_height="match_parent">
-            <com.kkkkkn.readbooks.view.BackgroundRadioButton
+            <com.kkkkkn.readbooks.view.customView.BackgroundRadioButton
+                android:id="@+id/setting_radio1"
                 android:button="@null"
                 android:background="@drawable/read_setting_background_select"
                 android:layout_marginHorizontal="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:imgLabel="@drawable/bookshelf" />
+                app:imgLabel="@drawable/browsingview" />
 
-            <com.kkkkkn.readbooks.view.BackgroundRadioButton
+            <com.kkkkkn.readbooks.view.customView.BackgroundRadioButton
+                android:id="@+id/setting_radio2"
                 android:button="@null"
                 android:background="@drawable/read_setting_background_select"
                 android:layout_marginHorizontal="10dp"
@@ -83,7 +88,8 @@
                 android:layout_height="wrap_content"
                 app:colorLabel="#22917A7A" />
 
-            <com.kkkkkn.readbooks.view.BackgroundRadioButton
+            <com.kkkkkn.readbooks.view.customView.BackgroundRadioButton
+                android:id="@+id/setting_radio3"
                 android:button="@null"
                 android:background="@drawable/read_setting_background_select"
                 android:layout_marginHorizontal="10dp"
@@ -91,7 +97,8 @@
                 android:layout_height="wrap_content"
                 app:colorLabel="#3FAA98" />
 
-            <com.kkkkkn.readbooks.view.BackgroundRadioButton
+            <com.kkkkkn.readbooks.view.customView.BackgroundRadioButton
+                android:id="@+id/setting_radio4"
                 android:button="@null"
                 android:background="@drawable/read_setting_background_select"
                 android:layout_marginHorizontal="10dp"

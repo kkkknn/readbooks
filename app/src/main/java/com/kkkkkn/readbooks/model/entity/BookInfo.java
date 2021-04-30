@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.entity;
+package com.kkkkkn.readbooks.model.entity;
 
 import java.io.Serializable;
 

@@ -24,19 +24,19 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".activates.SearchActivity"
+            android:name=".view.activities.SearchActivity"
             android:theme="@style/AppTheme.NoTitle_FullScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activates.BookBrowsingActivity"
+            android:name=".view.activities.BookBrowsingActivity"
             android:theme="@style/AppTheme.NoTitle_FullScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activates.BookInfoActivity"
+            android:name=".view.activities.BookInfoActivity"
             android:theme="@style/AppTheme.NoTitle_FullScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activates.MainActivity"
+            android:name=".view.activities.MainActivity"
             android:theme="@style/AppTheme.NoTitle_FullScreen"
             android:screenOrientation="portrait">
             <intent-filter>

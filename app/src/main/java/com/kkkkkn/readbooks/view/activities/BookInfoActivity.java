@@ -1,16 +1,10 @@
-package com.kkkkkn.readbooks.activates;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.kkkkkn.readbooks.view.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
@@ -19,31 +13,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.adapter.BookChaptersAdapter;
-import com.kkkkkn.readbooks.entity.BookInfo;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
-import com.kkkkkn.readbooks.util.sqlite.SqlBookUtil;
-import com.kkkkkn.readbooks.util.view.ViewUtil;
+import com.kkkkkn.readbooks.model.adapter.BookChaptersAdapter;
+import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.model.jsoup.JsoupUtil;
+import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
+import com.kkkkkn.readbooks.model.sqlite.SqlBookUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 public class BookInfoActivity extends BaseActivity {
     private final static String TAG="BookInfoActivity";
@@ -151,9 +135,9 @@ public class BookInfoActivity extends BaseActivity {
                 SqlBookUtil util=SqlBookUtil.getInstance(getApplicationContext());
                 util.initDataBase();
                 if(util.addEnjoyBook(bookInfo)){
-                    ViewUtil.showToast(getApplicationContext(),"加入书架成功");
+                    showToast(getApplicationContext(),"加入书架成功");
                 }else {
-                    ViewUtil.showToast(getApplicationContext(),"加入书架失败");
+                    showToast(getApplicationContext(),"加入书架失败");
                 }
             }
         });

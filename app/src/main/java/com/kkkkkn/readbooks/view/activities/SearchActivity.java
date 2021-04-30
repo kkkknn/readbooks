@@ -1,9 +1,7 @@
-package com.kkkkkn.readbooks.activates;
+package com.kkkkkn.readbooks.view.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,16 +9,14 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.adapter.SearchBookResultAdapter;
-import com.kkkkkn.readbooks.entity.BookInfo;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtil;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp;
-import com.kkkkkn.readbooks.util.jsoup.JsoupUtilImp_xbqg;
+import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
+import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.model.jsoup.JsoupUtil;
+import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,9 +24,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class SearchActivity extends BaseActivity {
     private final static String TAG="SearchActivity";
@@ -89,7 +82,7 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                System.out.println("文字改变");
+                System.out.println("文字改变"+newText);
                 return false;
             }
         });

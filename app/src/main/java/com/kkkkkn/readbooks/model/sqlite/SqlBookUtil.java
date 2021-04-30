@@ -1,27 +1,22 @@
-package com.kkkkkn.readbooks.util.sqlite;
+package com.kkkkkn.readbooks.model.sqlite;
 
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
-import android.os.Build;
 import android.util.Log;
 
-import com.kkkkkn.readbooks.entity.BookInfo;
-import com.kkkkkn.readbooks.util.sqlite.util.DatabaseHelper;
+import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.model.sqlite.util.DatabaseHelper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class SqlBookUtil {
