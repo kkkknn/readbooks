@@ -76,10 +76,9 @@ public class MainActivity extends BaseActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
         initView();
 
+        Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
     }
     private void initView(){
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -229,7 +228,7 @@ public class MainActivity extends BaseActivity  {
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void syncProgress(MessageEvent event){
         switch(event.message){
             case DOWNLOAD_PROGRESS:
@@ -250,6 +249,7 @@ public class MainActivity extends BaseActivity  {
                 showUpdateDialog(event.value);
                 break;
             case SYNC_BOOKSHELF:
+                Log.i(TAG, "syncProgress: 接收到了");
                 ArrayList<BookInfo> list=(ArrayList<BookInfo>) event.value;
                 syncBookShelf(list);
                 break;
@@ -277,12 +277,15 @@ public class MainActivity extends BaseActivity  {
             builder.setCancelable(false);            //点击对话框以外的区域是否让对话框消失
 
             //设置正面按钮
+            final String name = code+".apk";
+            final String path = Environment.getExternalStorageDirectory().getPath();
             final String finalUrl = url;
             builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_APK, finalUrl));
+                    Log.i(TAG, "onClick: "+name+"||"+path+"||"+finalUrl);
+                    Presenter_Main.getInstance().downloadAPK(name,path,finalUrl);
                 }
             });
             //设置反面按钮
@@ -293,109 +296,10 @@ public class MainActivity extends BaseActivity  {
                 }
             });
             AlertDialog alertdialog = builder.create();
-
             alertdialog.show();
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(MessageEvent event){
-        if(event.message== EventMessage.CHECK_VERSION){
-            //获取当前应用版本号
-            try {
-                PackageManager manager = this.getPackageManager();
-                PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
-                String version = info.versionName;
-                Log.i(TAG, "checkUpdate: "+version);
-
-                //在线获取最新版本号
-                OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder()
-                        .url(requestUrl)
-                        .build();
-                Response response = client.newCall(request).execute();
-                if(response.code()==200){
-                    String responseStr= Objects.requireNonNull(response.body()).string();
-                    Log.i(TAG, "checkUpdate: "+responseStr);
-                    //转换为json对象进行解析
-                    JSONObject jsonObject=new JSONObject(responseStr);
-                    String versionStr=jsonObject.getString("version");
-                    if(!version.equals(versionStr)){
-                        EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_DIALOG,jsonObject));
-
-                    }
-                }
-            } catch (IOException | JSONException | PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-        }else if(event.message== EventMessage.DOWNLOAD_APK){
-            //todo 弹窗显示是否下载APK
-
-            String url=(String) event.value;
-            //okhttp 进行下载，并通过eventbus发送消息通知UI更新通知栏下载进度
-            OkHttpClient client=new OkHttpClient();
-            Request down_request = new Request.Builder()
-                    .url(url)
-                    .build();
-            //("/download");//初始化下载目录
-            //拆分APK名字 http://www.aaa.com:8005/download/xxx.apk
-            ApkName=url.split("download")[1].replace("/","");
-            Log.i(TAG, "onMessageEvent: "+ApkName);
-            client.newCall(down_request).enqueue(new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Log.i(TAG, "onFailure: 下载失败");
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    InputStream is = null;
-                    byte[] buf = new byte[2048];
-                    int len = 0;
-                    FileOutputStream fos = null;
-                    //储存下载文件的目录
-                    //File file = new File(ApkDirPath, ApkName);
-                    //Log.i(TAG, "onResponse: "+file.getAbsolutePath());
-                    try {
-                        is = response.body().byteStream();
-                        long total = response.body().contentLength();
-                        fos = openFileOutput(ApkName,  Context.MODE_WORLD_READABLE+Context.MODE_WORLD_WRITEABLE);
-                        long sum = 0;
-                        int progress=0;
-                        while ((len = is.read(buf)) != -1) {
-                            fos.write(buf, 0, len);
-                            sum += len;
-                            int count = (int) (sum * 1.0f / total * 100);
-                            //下载中更新进度条 eventbus 通知
-                            if(progress<count){
-                                progress=count;
-                                EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_PROGRESS,(int)progress));
-                            }
-                        }
-                        fos.flush();
-                        //下载完成
-                        EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_SUCCESS,getDir()+"/"+ApkName));
-                        Log.i(TAG, "onResponse: DOWNLOAD_SUCCESS");
-                    } catch (Exception e) {
-                        EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_ERROR,e));
-                    }finally {
-                        try {
-                            if (is != null) {
-                                is.close();
-                            }
-                            if (fos != null) {
-                                fos.close();
-                            }
-                        } catch (IOException e) {
-
-                        }
-
-                    }
-
-                }
-            });
-        }
-    }
 
     //安装APK
     private void installApk(File apk){
