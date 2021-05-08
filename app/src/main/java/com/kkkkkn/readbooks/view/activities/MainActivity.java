@@ -78,7 +78,14 @@ public class MainActivity extends BaseActivity  {
 
         initView();
 
-        Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
+        Presenter_Main.getInstance().getBookShelfList(getApplicationContext());
+
+        new Thread(){
+            @Override
+            public void run() {
+                Presenter_Main.getInstance().checkUpdate(getApplicationContext());
+            }
+        }.start();
     }
     private void initView(){
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -137,18 +144,6 @@ public class MainActivity extends BaseActivity  {
 
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-        EventBus.getDefault().post(new MessageEvent(EventMessage.CHECK_VERSION,null));
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
 
     //跳转到阅读页面
     private void jump2ReadView(BookInfo info){

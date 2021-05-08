@@ -1,12 +1,7 @@
-package com.kkkkkn.readbooks.model.download;
+package com.kkkkkn.readbooks.model.network;
 
-import android.content.Context;
 import android.util.Log;
 
-import com.kkkkkn.readbooks.util.eventBus.EventMessage;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
-
-import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

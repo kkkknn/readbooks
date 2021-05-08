@@ -5,26 +5,21 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.kkkkkn.readbooks.model.download.DownloadListener;
-import com.kkkkkn.readbooks.model.download.DownloadUtil;
+import com.kkkkkn.readbooks.model.network.DownloadListener;
+import com.kkkkkn.readbooks.model.network.DownloadUtil;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.sqlite.SqlBookUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -77,7 +72,7 @@ public class Presenter_Main {
                 JSONObject jsonObject=new JSONObject(responseStr);
                 String versionStr=jsonObject.getString("version");
                 if(!version.equals(versionStr)){
-                    EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_DIALOG,jsonObject));
+                    EventBus.getDefault().postSticky(new MessageEvent(EventMessage.SYNC_DIALOG,jsonObject));
 
                 }
             }

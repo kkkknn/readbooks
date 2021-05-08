@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.model.download;
+package com.kkkkkn.readbooks.model.network;
 
 public interface DownloadListener {
     void onSuccess();

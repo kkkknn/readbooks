@@ -14,6 +14,9 @@ public enum EventMessage {
     //下载完成
     DOWNLOAD_SUCCESS,
     //下载失败
-    DOWNLOAD_ERROR;
+    DOWNLOAD_ERROR,
 
+
+    //更新搜索结果列表
+    SYNC_SEARCH_RESULT;
 }

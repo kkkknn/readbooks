@@ -17,35 +17,25 @@ import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.jsoup.JsoupUtil;
 import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
+import com.kkkkkn.readbooks.presenter.Presenter_Search;
+import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SearchActivity extends BaseActivity {
     private final static String TAG="SearchActivity";
     private SearchView searchView;
-    private static final int SHOW_BOOKLIST=11,LOAD_NEXTPAGE=12;
     private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
     private SearchBookResultAdapter adapter;
-    private Handler mHandle=new Handler(Looper.getMainLooper(),new Handler.Callback(){
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what){
-                case SHOW_BOOKLIST:
-                    adapter.notifyDataSetChanged();
-                    break;
-                case LOAD_NEXTPAGE:
-
-                    break;
-
-            }
-            return false;
-        }
-    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +63,13 @@ public class SearchActivity extends BaseActivity {
                 //请求字符串不为空，开始进行网络请求
                 if(!query.isEmpty()){
                     //请求搜索
-                    new RequestThread(query,1).start();
+                    final String str=query;
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            Presenter_Search.getInstance().searchBook(str,1);
+                        }
+                    }.start();
                     //防止抬起落下都触发此事件
                     searchView.setIconified(true);
                 }
@@ -90,40 +86,21 @@ public class SearchActivity extends BaseActivity {
 
     }
 
-    private class RequestThread extends Thread{
-        int sourceId;
-        String str;
-        public RequestThread(String string,int id) {
-            super();
-            this.str=string;
-            this.sourceId=id;
-        }
-
-        @Override
-        public void run() {
-            JsoupUtil jsoupUtil=JsoupUtilImp.getInstance().setSource(1);
-            try {
-                String str=jsoupUtil.searchBook(this.str);
-                //解析搜索结果并填充到arrayList中
-                JSONObject jsonObject=new JSONObject(str);
-                JSONArray jsonArray=jsonObject.getJSONArray("data");
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void eventCallBack(MessageEvent event){
+        switch (event.message){
+            case SYNC_SEARCH_RESULT:
                 arrayList.clear();
-                for(int i=0;i<jsonArray.length();i++){
-                    JSONObject object=(JSONObject) jsonArray.get(i);
-                    BookInfo bookInfo=new BookInfo();
-                    bookInfo.setAuthorName(object.getString("authorName"));
-                    bookInfo.setBookName(object.getString("bookName"));
-                    bookInfo.setBookUrl(object.getString("bookUrl"));
-                    bookInfo.setBookImgUrl(object.getString("bookImgUrl"));
-                    bookInfo.setNewChapterName(object.getString("newChapterName"));
-                    bookInfo.setBookFromType(jsoupUtil.getSource());
-                    arrayList.add(bookInfo);
+                if(event.value instanceof ArrayList<?>){
+                    ArrayList<?> list=(ArrayList<?>) event.value;
+                    for (Object o:list) {
+                        arrayList.add((BookInfo) o);
+                    }
                 }
-                mHandle.sendEmptyMessage(SHOW_BOOKLIST);
-                //System.out.println("搜索结果："+str);
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
+                adapter.notifyDataSetChanged();
+                break;
         }
     }
+
+
 }
