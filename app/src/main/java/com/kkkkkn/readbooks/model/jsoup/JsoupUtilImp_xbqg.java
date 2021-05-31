@@ -48,6 +48,7 @@ public class JsoupUtilImp_xbqg implements JsoupUtil {
             jsonArray.put(jsonObject);
         }
         retObject.put("data",jsonArray);
+        Log.i(TAG, "searchBook:  "+elements.size());
         return retObject.toString();
     }
 

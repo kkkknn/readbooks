@@ -248,6 +248,9 @@ public class MainActivity extends BaseActivity  {
                 ArrayList<BookInfo> list=(ArrayList<BookInfo>) event.value;
                 syncBookShelf(list);
                 break;
+            case SYNC_SEARCH_RESULT:
+                Log.i(TAG, "syncProgress: 1111111111111");
+                break;
         }
 
     }

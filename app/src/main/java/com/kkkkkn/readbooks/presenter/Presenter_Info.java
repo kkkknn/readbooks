@@ -19,6 +19,6 @@ public class Presenter_Info {
 
     //读取图书信息，返回相关对象，然后进行展示 eventbus 返回
     public void getBookInfo(String bookUrl){
-
+        
     }
 }

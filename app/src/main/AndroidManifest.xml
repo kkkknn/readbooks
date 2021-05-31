@@ -3,17 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.kkkkkn.readbooks">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission
-        android:name="android.permission.INTERNET"
-        tools:ignore="ManifestOrder" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.REPLACE_EXISTING_PACKAGE"/>
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/><!-- 8.0必要权限  -->
-
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -22,23 +11,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-
+        <activity android:name=".view.activities.RegisterActivity"></activity>
+        <activity android:name=".view.activities.LoginActivity" />
         <activity
             android:name=".view.activities.SearchActivity"
-            android:theme="@style/AppTheme.NoTitle_FullScreen"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle_FullScreen" />
         <activity
             android:name=".view.activities.BookBrowsingActivity"
-            android:theme="@style/AppTheme.NoTitle_FullScreen"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle_FullScreen" />
         <activity
             android:name=".view.activities.BookInfoActivity"
-            android:theme="@style/AppTheme.NoTitle_FullScreen"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle_FullScreen" />
         <activity
             android:name=".view.activities.MainActivity"
-            android:theme="@style/AppTheme.NoTitle_FullScreen"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle_FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,13 +39,23 @@
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
-        android:grantUriPermissions="true"
-        android:exported="false">
-
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:ignore="ManifestOrder" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.REPLACE_EXISTING_PACKAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
 </manifest>

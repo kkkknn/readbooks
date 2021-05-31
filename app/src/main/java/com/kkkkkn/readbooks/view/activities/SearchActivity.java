@@ -41,7 +41,7 @@ public class SearchActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        Log.i("TAG", "onCreate: 开始创建");
+
         //listview相关初始化
         adapter=new SearchBookResultAdapter(arrayList,this);
         ListView listView=findViewById(R.id.search_listView);
@@ -95,9 +95,10 @@ public class SearchActivity extends BaseActivity {
                     ArrayList<?> list=(ArrayList<?>) event.value;
                     for (Object o:list) {
                         arrayList.add((BookInfo) o);
+                        adapter.notifyDataSetChanged();
                     }
                 }
-                adapter.notifyDataSetChanged();
+                Log.i(TAG, "eventCallBack: sssssssssssssss   "+arrayList.size());
                 break;
         }
     }

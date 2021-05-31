@@ -1,5 +1,7 @@
 package com.kkkkkn.readbooks.presenter;
 
+import android.util.Log;
+
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.jsoup.JsoupUtil;
 import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
@@ -33,6 +35,7 @@ public class Presenter_Search {
 
     //根据关键字/作者搜索图书，添加到list中并展示  eventbus 发送
     public void searchBook(String str,int sourceId){
+        Log.i("asdasd", "searchBook: 开始搜索" +str +"||" +sourceId);
         if (str==null||str.isEmpty()){
             return;
         }
