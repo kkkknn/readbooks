@@ -2,6 +2,7 @@ package com.kkkkkn.readbooks.view.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,8 +20,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.util.eventBus.EventMessage;
+import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 public class BaseActivity extends AppCompatActivity {
@@ -54,6 +59,8 @@ public class BaseActivity extends AppCompatActivity {
         //将当前activity加入栈
         StackManager stackManager=StackManager.getInstance();
         stackManager.addActivity(this);
+
+        EventBus.getDefault().register(this);
     }
 
     public void exitAll(){
@@ -104,6 +111,7 @@ public class BaseActivity extends AppCompatActivity {
         if(logRun){
             logRun=false;
         }
+        EventBus.getDefault().unregister(this);
     }
 
     public void showToast(Context context,String str) {
@@ -122,15 +130,13 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void eventMessage(MessageEvent event){
+        //判断消息是否需要跳转到登录页面
+        if(event.message== EventMessage.TOKEN_ERROR){
+            Intent intent=new Intent(getApplicationContext(),LoginActivity.class);
+            startActivity(intent);
+        }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
 }

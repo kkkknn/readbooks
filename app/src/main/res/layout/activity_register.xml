@@ -53,4 +53,13 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/register_btn"
+        android:background="@drawable/btn"
+        android:text="@string/register_btn"
+        android:layout_marginVertical="40dp"
+        android:layout_marginHorizontal="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>

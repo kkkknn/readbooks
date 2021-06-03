@@ -25,8 +25,11 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.model.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -419,6 +422,12 @@ public class BookBrowsingActivity extends BaseActivity {
             }
         }
     };
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void eventMessage(MessageEvent event){
+
+    }
 
 
 }

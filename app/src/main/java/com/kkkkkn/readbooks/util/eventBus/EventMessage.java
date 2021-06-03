@@ -18,5 +18,8 @@ public enum EventMessage {
 
 
     //更新搜索结果列表
-    SYNC_SEARCH_RESULT;
+    SYNC_SEARCH_RESULT,
+
+    //token 非法
+    TOKEN_ERROR;
 }
