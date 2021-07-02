@@ -5,60 +5,66 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     tools:context=".view.activities.RegisterActivity">
 
-    <LinearLayout
+
+    <TableLayout
+        android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <TableRow>
+            <TextView
+                android:gravity="center"
+                android:text="用户名："
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:text="用户名："
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <EditText
+                android:hint="@string/name_tip"
+                android:layout_weight="5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <EditText
-            android:hint="@string/name_tip"
-            android:layout_weight="5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:textColor="@color/colorRed"
+                android:textSize="8sp"
+                android:layout_weight="3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="SmallSp" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:gravity="center"
+                android:text="密码："
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:textColor="@color/colorRed"
-            android:layout_weight="3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            <EditText
+                android:hint="@string/password_tip"
+                android:layout_weight="5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:text="密    码："
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <EditText
-            android:hint="@string/password_tip"
-            android:layout_weight="5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:textColor="@color/colorRed"
-            android:layout_weight="3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            <TextView
+                android:textColor="@color/colorRed"
+                android:textSize="8sp"
+                android:layout_weight="3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="SmallSp" />
+        </TableRow>
+    </TableLayout>
 
     <Button
         android:id="@+id/register_btn"
         android:background="@drawable/btn"
         android:text="@string/register_btn"
-        android:layout_marginVertical="40dp"
-        android:layout_marginHorizontal="80dp"
+        android:layout_marginVertical="30dp"
+        android:layout_marginHorizontal="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

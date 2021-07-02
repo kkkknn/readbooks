@@ -8,16 +8,15 @@ import android.widget.EditText;
 
 import com.kkkkkn.readbooks.R;
 
-public class RegisterActivity extends AppCompatActivity {
-    private EditText edit_pwd,edit_name;
-    private Button btn_submit;
+public class SettingActivity extends AppCompatActivity {
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
-        initView();
+        setContentView(R.layout.activity_setting);
+
     }
-    private void initView(){
-        
-    }
+
+
 }
