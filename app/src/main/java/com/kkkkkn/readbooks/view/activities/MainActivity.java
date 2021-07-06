@@ -26,11 +26,15 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.library.baseAdapters.BR;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.databinding.ActivityMainItemBinding;
 import com.kkkkkn.readbooks.model.adapter.BookShelfAdapter;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
@@ -50,11 +54,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 
 /**
@@ -62,20 +61,20 @@ import okhttp3.Response;
  */
 public class MainActivity extends BaseActivity  {
     private final static String TAG="主界面";
-    private Presenter_Main presenterMain;
     private long lastBackClick;
-    private final String requestUrl="http://www.kkkkknn.com:8005/version/";
     private String ApkDirPath="";
     private String ApkName="";
     private NotificationManager mNotifyManager;
     private Notification.Builder mBuilder=null;
     private GridView mGridView;
+    private BookShelfAdapter bookShelfAdapter;
+    private ArrayList<BookShelfItem> bookshelf=new ArrayList<BookShelfItem>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
 
         Presenter_Main.getInstance().getBookShelfList(getApplicationContext());
@@ -100,12 +99,13 @@ public class MainActivity extends BaseActivity  {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
 
+        bookShelfAdapter=new BookShelfAdapter(bookshelf,this,getLayoutInflater(),R.layout.activity_main_item, BR.book_item);
+        mGridView.setAdapter(bookShelfAdapter);
         //初始化通知栏
         mNotifyManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //ChannelId为"1",ChannelName为"Channel1"
@@ -121,9 +121,9 @@ public class MainActivity extends BaseActivity  {
     }
 
 
-    private void syncBookShelf(ArrayList<BookInfo> object){
-        if(mGridView.getAdapter()==null&& (ArrayList<BookInfo>) object !=null){
-            BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(), (ArrayList<BookInfo>) object);
+    private void syncBookShelf(ArrayList<BookShelfItem> object){
+        if(mGridView.getAdapter()==null&& (ArrayList<BookShelfItem>) object !=null){
+            BookShelfAdapter mAdapter = new BookShelfAdapter((ArrayList<BookShelfItem>) object,getApplicationContext(), getLayoutInflater(),R.layout.activity_main_item, BR.book_item);
             mGridView.setAdapter(mAdapter);
             mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -135,14 +135,12 @@ public class MainActivity extends BaseActivity  {
                     }
                 }
             });
-        }else if((ArrayList<BookInfo>) object !=null){
-            BookShelfAdapter mAdapter = new BookShelfAdapter(getApplicationContext(), (ArrayList<BookInfo>) object);
+        }else if((ArrayList<BookShelfItem>) object !=null){
+            BookShelfAdapter mAdapter = new BookShelfAdapter((ArrayList<BookShelfItem>) object,getApplicationContext(), getLayoutInflater(),R.layout.activity_main_item, BR.book_item);
             mGridView.setAdapter(mAdapter);
         }
 
     }
-
-
 
 
     //跳转到阅读页面
@@ -217,11 +215,6 @@ public class MainActivity extends BaseActivity  {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void syncProgress(MessageEvent event){
@@ -245,8 +238,8 @@ public class MainActivity extends BaseActivity  {
                 break;
             case SYNC_BOOKSHELF:
                 Log.i(TAG, "syncProgress: 接收到了");
-                ArrayList<BookInfo> list=(ArrayList<BookInfo>) event.value;
-                syncBookShelf(list);
+                //ArrayList<BookInfo> list=(ArrayList<BookInfo>) event.value;
+                //syncBookShelf(list);
                 break;
             case SYNC_SEARCH_RESULT:
                 Log.i(TAG, "syncProgress: 1111111111111");
@@ -283,7 +276,7 @@ public class MainActivity extends BaseActivity  {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     Log.i(TAG, "onClick: "+name+"||"+path+"||"+finalUrl);
-                    Presenter_Main.getInstance().downloadAPK(name,path,finalUrl);
+                    Presenter_Main.getInstance().updateAPK(name,path,finalUrl);
                 }
             });
             //设置反面按钮
@@ -365,11 +358,5 @@ public class MainActivity extends BaseActivity  {
         return ApkDirPath;
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
 
-        //返回时重新获取书架数据
-        Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
-    }
 }

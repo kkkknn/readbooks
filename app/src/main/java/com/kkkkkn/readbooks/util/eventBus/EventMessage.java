@@ -1,6 +1,12 @@
 package com.kkkkkn.readbooks.util.eventBus;
 
 public enum EventMessage {
+    //跳转注册页
+    JUMP_REG,
+    //跳转主页
+    JUMP_INDEX,
+
+
     //更新书架
     SYNC_BOOKSHELF,
     //更新窗口

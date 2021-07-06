@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="book_item"
+            type="BookShelfItem" />
+        <import type="com.kkkkkn.readbooks.model.entity.BookShelfItem"/>
+        <import type="android.view.View"/>
+
+    </data>
+<LinearLayout
     android:id="@+id/book_item"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,6 +22,7 @@
     <ImageView
         android:layout_marginVertical="5dp"
         android:id="@+id/book_img"
+        android:src="@{book_item.book_img_url}"
         android:scaleType="matrix"
         android:layout_width="80dp"
         android:layout_height="100dp"/>
@@ -24,25 +36,22 @@
         <TextView
             android:id="@+id/book_name"
             android:gravity="center"
+            android:text="@{book_item.book_name}"
             android:textAlignment="center"
             android:textColor="@color/colorBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView
-            android:id="@+id/book_replaceSum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/book_name"
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:fontFamily="楷体"
-            android:textColor="@color/colorWhite"
-            android:enabled="false"
-            android:textSize="8sp"
-            android:text="99+"
-            android:background="@drawable/textview_update" />
+        <View
+            android:id="@+id/is_update"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_alignEnd="@id/book_name"
+            android:background="@drawable/bookshelf_message_update"
+            android:visibility="@{book_item.is_update? View.VISIBLE:View.GONE}"/>
+
     </RelativeLayout>
 
-
 </LinearLayout>
+
+</layout>

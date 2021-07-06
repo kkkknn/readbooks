@@ -9,23 +9,33 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+
 import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.view.viewHolder.BookShelfAdapter_ViewHolder;
 
 import java.util.ArrayList;
 
 public class BookShelfAdapter extends BaseAdapter {
-    private ArrayList<BookInfo> mArrayList;
+    private ArrayList<BookShelfItem> mArrayList;
     private Context mContext;
     private LayoutInflater mInflater;
+    private int layoutId;
+    private int variableId;
 
-    public BookShelfAdapter(Context context, ArrayList<BookInfo> lxrs) {
-        mContext = context;
-        this.mArrayList = lxrs;
-        mInflater = LayoutInflater.from(context);
-        Log.i("TAG", "BookShelfAdapter: "+mArrayList.toString());
+
+    public BookShelfAdapter(ArrayList<BookShelfItem> mArrayList, Context mContext, LayoutInflater mInflater, int layoutId, int variableId) {
+        this.mArrayList = mArrayList;
+        this.mContext = mContext;
+        this.mInflater = mInflater;
+        this.layoutId = layoutId;
+        this.variableId = variableId;
+
+
     }
 
     @Override
@@ -46,45 +56,18 @@ public class BookShelfAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        BookShelfAdapter_ViewHolder viewHolder=null;
+        ViewDataBinding viewDataBinding=null;
+
         if(convertView==null){
-            convertView=mInflater.inflate(R.layout.activity_main_item,parent,false);
-            viewHolder=new BookShelfAdapter_ViewHolder();
-            viewHolder.bookImg=(ImageView)convertView.findViewById(R.id.book_img);
-            viewHolder.bookName=(TextView) convertView.findViewById(R.id.book_name);
-            viewHolder.updateSum=(TextView)convertView.findViewById(R.id.book_replaceSum);
-            convertView.setTag(viewHolder);
+            viewDataBinding=DataBindingUtil.inflate(mInflater,layoutId,null,false);
+
         }else {
-            viewHolder=(BookShelfAdapter_ViewHolder) convertView.getTag();
-
+            viewDataBinding=DataBindingUtil.getBinding(convertView);
         }
+        viewDataBinding.setVariable(variableId,mArrayList.get(position));
 
-        BookInfo books=mArrayList.get(position);
-        if(books!=null){
-            Glide.with(mContext).load(books.getBookImgUrl()).into(viewHolder.bookImg);
-            viewHolder.bookName.setText(books.getBookName());
-            viewHolder.updateSum.setVisibility(View.GONE);
-            /*if(books.isUpdate()){
-                viewHolder.updateSum.setVisibility(View.VISIBLE);
-                int sum=books.getReplaceSum();
-                if(sum<=99){
-                    viewHolder.updateSum.setText(Integer.toString(sum));
-                }else{
-                    viewHolder.updateSum.setText("99+");
-                }
-            }else{
 
-            }*/
-
-        }
-
-        return convertView;
-    }
-
-    public static class ViewHolder {
-        public TextView bookName;
-        public ImageView bookImg;
-        public TextView updateSum;
+        return viewDataBinding.getRoot().getRootView();
     }
 
 }

@@ -42,7 +42,10 @@ public class Presenter_Main {
         return presenter_main;
     }
 
-    //获取书架信息，并显示到页面上 通过eventbus发送
+    /**
+     * 获取书架信息，并显示到页面上 通过eventbus发送
+     * @param context
+     */
     public void getBookShelfList(Context context){
         SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(context).initDataBase();
         ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
@@ -50,7 +53,10 @@ public class Presenter_Main {
         EventBus.getDefault().postSticky(new MessageEvent(EventMessage.SYNC_BOOKSHELF,list));
     }
 
-    //获取APP更新信息，通过eventbus发送
+    /**
+     * 获取APP更新信息，通过eventbus发送
+     * @param context
+     */
     public void checkUpdate(Context context){
         //获取当前应用版本号
         try {
@@ -81,8 +87,10 @@ public class Presenter_Main {
         }
     }
 
-    //更新APK
-    public void downloadAPK(final String name,final String path,final String url){
+    /**
+     * 弹窗显示更新APK
+     */
+    public void updateAPK(final String name,final String path,final String url){
         DownloadUtil.downloadFile(name,url,path,new DownloadListener() {
             @Override
             public void onSuccess() {

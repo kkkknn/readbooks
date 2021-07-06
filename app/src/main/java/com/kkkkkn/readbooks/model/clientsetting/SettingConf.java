@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.util.client;
+package com.kkkkkn.readbooks.model.clientsetting;
 
 import android.content.Context;
 

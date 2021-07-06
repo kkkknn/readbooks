@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.model.entity;
 
+
 import java.io.Serializable;
 
 /**
@@ -14,7 +15,7 @@ import java.io.Serializable;
  *     private int bookFromType;    图书来源
  *     private String chapterPagesUrlStr;   图书章节页码 网页版
  */
-public class BookInfo implements Serializable {
+public class BookInfo  implements Serializable {
     private int bookId;
     private String bookName;
     private String bookUrl;
@@ -93,6 +94,7 @@ public class BookInfo implements Serializable {
     public void setBookAbout(String bookAbout) {
         this.bookAbout = bookAbout;
     }
+
 
     public String getBookName() {
         return bookName;

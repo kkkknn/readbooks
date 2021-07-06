@@ -21,10 +21,10 @@
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".view.activities.SearchActivity"
             android:screenOrientation="fullSensor"
@@ -40,7 +40,9 @@
         <activity
             android:name=".view.activities.MainActivity"
             android:screenOrientation="fullSensor"
-            android:theme="@style/AppTheme.NoTitle_FullScreen"/>
+            android:theme="@style/AppTheme.NoTitle_FullScreen">
+
+        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

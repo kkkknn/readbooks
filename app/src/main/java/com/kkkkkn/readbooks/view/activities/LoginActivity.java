@@ -1,46 +1,49 @@
 package com.kkkkkn.readbooks.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.adapters.TextViewBindingAdapter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
+import com.kkkkkn.readbooks.BR;
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.databinding.ActivityLoginBinding;
+import com.kkkkkn.readbooks.model.entity.LoginInfo;
+import com.kkkkkn.readbooks.util.eventBus.EventMessage;
+import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.viewmodel.LoginViewModel;
 
-public class LoginActivity extends AppCompatActivity {
-    private EditText edit_name,edit_pwd;
-    private Button submitBtn;
-    private TextView jump2Rsg;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ActivityLoginBinding activityLoginBinding= DataBindingUtil.setContentView(this,R.layout.activity_login);
+        new LoginViewModel(activityLoginBinding);
     }
 
-    private void initView(){
-        edit_name=findViewById(R.id.edit_account_name);
-        edit_pwd=findViewById(R.id.edit_account_password);
-        submitBtn=findViewById(R.id.login_btn);
-        jump2Rsg=findViewById(R.id.jumpToRsg);
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //请求登录，判断是否跳转到登录页
-            }
-        });
-        jump2Rsg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //跳转到注册页，注册完后 activitresult返回结果
-                Intent intent=new Intent(getApplicationContext(),RegisterActivity.class);
-                startActivityForResult(intent,2);
-            }
-        });
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void syncProgress(MessageEvent event){
+        switch (event.message){
+            case JUMP_REG:
+                Intent intent=new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(intent);
+                break;
+            case JUMP_INDEX:
+                System.out.println("跳转到主页");
+                break;
+        }
     }
+
 
 }
