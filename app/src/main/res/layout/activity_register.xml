@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <variable
-            name="reg_info"
-            type="com.kkkkkn.readbooks.model.entity.RegisterInfo" />
-        <variable
-            name="register_viewmodel"
-            type="com.kkkkkn.readbooks.viewmodel.RegisterViewModel" />
-    </data>
 
-<LinearLayout
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,9 +26,7 @@
             <EditText
                 android:hint="@string/name_tip"
                 android:id="@+id/edit_reg_name"
-                android:text="@{reg_info.reg_name}"
-                android:afterTextChanged="@{register_viewmodel.afterUserNameChanged}"
-                android:maxLength="10"
+                 android:maxLength="10"
                 android:layout_weight="7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -54,8 +44,6 @@
             <EditText
                 android:hint="@string/password_tip"
                 android:id="@+id/edit_reg_password"
-                android:text="@{reg_info.reg_password}"
-                android:afterTextChanged="@{register_viewmodel.afterPasswordChanged}"
                 android:layout_weight="7"
                 android:maxLength="10"
                 android:layout_width="wrap_content"
@@ -67,7 +55,6 @@
     <TextView
         android:id="@+id/text_reg_msg"
         android:textColor="@color/colorRed"
-        android:text="@{reg_info.reg_msg}"
         android:textSize="12sp"
         android:gravity="center"
         android:layout_width="match_parent"
@@ -77,7 +64,6 @@
     <Button
         android:id="@+id/register_btn"
         android:background="@drawable/btn"
-        android:onClick="@{()->register_viewmodel.regClick(reg_info)}"
         android:text="@string/register_btn"
         android:layout_marginVertical="30dp"
         android:layout_marginHorizontal="100dp"
@@ -85,4 +71,3 @@
         android:layout_height="wrap_content"/>
 
 </LinearLayout>
-</layout>

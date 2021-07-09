@@ -7,15 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 
 import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
+import com.kkkkkn.readbooks.view.viewHolder.BookChaptersAdapter_ViewHolder;
 import com.kkkkkn.readbooks.view.viewHolder.BookShelfAdapter_ViewHolder;
 
 import java.util.ArrayList;
@@ -24,18 +22,12 @@ public class BookShelfAdapter extends BaseAdapter {
     private ArrayList<BookShelfItem> mArrayList;
     private Context mContext;
     private LayoutInflater mInflater;
-    private int layoutId;
-    private int variableId;
 
 
-    public BookShelfAdapter(ArrayList<BookShelfItem> mArrayList, Context mContext, LayoutInflater mInflater, int layoutId, int variableId) {
+    public BookShelfAdapter(ArrayList<BookShelfItem> mArrayList, Context mContext) {
         this.mArrayList = mArrayList;
         this.mContext = mContext;
-        this.mInflater = mInflater;
-        this.layoutId = layoutId;
-        this.variableId = variableId;
-
-
+        this.mInflater = LayoutInflater.from(mContext);
     }
 
     @Override
@@ -56,18 +48,28 @@ public class BookShelfAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewDataBinding viewDataBinding=null;
+        BookShelfAdapter_ViewHolder bookShelfAdapter_viewHolder=null;
 
         if(convertView==null){
-            viewDataBinding=DataBindingUtil.inflate(mInflater,layoutId,null,false);
-
+            convertView=mInflater.inflate(R.layout.activity_book_info_chapter_item,parent,false);
+            bookShelfAdapter_viewHolder=new BookShelfAdapter_ViewHolder(convertView);
+            convertView.setTag(bookShelfAdapter_viewHolder);
         }else {
-            viewDataBinding=DataBindingUtil.getBinding(convertView);
+            bookShelfAdapter_viewHolder=(BookShelfAdapter_ViewHolder) convertView.getTag();
         }
-        viewDataBinding.setVariable(variableId,mArrayList.get(position));
+        BookShelfItem bookShelfItem=mArrayList.get(position);
+
+        if(bookShelfItem!=null){
+            bookShelfAdapter_viewHolder.bookName.setText(bookShelfItem.getBook_name());
+            String url=bookShelfItem.getBook_img_url();
+            if(url!=null&&!url.isEmpty()){
+                Glide.with(mContext).load(url).into(bookShelfAdapter_viewHolder.bookImg);
+            }
+            bookShelfAdapter_viewHolder.updateView.setVisibility(bookShelfItem.isIs_update()?View.VISIBLE:View.GONE);
+        }
 
 
-        return viewDataBinding.getRoot().getRootView();
+        return convertView;
     }
 
 }

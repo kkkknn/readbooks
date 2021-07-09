@@ -7,8 +7,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,40 +24,31 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.library.baseAdapters.BR;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.databinding.ActivityMainItemBinding;
 import com.kkkkkn.readbooks.model.adapter.BookShelfAdapter;
+import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
-import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
-import com.kkkkkn.readbooks.model.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.model.scrap.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.view.view.MainView;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Objects;
-
 
 
 /**
  * 程序主界面，每次进入的时候获取读取本地图书并进行加载
  */
-public class MainActivity extends BaseActivity  {
+public class MainActivity extends BaseActivity implements MainView {
     private final static String TAG="主界面";
     private long lastBackClick;
     private String ApkDirPath="";
@@ -67,45 +56,42 @@ public class MainActivity extends BaseActivity  {
     private NotificationManager mNotifyManager;
     private Notification.Builder mBuilder=null;
     private GridView mGridView;
-    private BookShelfAdapter bookShelfAdapter;
-    private ArrayList<BookShelfItem> bookshelf=new ArrayList<BookShelfItem>();
-
+    private Presenter_Main presenter_main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        presenter_main=new Presenter_Main(getApplicationContext(),this);
         initView();
 
-        Presenter_Main.getInstance().getBookShelfList(getApplicationContext());
+        AccountInfo info=presenter_main.getToken();
+        if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
+            toLoginActivity();
+        }
+       /* Presenter_Main.getInstance().getBookShelfList(getApplicationContext());
 
         new Thread(){
             @Override
             public void run() {
                 Presenter_Main.getInstance().checkUpdate(getApplicationContext());
             }
-        }.start();
+        }.start();*/
     }
     private void initView(){
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //隐藏APP title
-        /*ActionBar actionBar=getSupportActionBar();
-        if(actionBar!=null){
-            actionBar.setDisplayShowTitleEnabled(false);
-        }*/
+
         mGridView=findViewById(R.id.main_booksGridView);
         final SwipeRefreshLayout swipeRefreshLayout=findViewById(R.id.main_SwipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
+                //Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        bookShelfAdapter=new BookShelfAdapter(bookshelf,this,getLayoutInflater(),R.layout.activity_main_item, BR.book_item);
-        mGridView.setAdapter(bookShelfAdapter);
         //初始化通知栏
         mNotifyManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //ChannelId为"1",ChannelName为"Channel1"
@@ -123,7 +109,7 @@ public class MainActivity extends BaseActivity  {
 
     private void syncBookShelf(ArrayList<BookShelfItem> object){
         if(mGridView.getAdapter()==null&& (ArrayList<BookShelfItem>) object !=null){
-            BookShelfAdapter mAdapter = new BookShelfAdapter((ArrayList<BookShelfItem>) object,getApplicationContext(), getLayoutInflater(),R.layout.activity_main_item, BR.book_item);
+            BookShelfAdapter mAdapter = new BookShelfAdapter((ArrayList<BookShelfItem>) object,getApplicationContext());
             mGridView.setAdapter(mAdapter);
             mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -136,7 +122,7 @@ public class MainActivity extends BaseActivity  {
                 }
             });
         }else if((ArrayList<BookShelfItem>) object !=null){
-            BookShelfAdapter mAdapter = new BookShelfAdapter((ArrayList<BookShelfItem>) object,getApplicationContext(), getLayoutInflater(),R.layout.activity_main_item, BR.book_item);
+            BookShelfAdapter mAdapter = new BookShelfAdapter((ArrayList<BookShelfItem>) object,getApplicationContext());
             mGridView.setAdapter(mAdapter);
         }
 
@@ -276,7 +262,7 @@ public class MainActivity extends BaseActivity  {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     Log.i(TAG, "onClick: "+name+"||"+path+"||"+finalUrl);
-                    Presenter_Main.getInstance().updateAPK(name,path,finalUrl);
+                    //Presenter_Main.getInstance().updateAPK(name,path,finalUrl);
                 }
             });
             //设置反面按钮
@@ -359,4 +345,28 @@ public class MainActivity extends BaseActivity  {
     }
 
 
+    @Override
+    public void updateBookShelf() {
+
+    }
+
+    @Override
+    public void showUpdateDialog(String msg) {
+
+    }
+
+    @Override
+    public void toSearchActivity() {
+
+    }
+
+    @Override
+    public void toBrowsingActivity() {
+
+    }
+
+    @Override
+    public void toLoginActivity() {
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+    }
 }

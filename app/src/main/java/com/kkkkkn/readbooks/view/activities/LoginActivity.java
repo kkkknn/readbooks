@@ -1,49 +1,81 @@
 package com.kkkkkn.readbooks.view.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.adapters.TextViewBindingAdapter;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.kkkkkn.readbooks.BR;
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.databinding.ActivityLoginBinding;
-import com.kkkkkn.readbooks.model.entity.LoginInfo;
-import com.kkkkkn.readbooks.util.eventBus.EventMessage;
+import com.kkkkkn.readbooks.presenter.Presenter_Login;
+import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
-import com.kkkkkn.readbooks.viewmodel.LoginViewModel;
+import com.kkkkkn.readbooks.view.customView.CustomToast;
+import com.kkkkkn.readbooks.view.view.LoginView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class LoginActivity extends BaseActivity {
 
+public class LoginActivity extends BaseActivity implements LoginView {
+    private Button btn_login;
+    private EditText edit_name,edit_password;
+    private TextView jumpText;
+    private Presenter_Login presenter_login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ActivityLoginBinding activityLoginBinding= DataBindingUtil.setContentView(this,R.layout.activity_login);
-        new LoginViewModel(activityLoginBinding);
+
+        initView();
+        presenter_login=new Presenter_Login(getApplicationContext(),this);
+    }
+    private void initView(){
+        jumpText=findViewById(R.id.jumpToRsg);
+        btn_login=findViewById(R.id.login_btn);
+        edit_name=findViewById(R.id.edit_account_name);
+        edit_password=findViewById(R.id.edit_account_password);
+        btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name=edit_name.getText().toString();
+                String password= StringUtil.password2md5(edit_password.getText().toString());
+                presenter_login.login(name,password);
+            }
+        });
+        jumpText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toRegisterActivity();
+            }
+        });
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void syncProgress(MessageEvent event){
-        switch (event.message){
-            case JUMP_REG:
-                Intent intent=new Intent(getApplicationContext(), RegisterActivity.class);
-                startActivity(intent);
-                break;
-            case JUMP_INDEX:
-                System.out.println("跳转到主页");
-                break;
+
+
+    @Override
+    public void showMsgDialog(int type, String msg) {
+        if(type>0){
+            CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
+        }else {
+            CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
         }
     }
 
+    @Override
+    public void toRegisterActivity() {
+        startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+    }
 
+    @Override
+    public void toMainActivity() {
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+    }
 }

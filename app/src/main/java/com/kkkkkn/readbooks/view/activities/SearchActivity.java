@@ -4,9 +4,6 @@ import androidx.appcompat.widget.SearchView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,21 +12,13 @@ import android.widget.ListView;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.jsoup.JsoupUtil;
-import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.presenter.Presenter_Search;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SearchActivity extends BaseActivity {
     private final static String TAG="SearchActivity";

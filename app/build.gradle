@@ -18,10 +18,7 @@ android {
     }
     buildToolsVersion '30.0.2'
 
-    //启用databinding
-    dataBinding{
-        enabled true
-    }
+   
 }
 
 dependencies {

@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.model.sqlite;
+package com.kkkkkn.readbooks.model.scrap.sqlite;
 
 
 import android.content.ContentValues;
@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteQuery;
 import android.util.Log;
 
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.sqlite.util.DatabaseHelper;
+import com.kkkkkn.readbooks.model.scrap.sqlite.util.DatabaseHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;

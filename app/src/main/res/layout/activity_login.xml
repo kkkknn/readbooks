@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <variable
-            name="login_info"
-            type="com.kkkkkn.readbooks.model.entity.LoginInfo" />
-        <variable
-            name="login_viewmodel"
-            type="com.kkkkkn.readbooks.viewmodel.LoginViewModel" />
-    </data>
-
-
-<LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -42,9 +31,7 @@
                 android:id="@+id/edit_account_name"
                 android:layout_weight="7"
                 android:maxLength="10"
-                android:text="@{login_info.login_name}"
-                android:afterTextChanged="@{login_viewmodel::afterUserNameChanged}"
-                android:inputType="text"
+               android:inputType="text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </TableRow>
@@ -61,8 +48,6 @@
                 android:layout_weight="7"
                 android:inputType="textPassword"
                 android:maxLength="10"
-                android:afterTextChanged="@{login_viewmodel::afterPasswordChanged}"
-                android:text="@{login_info.login_password}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </TableRow>
@@ -92,7 +77,6 @@
         android:id="@+id/login_btn"
         android:text="@string/login_btn"
         android:textSize="20sp"
-        android:onClick="@{()->login_viewmodel.loginClick(login_info)}"
         android:layout_marginVertical="20dp"
         android:layout_marginHorizontal="80dp"
         android:layout_width="match_parent"
@@ -102,7 +86,6 @@
         android:layout_marginRight="20dp"
         android:textColor="@color/colorBlue"
         android:id="@+id/jumpToRsg"
-        android:onClick="@{login_viewmodel::jumpClick}"
         android:gravity="right"
         android:text="@string/register"
         android:autoLink="all"
@@ -111,4 +94,3 @@
         tools:ignore="RtlHardcoded" />
 
 </LinearLayout>
-</layout>

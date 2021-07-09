@@ -1,16 +1,19 @@
 package com.kkkkkn.readbooks.presenter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.network.DownloadListener;
 import com.kkkkkn.readbooks.model.network.DownloadUtil;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.model.scrap.sqlite.SqlBookUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.view.view.MainView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -24,30 +27,33 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Presenter_Main {
+public class Presenter_Main extends BasePresenter {
     private static String TAG="Presenter_Main";
-    private volatile static Presenter_Main presenter_main=null;
+    private MainView mainView;
 
-    private Presenter_Main() {
+    public Presenter_Main(Context context,MainView view) {
+        super(context);
+        this.mainView=view;
     }
 
-    public static Presenter_Main getInstance(){
-        if(presenter_main==null){
-            synchronized (Presenter_Browsing.class){
-                if(presenter_main==null){
-                    presenter_main=new Presenter_Main();
-                }
-            }
-        }
-        return presenter_main;
+    /**
+     * 获取当前用户token及用户id
+     * @return 用户对象
+     */
+    public AccountInfo getToken(){
+        SharedPreferences sharedPreferences=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE);
+        AccountInfo accountInfo=new AccountInfo();
+        accountInfo.setAccount_id(sharedPreferences.getInt("account_id",-1));
+        accountInfo.setAccount_token(sharedPreferences.getString("account_token",""));
+        return accountInfo;
     }
 
     /**
      * 获取书架信息，并显示到页面上 通过eventbus发送
-     * @param context
+     *
      */
-    public void getBookShelfList(Context context){
-        SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(context).initDataBase();
+    public void getBookShelfList(){
+        SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getContext()).initDataBase();
         ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
         //发送粘性事件，防止接收不到消息
         EventBus.getDefault().postSticky(new MessageEvent(EventMessage.SYNC_BOOKSHELF,list));
@@ -55,13 +61,13 @@ public class Presenter_Main {
 
     /**
      * 获取APP更新信息，通过eventbus发送
-     * @param context
+     *
      */
-    public void checkUpdate(Context context){
+    public void checkUpdate(){
         //获取当前应用版本号
         try {
-            PackageManager manager = context.getPackageManager();
-            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            PackageManager manager = getContext().getPackageManager();
+            PackageInfo info = manager.getPackageInfo(getContext().getPackageName(), 0);
             String version = info.versionName;
             Log.i(TAG, "checkUpdate: "+version);
 

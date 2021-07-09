@@ -19,10 +19,7 @@
         <activity
             android:name=".view.activities.LoginActivity"
             android:screenOrientation="fullSensor">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
         <activity
@@ -41,7 +38,10 @@
             android:name=".view.activities.MainActivity"
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoTitle_FullScreen">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <provider

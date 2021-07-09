@@ -3,8 +3,8 @@ package com.kkkkkn.readbooks.presenter;
 import android.util.Log;
 
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.jsoup.JsoupUtil;
-import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
+import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtil;
+import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 

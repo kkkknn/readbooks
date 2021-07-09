@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.model.sqlite.util;
+package com.kkkkkn.readbooks.model.scrap.sqlite.util;
 
 import android.content.Context;
 import android.database.SQLException;

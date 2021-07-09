@@ -18,9 +18,9 @@ import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.BookChaptersAdapter;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.jsoup.JsoupUtil;
-import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
-import com.kkkkkn.readbooks.model.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtil;
+import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtilImp;
+import com.kkkkkn.readbooks.model.scrap.sqlite.SqlBookUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;

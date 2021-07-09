@@ -44,10 +44,7 @@ public class SearchBookResultAdapter extends BaseAdapter {
         SearchBookResultAdapter_ViewHolder viewHolder=null;
         if(convertView==null){
             convertView=mInflater.inflate(R.layout.activity_search_item,parent,false);
-            viewHolder=new SearchBookResultAdapter_ViewHolder();
-            viewHolder.authorName=convertView.findViewById(R.id.fragment_search_item_book_author_name);
-            viewHolder.bookName=convertView.findViewById(R.id.fragment_search_item_book_name);
-            viewHolder.bookImg=convertView.findViewById(R.id.fragment_search_item_book_img);
+            viewHolder=new SearchBookResultAdapter_ViewHolder(convertView);
             convertView.setTag(viewHolder);
         }else {
             viewHolder=(SearchBookResultAdapter_ViewHolder) convertView.getTag();

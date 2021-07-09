@@ -23,8 +23,8 @@ import android.widget.TextView;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.jsoup.JsoupUtilImp;
-import com.kkkkkn.readbooks.model.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtilImp;
+import com.kkkkkn.readbooks.model.scrap.sqlite.SqlBookUtil;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
 

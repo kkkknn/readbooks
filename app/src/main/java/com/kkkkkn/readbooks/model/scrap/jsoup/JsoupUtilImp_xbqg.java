@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.model.jsoup;
+package com.kkkkkn.readbooks.model.scrap.jsoup;
 
 import android.util.Log;
 
