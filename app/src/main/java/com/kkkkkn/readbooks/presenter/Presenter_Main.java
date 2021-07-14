@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.kkkkkn.readbooks.model.Model_Main;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.network.DownloadListener;
 import com.kkkkkn.readbooks.model.network.DownloadUtil;
@@ -32,7 +33,7 @@ public class Presenter_Main extends BasePresenter {
     private MainView mainView;
 
     public Presenter_Main(Context context,MainView view) {
-        super(context);
+        super(context,new Model_Main());
         this.mainView=view;
     }
 
@@ -56,7 +57,7 @@ public class Presenter_Main extends BasePresenter {
         SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getContext()).initDataBase();
         ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
         //发送粘性事件，防止接收不到消息
-        EventBus.getDefault().postSticky(new MessageEvent(EventMessage.SYNC_BOOKSHELF,list));
+        //EventBus.getDefault().postSticky(new MessageEvent(EventMessage.SYNC_BOOKSHELF,list));
     }
 
     /**
@@ -84,7 +85,7 @@ public class Presenter_Main extends BasePresenter {
                 JSONObject jsonObject=new JSONObject(responseStr);
                 String versionStr=jsonObject.getString("version");
                 if(!version.equals(versionStr)){
-                    EventBus.getDefault().postSticky(new MessageEvent(EventMessage.SYNC_DIALOG,jsonObject));
+                    //EventBus.getDefault().postSticky(new MessageEvent(EventMessage.SYNC_DIALOG,jsonObject));
 
                 }
             }
@@ -100,18 +101,18 @@ public class Presenter_Main extends BasePresenter {
         DownloadUtil.downloadFile(name,url,path,new DownloadListener() {
             @Override
             public void onSuccess() {
-                EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_SUCCESS,path+"/"+name));
+                //EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_SUCCESS,path+"/"+name));
 
             }
 
             @Override
             public void onProgress(int i) {
-                EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_PROGRESS,(int)i));
+                //EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_PROGRESS,(int)i));
             }
 
             @Override
             public void onError(Exception e) {
-                EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_ERROR,e));
+                //EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_ERROR,e));
 
             }
         });

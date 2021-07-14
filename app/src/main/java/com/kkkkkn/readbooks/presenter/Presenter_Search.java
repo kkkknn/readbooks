@@ -57,7 +57,7 @@ public class Presenter_Search {
                 bookInfo.setBookFromType(jsoupUtil.getSource());
                 arrayList.add(bookInfo);
             }
-            EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_SEARCH_RESULT,arrayList));
+            //EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_SEARCH_RESULT,arrayList));
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

@@ -20,6 +20,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.presenter.BasePresenter;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
@@ -60,7 +61,6 @@ public class BaseActivity extends AppCompatActivity {
         StackManager stackManager=StackManager.getInstance();
         stackManager.addActivity(this);
 
-        EventBus.getDefault().register(this);
     }
 
     public void exitAll(){
@@ -111,32 +111,8 @@ public class BaseActivity extends AppCompatActivity {
         if(logRun){
             logRun=false;
         }
-        EventBus.getDefault().unregister(this);
     }
 
-    public void showToast(Context context,String str) {
-        if(context==null){
-            return;
-        }
 
-        View view= LayoutInflater.from(context).inflate(R.layout.view_toast_custom,null);
-        TextView tv_msg = (TextView) view.findViewById(R.id.tvToast);
-        tv_msg.setText(str);
-        Toast toast = new Toast(context);
-        toast.setGravity(Gravity.CENTER, 0, 20);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(view);
-        toast.show();
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void eventMessage(MessageEvent event){
-        //判断消息是否需要跳转到登录页面
-        if(event.message== EventMessage.TOKEN_ERROR){
-            Intent intent=new Intent(getApplicationContext(),LoginActivity.class);
-            startActivity(intent);
-        }
-    }
 
 }

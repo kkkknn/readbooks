@@ -1,18 +1,28 @@
 package com.kkkkkn.readbooks.presenter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.JsonReader;
 import android.util.Log;
 
+import com.kkkkkn.readbooks.model.BaseModel;
+import com.kkkkkn.readbooks.model.Model_Register;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.view.view.RegisterView;
 
-public class Presenter_Register extends BasePresenter {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class Presenter_Register extends BasePresenter implements BaseModel.CallBack {
     private RegisterView registerView;
+    private Model_Register model_register;
 
     public Presenter_Register(Context context,RegisterView view) {
-        super(context);
+        super(context,new Model_Register());
         this.registerView=view;
+        model_register=new Model_Register();
+        model_register.setCallback(this);
     }
 
     /**
@@ -21,15 +31,34 @@ public class Presenter_Register extends BasePresenter {
      * @param name 用户姓名
      * @return  成功失败 boolean类型
      */
-    public boolean register(String name,String password){
-        if(!StringUtil.checkAccountName(name)||!StringUtil.checkAccountPassword(password)){
-
-            System.out.println("11111111");
-            return false;
+    public void register(final String name, final String password){
+        if(!StringUtil.checkAccountName(name)){
+            registerView.showTip(0,"用户名仅支持英文、数字、下划线,长度3-10之间");
+            return;
+        }else if (!StringUtil.checkAccountPassword(password)){
+            registerView.showTip(0,"密码必须包含大小写字母和数字的组合，可以使用特殊字符，长度在8-10之间");
+            return;
         }
-        //获取model层，进行注册操作
-        registerView.showMsgDialog(1,"注册成功");
-        System.out.println("注册成功"+name+"||"+password);
-        return true;
+        model_register.register(name, password);
+        SharedPreferences sharedPreferences=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString("account_name",name);
+        editor.putString("account_password",password);
+        editor.apply();
+    }
+
+    @Override
+    public void onSuccess(int type, Object object) {
+        if (type == 1) {
+            registerView.back2Login();
+            registerView.showMsgDialog(1, (String) object);
+        } else {
+            registerView.showMsgDialog(-1, "注册失败");
+        }
+    }
+
+    @Override
+    public void onError(int type, Object object) {
+        registerView.showTip(-1,(String)object);
     }
 }

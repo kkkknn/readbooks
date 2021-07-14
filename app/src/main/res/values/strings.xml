@@ -14,7 +14,7 @@
     <string name="ok_btn">确定</string>
     <string name="cancel_btn">取消</string>
     <string name="welcome">欢迎注册本软件</string>
-    <string name="register"><u>没有账号，注册 / 忘记密码</u></string>
+    <string name="register"><u>没有账号，注册</u></string>
     <string name="version_info">此软件仅用于学习交流，禁止商业用途</string>
 
     <string name="read_setting_led">亮度</string>

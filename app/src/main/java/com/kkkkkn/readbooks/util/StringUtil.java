@@ -21,8 +21,8 @@ public class StringUtil {
         if(str==null||str.isEmpty()){
             return false;
         }
-        //验证是否为MD5字符串
-        Pattern p = Pattern.compile("([a-fA-F0-9]{32})$");
+        //验证是否为强密码(必须包含大小写字母和数字的组合，可以使用特殊字符，长度在8-10之间)
+        Pattern p = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,10}$");
         Matcher m = p.matcher(str);
         return m.matches();
     }

@@ -135,9 +135,9 @@ public class BookInfoActivity extends BaseActivity {
                 SqlBookUtil util=SqlBookUtil.getInstance(getApplicationContext());
                 util.initDataBase();
                 if(util.addEnjoyBook(bookInfo)){
-                    showToast(getApplicationContext(),"加入书架成功");
+                    //showToast(getApplicationContext(),"加入书架成功");
                 }else {
-                    showToast(getApplicationContext(),"加入书架失败");
+                    //showToast(getApplicationContext(),"加入书架失败");
                 }
             }
         });

@@ -3,6 +3,11 @@ package com.kkkkkn.readbooks.model.network;
 import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.model.BaseModel;
+import com.kkkkkn.readbooks.util.StringUtil;
+import com.kkkkkn.readbooks.util.eventBus.EventMessage;
+import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -16,8 +21,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class HttpUtil {
-    //服务器IP
-    private final static String IP="http://81.70.239.217";
     private static volatile HttpUtil httpUtil;
     private OkHttpClient okHttpClient;
     private HttpUtil() {
@@ -43,7 +46,13 @@ public class HttpUtil {
         return httpUtil;
     }
 
-    public String login(String name, String password, final BaseModel.CallBack callBack){
+    public void post(Request request,Callback callback){
+        okHttpClient.newCall(request).enqueue(callback);
+    }
+
+
+
+   /* public void login(String name, String password){
         FormBody.Builder formBody = new FormBody.Builder();
         formBody.add("accountName", name);
         formBody.add("accountPassword", password);
@@ -54,23 +63,19 @@ public class HttpUtil {
         Call call=okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                callBack.onSuccess(1,response.body().string());
-                System.out.println(response.body().string());
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                EventBus.getDefault().post(new MessageEvent(EventMessage.NET_ERROR,"访问出错"));
             }
 
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                callBack.onError(-1,"");
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                EventBus.getDefault().post(new MessageEvent(EventMessage.NET_OK,response.body().string()));
             }
         });
-
-
-        return null;
     }
 
 
-    public String register(String name,String password){
+    public void register(String name,String password){
         FormBody.Builder formBody = new FormBody.Builder();
         formBody.add("accountName", name);
         formBody.add("accountPassword", password);
@@ -79,15 +84,17 @@ public class HttpUtil {
                 .post(formBody.build())//传递请求体
                 .build();
         Call call=okHttpClient.newCall(request);
-        Response response= null;
-        try {
-            response = call.execute();
-            if(response.isSuccessful()){
-                return response.body().string();
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                EventBus.getDefault().post(new MessageEvent(EventMessage.NET_ERROR,"注册失败，请联系开发人员"));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                EventBus.getDefault().post(new MessageEvent(EventMessage.NET_OK,response.body().string()));
+            }
+        });
+
+    }*/
 }

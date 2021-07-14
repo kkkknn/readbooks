@@ -68,7 +68,10 @@ public class MainActivity extends BaseActivity implements MainView {
         AccountInfo info=presenter_main.getToken();
         if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
             toLoginActivity();
+        }else {
+            Log.i(TAG, "onCreate: id "+info.getAccount_id()+"  "+info.getAccount_token());
         }
+
        /* Presenter_Main.getInstance().getBookShelfList(getApplicationContext());
 
         new Thread(){

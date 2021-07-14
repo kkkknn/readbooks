@@ -1,11 +1,15 @@
 package com.kkkkkn.readbooks.util.eventBus;
 
 public enum EventMessage {
-    //跳转注册页
-    JUMP_REG,
-    //跳转主页
-    JUMP_INDEX,
 
+    //网络相关
+    NET_ERROR,
+    NET_OK,
+    //登录相关
+    LOGIN,
+
+    //注册相关
+    REGISTER,
 
     //更新书架
     SYNC_BOOKSHELF,

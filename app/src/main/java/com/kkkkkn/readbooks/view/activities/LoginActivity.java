@@ -4,6 +4,7 @@ package com.kkkkkn.readbooks.view.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Login;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
@@ -36,6 +40,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
         initView();
         presenter_login=new Presenter_Login(getApplicationContext(),this);
+        presenter_login.init();
+        flushEditView();
     }
     private void initView(){
         jumpText=findViewById(R.id.jumpToRsg);
@@ -46,7 +52,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             @Override
             public void onClick(View view) {
                 String name=edit_name.getText().toString();
-                String password= StringUtil.password2md5(edit_password.getText().toString());
+                String password= edit_password.getText().toString();
                 presenter_login.login(name,password);
             }
         });
@@ -62,20 +68,40 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void showMsgDialog(int type, String msg) {
+        Looper.prepare();
         if(type>0){
             CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
         }else {
             CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
         }
+        Looper.loop();
     }
 
     @Override
     public void toRegisterActivity() {
-        startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+        startActivityForResult(new Intent(getApplicationContext(), RegisterActivity.class),1);
     }
 
     @Override
     public void toMainActivity() {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
+    }
+
+    @Override
+    public void flushEditView() {
+        if(presenter_login!=null){
+            AccountInfo info=presenter_login.getAccountCache();
+            edit_name.setText(info.getAccount_name());
+            edit_password.setText(info.getAccount_password());
+        }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(presenter_login!=null){
+            presenter_login.release();
+        }
     }
 }
