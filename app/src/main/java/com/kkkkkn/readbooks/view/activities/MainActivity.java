@@ -62,8 +62,9 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        presenter_main=new Presenter_Main(getApplicationContext(),this);
         initView();
+        presenter_main=new Presenter_Main(getApplicationContext(),this);
+        presenter_main.init();
 
         AccountInfo info=presenter_main.getToken();
         if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
@@ -371,5 +372,11 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     public void toLoginActivity() {
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter_main.release();
     }
 }

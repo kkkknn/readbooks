@@ -9,19 +9,23 @@ import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_Register;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.util.StringUtil;
+import com.kkkkkn.readbooks.util.eventBus.EventMessage;
+import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.view.RegisterView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Presenter_Register extends BasePresenter implements BaseModel.CallBack {
     private RegisterView registerView;
     private Model_Register model_register;
+    private String name,password;
 
     public Presenter_Register(Context context,RegisterView view) {
         super(context,new Model_Register());
         this.registerView=view;
-        model_register=new Model_Register();
+        model_register=(Model_Register) getBaseModel();
         model_register.setCallback(this);
     }
 
@@ -39,9 +43,14 @@ public class Presenter_Register extends BasePresenter implements BaseModel.CallB
             registerView.showTip(0,"密码必须包含大小写字母和数字的组合，可以使用特殊字符，长度在8-10之间");
             return;
         }
-        model_register.register(name, password);
-        SharedPreferences sharedPreferences=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
+        String[] arr={name,password};
+        this.name=name;
+        this.password=password;
+        EventBus.getDefault().post(new MessageEvent(EventMessage.REGISTER,arr));
+
+    }
+    public void setAccountCache(String name,String password){
+        SharedPreferences.Editor editor=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE).edit();
         editor.putString("account_name",name);
         editor.putString("account_password",password);
         editor.apply();
@@ -50,15 +59,18 @@ public class Presenter_Register extends BasePresenter implements BaseModel.CallB
     @Override
     public void onSuccess(int type, Object object) {
         if (type == 1) {
+            setAccountCache(this.name,this.password);
             registerView.back2Login();
             registerView.showMsgDialog(1, (String) object);
         } else {
+            this.name=this.password=null;
             registerView.showMsgDialog(-1, "注册失败");
         }
     }
 
     @Override
     public void onError(int type, Object object) {
+        this.name=this.password=null;
         registerView.showTip(-1,(String)object);
     }
 }

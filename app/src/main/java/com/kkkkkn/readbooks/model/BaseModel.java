@@ -37,7 +37,7 @@ public abstract class BaseModel {
         }
     }
 
-    abstract void syncProgress(MessageEvent event);
+    public abstract void syncProgress(MessageEvent event);
 
 
 }

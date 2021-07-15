@@ -41,7 +41,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         initView();
         presenter_login=new Presenter_Login(getApplicationContext(),this);
         presenter_login.init();
-        flushEditView();
+
     }
     private void initView(){
         jumpText=findViewById(R.id.jumpToRsg);
@@ -64,7 +64,11 @@ public class LoginActivity extends BaseActivity implements LoginView {
         });
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        flushEditView();
+    }
 
     @Override
     public void showMsgDialog(int type, String msg) {

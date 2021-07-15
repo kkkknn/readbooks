@@ -22,7 +22,7 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
     private final static String TAG="Presenter_Login";
     private LoginView loginView;
     private Model_Login model_login;
-
+    private String name,password;
 
     public Presenter_Login(Context context,LoginView loginView) {
         super(context,new Model_Login());
@@ -43,6 +43,8 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
             return;
         }
         String[] arr={name,password};
+        this.name=name;
+        this.password=password;
         EventBus.getDefault().post(new MessageEvent(EventMessage.LOGIN,arr));
     }
 
@@ -54,8 +56,18 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
         return accountInfo;
     }
 
-    public boolean setAccountCache(String name,String password){
+    private void setAccountCache(String name,String password){
+        SharedPreferences.Editor editor=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE).edit();
+        editor.putString("account_name",name);
+        editor.putString("account_password",password);
+        editor.apply();
+    }
 
+    private void setToken(int id,String token){
+        SharedPreferences.Editor editor=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE).edit();
+        editor.putInt("account_id",id);
+        editor.putString("account_token",token);
+        editor.apply();
     }
 
 
@@ -64,18 +76,19 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
         switch (type){
             case 1:
                 //存储ID和token
-                SharedPreferences.Editor editor=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE).edit();
-                editor.putInt();
-                editor.putString();
-                editor.apply();
+                AccountInfo info=(AccountInfo)object;
+                setToken(info.getAccount_id(),info.getAccount_token());
+                setAccountCache(this.name,this.password);
 
                 loginView.toMainActivity();
                 loginView.showMsgDialog(1,"登录成功");
                 break;
             case -1:
+                this.name=this.password=null;
                 loginView.showMsgDialog(-1,(String)object);
                 break;
             default:
+                this.name=this.password=null;
                 loginView.showMsgDialog(-1,"登录失败");
                 break;
         }
@@ -83,6 +96,7 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
 
     @Override
     public void onError(int type, Object object) {
+        this.name=this.password=null;
         loginView.showMsgDialog(-1,"登录失败");
     }
 

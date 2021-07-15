@@ -2,11 +2,14 @@ package com.kkkkkn.readbooks.model;
 
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
+import org.greenrobot.eventbus.Subscribe;
+
 public class Model_Main extends BaseModel {
 
 
+    @Subscribe
     @Override
-    void syncProgress(MessageEvent event) {
+    public void syncProgress(MessageEvent event) {
 
     }
 }

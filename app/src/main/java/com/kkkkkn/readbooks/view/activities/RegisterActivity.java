@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.presenter.Presenter_Login;
 import com.kkkkkn.readbooks.presenter.Presenter_Register;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
@@ -31,7 +32,7 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
         setContentView(R.layout.activity_register);
         initView();
         presenter_register=new Presenter_Register(getApplicationContext(),this);
-
+        presenter_register.init();
     }
 
     private void initView(){
@@ -45,12 +46,7 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
                 tv_tip.setText("");
                 final String name=edit_name.getText().toString();
                 final String password=edit_password.getText().toString();
-                new Thread(){
-                    @Override
-                    public void run() {
-                        presenter_register.register(name,password);
-                    }
-                }.start();
+                presenter_register.register(name,password);
             }
         });
     }
@@ -94,4 +90,10 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
         this.finish();
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter_register.release();
+    }
 }

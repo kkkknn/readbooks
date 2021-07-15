@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_Main;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.network.DownloadListener;
@@ -28,13 +29,16 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Presenter_Main extends BasePresenter {
+public class Presenter_Main extends BasePresenter implements BaseModel.CallBack {
     private static String TAG="Presenter_Main";
     private MainView mainView;
+    private Model_Main model_main;
 
     public Presenter_Main(Context context,MainView view) {
         super(context,new Model_Main());
         this.mainView=view;
+        model_main=(Model_Main) getBaseModel();
+        model_main.setCallback(this);
     }
 
     /**
@@ -119,4 +123,13 @@ public class Presenter_Main extends BasePresenter {
     }
 
 
+    @Override
+    public void onSuccess(int type, Object object) {
+
+    }
+
+    @Override
+    public void onError(int type, Object object) {
+
+    }
 }
