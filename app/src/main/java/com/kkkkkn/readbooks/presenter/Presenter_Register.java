@@ -49,12 +49,6 @@ public class Presenter_Register extends BasePresenter implements BaseModel.CallB
         EventBus.getDefault().post(new MessageEvent(EventMessage.REGISTER,arr));
 
     }
-    public void setAccountCache(String name,String password){
-        SharedPreferences.Editor editor=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE).edit();
-        editor.putString("account_name",name);
-        editor.putString("account_password",password);
-        editor.apply();
-    }
 
     @Override
     public void onSuccess(int type, Object object) {

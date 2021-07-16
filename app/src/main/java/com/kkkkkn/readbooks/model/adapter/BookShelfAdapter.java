@@ -19,12 +19,12 @@ import com.kkkkkn.readbooks.view.viewHolder.BookShelfAdapter_ViewHolder;
 import java.util.ArrayList;
 
 public class BookShelfAdapter extends BaseAdapter {
-    private ArrayList<BookShelfItem> mArrayList;
+    private ArrayList<BookInfo> mArrayList;
     private Context mContext;
     private LayoutInflater mInflater;
 
 
-    public BookShelfAdapter(ArrayList<BookShelfItem> mArrayList, Context mContext) {
+    public BookShelfAdapter(ArrayList<BookInfo> mArrayList, Context mContext) {
         this.mArrayList = mArrayList;
         this.mContext = mContext;
         this.mInflater = LayoutInflater.from(mContext);
@@ -57,15 +57,15 @@ public class BookShelfAdapter extends BaseAdapter {
         }else {
             bookShelfAdapter_viewHolder=(BookShelfAdapter_ViewHolder) convertView.getTag();
         }
-        BookShelfItem bookShelfItem=mArrayList.get(position);
+        BookInfo bookInfo=mArrayList.get(position);
 
-        if(bookShelfItem!=null){
-            bookShelfAdapter_viewHolder.bookName.setText(bookShelfItem.getBook_name());
-            String url=bookShelfItem.getBook_img_url();
+        if(bookInfo!=null){
+            bookShelfAdapter_viewHolder.bookName.setText(bookInfo.getBookName());
+            String url=bookInfo.getBookImgUrl();
             if(url!=null&&!url.isEmpty()){
                 Glide.with(mContext).load(url).into(bookShelfAdapter_viewHolder.bookImg);
             }
-            bookShelfAdapter_viewHolder.updateView.setVisibility(bookShelfItem.isIs_update()?View.VISIBLE:View.GONE);
+            bookShelfAdapter_viewHolder.updateView.setVisibility(bookInfo.isEnjoy()?View.VISIBLE:View.GONE);
         }
 
 

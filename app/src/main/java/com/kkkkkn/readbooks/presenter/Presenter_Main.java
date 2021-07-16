@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import okhttp3.OkHttpClient;
@@ -58,11 +59,12 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
      *
      */
     public void getBookShelfList(){
-        SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getContext()).initDataBase();
-        ArrayList<BookInfo> list=sqlBookUtil.getEnjoyBook();
+        //获取缓存内的用户账户数据
+        AccountInfo info=getAccountCache();
         //发送粘性事件，防止接收不到消息
-        //EventBus.getDefault().postSticky(new MessageEvent(EventMessage.SYNC_BOOKSHELF,list));
+        EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_BOOKSHELF,info));
     }
+
 
     /**
      * 获取APP更新信息，通过eventbus发送

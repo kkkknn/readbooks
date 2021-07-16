@@ -48,27 +48,8 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
         EventBus.getDefault().post(new MessageEvent(EventMessage.LOGIN,arr));
     }
 
-    public AccountInfo getAccountCache(){
-        SharedPreferences sharedPreferences=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE);
-        AccountInfo accountInfo=new AccountInfo();
-        accountInfo.setAccount_name(sharedPreferences.getString("account_name",""));
-        accountInfo.setAccount_password(sharedPreferences.getString("account_password",""));
-        return accountInfo;
-    }
 
-    private void setAccountCache(String name,String password){
-        SharedPreferences.Editor editor=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE).edit();
-        editor.putString("account_name",name);
-        editor.putString("account_password",password);
-        editor.apply();
-    }
 
-    private void setToken(int id,String token){
-        SharedPreferences.Editor editor=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE).edit();
-        editor.putInt("account_id",id);
-        editor.putString("account_token",token);
-        editor.apply();
-    }
 
 
     @Override
@@ -77,7 +58,7 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
             case 1:
                 //存储ID和token
                 AccountInfo info=(AccountInfo)object;
-                setToken(info.getAccount_id(),info.getAccount_token());
+                setTokenCache(info.getAccount_id(),info.getAccount_token());
                 setAccountCache(this.name,this.password);
 
                 loginView.toMainActivity();

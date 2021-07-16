@@ -69,8 +69,6 @@ public class MainActivity extends BaseActivity implements MainView {
         AccountInfo info=presenter_main.getToken();
         if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
             toLoginActivity();
-        }else {
-            Log.i(TAG, "onCreate: id "+info.getAccount_id()+"  "+info.getAccount_token());
         }
 
        /* Presenter_Main.getInstance().getBookShelfList(getApplicationContext());
@@ -97,7 +95,7 @@ public class MainActivity extends BaseActivity implements MainView {
         });
 
         //初始化通知栏
-        mNotifyManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        /*mNotifyManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //ChannelId为"1",ChannelName为"Channel1"
         NotificationChannel channel = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -107,28 +105,12 @@ public class MainActivity extends BaseActivity implements MainView {
         }
         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
         mBuilder.setContentTitle("正在下载");
-        mNotifyManager.notify(1,mBuilder.build());
+        mNotifyManager.notify(1,mBuilder.build());*/
     }
 
 
     private void syncBookShelf(ArrayList<BookShelfItem> object){
-        if(mGridView.getAdapter()==null&& (ArrayList<BookShelfItem>) object !=null){
-            BookShelfAdapter mAdapter = new BookShelfAdapter((ArrayList<BookShelfItem>) object,getApplicationContext());
-            mGridView.setAdapter(mAdapter);
-            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
-                    if(bookInfo!=null){
-                        jump2ReadView(bookInfo);
-                        Log.i(TAG, "onItemClick: "+bookInfo.getBookId());
-                    }
-                }
-            });
-        }else if((ArrayList<BookShelfItem>) object !=null){
-            BookShelfAdapter mAdapter = new BookShelfAdapter((ArrayList<BookShelfItem>) object,getApplicationContext());
-            mGridView.setAdapter(mAdapter);
-        }
+
 
     }
 
@@ -350,8 +332,21 @@ public class MainActivity extends BaseActivity implements MainView {
 
 
     @Override
-    public void updateBookShelf() {
-
+    public void updateBookShelf(ArrayList<BookInfo> list) {
+         if(list !=null){
+            BookShelfAdapter mAdapter = new BookShelfAdapter(list,getApplicationContext());
+            mGridView.setAdapter(mAdapter);
+            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
+                    if(bookInfo!=null){
+                        jump2ReadView(bookInfo);
+                        Log.i(TAG, "onItemClick: "+bookInfo.getBookId());
+                    }
+                }
+            });
+        }
     }
 
     @Override
