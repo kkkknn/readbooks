@@ -1,7 +1,6 @@
 package com.kkkkkn.readbooks.presenter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -11,19 +10,15 @@ import com.kkkkkn.readbooks.model.Model_Main;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.network.DownloadListener;
 import com.kkkkkn.readbooks.model.network.DownloadUtil;
-import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.scrap.sqlite.SqlBookUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
-import com.kkkkkn.readbooks.view.view.MainView;
+import com.kkkkkn.readbooks.view.view.MainActivityView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 import okhttp3.OkHttpClient;
@@ -32,12 +27,12 @@ import okhttp3.Response;
 
 public class Presenter_Main extends BasePresenter implements BaseModel.CallBack {
     private static String TAG="Presenter_Main";
-    private MainView mainView;
+    private MainActivityView mainActivityView;
     private Model_Main model_main;
 
-    public Presenter_Main(Context context,MainView view) {
+    public Presenter_Main(Context context, MainActivityView view) {
         super(context,new Model_Main());
-        this.mainView=view;
+        this.mainActivityView =view;
         model_main=(Model_Main) getBaseModel();
         model_main.setCallback(this);
     }
@@ -47,11 +42,7 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
      * @return 用户对象
      */
     public AccountInfo getToken(){
-        SharedPreferences sharedPreferences=getContext().getSharedPreferences("AccountInfo",Context.MODE_PRIVATE);
-        AccountInfo accountInfo=new AccountInfo();
-        accountInfo.setAccount_id(sharedPreferences.getInt("account_id",-1));
-        accountInfo.setAccount_token(sharedPreferences.getString("account_token",""));
-        return accountInfo;
+        return getAccountCache();
     }
 
     /**
@@ -61,7 +52,7 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
     public void getBookShelfList(){
         //获取缓存内的用户账户数据
         AccountInfo info=getAccountCache();
-        //发送粘性事件，防止接收不到消息
+        //请求图书列表
         EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_BOOKSHELF,info));
     }
 

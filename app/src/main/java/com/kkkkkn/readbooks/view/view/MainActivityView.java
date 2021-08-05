@@ -4,7 +4,7 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 
 import java.util.ArrayList;
 
-public interface MainView {
+public interface MainActivityView {
     void updateBookShelf(ArrayList<BookInfo> list);
     void showUpdateDialog(String msg);
     void toSearchActivity();

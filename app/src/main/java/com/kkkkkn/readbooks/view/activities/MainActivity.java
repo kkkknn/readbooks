@@ -2,9 +2,7 @@ package com.kkkkkn.readbooks.view.activities;
 
 import android.app.AlertDialog;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -34,7 +32,7 @@ import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.model.scrap.sqlite.SqlBookUtil;
-import com.kkkkkn.readbooks.view.view.MainView;
+import com.kkkkkn.readbooks.view.view.MainActivityView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -48,7 +46,7 @@ import java.util.ArrayList;
 /**
  * 程序主界面，每次进入的时候获取读取本地图书并进行加载
  */
-public class MainActivity extends BaseActivity implements MainView {
+public class MainActivity extends BaseActivity implements MainActivityView {
     private final static String TAG="主界面";
     private long lastBackClick;
     private String ApkDirPath="";
@@ -70,6 +68,9 @@ public class MainActivity extends BaseActivity implements MainView {
         if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
             toLoginActivity();
         }
+        //todo 获取书架信息
+
+        //todo 检查APK更新
 
        /* Presenter_Main.getInstance().getBookShelfList(getApplicationContext());
 

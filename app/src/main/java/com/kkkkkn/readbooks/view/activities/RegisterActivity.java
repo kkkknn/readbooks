@@ -1,10 +1,8 @@
 package com.kkkkkn.readbooks.view.activities;
 
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,15 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.presenter.Presenter_Login;
 import com.kkkkkn.readbooks.presenter.Presenter_Register;
-import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
-import com.kkkkkn.readbooks.view.view.RegisterView;
+import com.kkkkkn.readbooks.view.view.RegisterActivityView;
 
-import org.greenrobot.eventbus.EventBus;
-
-public class RegisterActivity extends BaseActivity implements RegisterView {
+public class RegisterActivity extends BaseActivity implements RegisterActivityView {
     private EditText edit_name,edit_password;
     private Button btn_reg;
     private Presenter_Register presenter_register;
@@ -54,14 +48,14 @@ public class RegisterActivity extends BaseActivity implements RegisterView {
 
     @Override
     public void showMsgDialog(int type, String msg) {
-        Looper.prepare();
+        //Looper.prepare();
         if(type>0){
             CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
 
         }else {
             CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
         }
-        Looper.loop();
+        //Looper.loop();
     }
 
     @Override

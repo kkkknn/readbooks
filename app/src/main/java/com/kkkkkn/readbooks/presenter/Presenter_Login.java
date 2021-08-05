@@ -1,9 +1,6 @@
 package com.kkkkkn.readbooks.presenter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Looper;
-import android.util.Log;
 
 import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_Login;
@@ -11,22 +8,19 @@ import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
-import com.kkkkkn.readbooks.view.activities.LoginActivity;
-import com.kkkkkn.readbooks.view.view.LoginView;
+import com.kkkkkn.readbooks.view.view.LoginActivityView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Presenter_Login extends BasePresenter implements BaseModel.CallBack{
     private final static String TAG="Presenter_Login";
-    private LoginView loginView;
+    private LoginActivityView loginActivityView;
     private Model_Login model_login;
     private String name,password;
 
-    public Presenter_Login(Context context,LoginView loginView) {
+    public Presenter_Login(Context context, LoginActivityView loginActivityView) {
         super(context,new Model_Login());
-        this.loginView=loginView;
+        this.loginActivityView = loginActivityView;
         model_login=(Model_Login)getBaseModel();
         model_login.setCallback(this);
     }
@@ -39,7 +33,7 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
      */
     public void login(String name,String password){
         if(!StringUtil.checkAccountName(name)||!StringUtil.checkAccountPassword(password)){
-            loginView.showMsgDialog(-1,"登陆失败");
+            loginActivityView.showMsgDialog(-1,"登陆失败");
             return;
         }
         String[] arr={name,password};
@@ -61,16 +55,16 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
                 setTokenCache(info.getAccount_id(),info.getAccount_token());
                 setAccountCache(this.name,this.password);
 
-                loginView.toMainActivity();
-                loginView.showMsgDialog(1,"登录成功");
+                loginActivityView.toMainActivity();
+                loginActivityView.showMsgDialog(1,"登录成功");
                 break;
             case -1:
                 this.name=this.password=null;
-                loginView.showMsgDialog(-1,(String)object);
+                loginActivityView.showMsgDialog(-1,(String)object);
                 break;
             default:
                 this.name=this.password=null;
-                loginView.showMsgDialog(-1,"登录失败");
+                loginActivityView.showMsgDialog(-1,"登录失败");
                 break;
         }
     }
@@ -78,7 +72,7 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
     @Override
     public void onError(int type, Object object) {
         this.name=this.password=null;
-        loginView.showMsgDialog(-1,"登录失败");
+        loginActivityView.showMsgDialog(-1,"登录失败");
     }
 
 }

@@ -12,25 +12,30 @@ import android.widget.ListView;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.presenter.Presenter_Login;
 import com.kkkkkn.readbooks.presenter.Presenter_Search;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.view.view.SearchActivityView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-public class SearchActivity extends BaseActivity {
+public class SearchActivity extends BaseActivity implements SearchActivityView {
     private final static String TAG="SearchActivity";
     private SearchView searchView;
     private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
     private SearchBookResultAdapter adapter;
+    private Presenter_Search presenter_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        presenter_search=new Presenter_Search(getApplicationContext(),this);
+        presenter_search.init();
         //listview相关初始化
         adapter=new SearchBookResultAdapter(arrayList,this);
         ListView listView=findViewById(R.id.search_listView);
@@ -52,13 +57,7 @@ public class SearchActivity extends BaseActivity {
                 //请求字符串不为空，开始进行网络请求
                 if(!query.isEmpty()){
                     //请求搜索
-                    final String str=query;
-                    new Thread(){
-                        @Override
-                        public void run() {
-                            Presenter_Search.getInstance().searchBook(str,1);
-                        }
-                    }.start();
+                    presenter_search.searchBook(query,1);
                     //防止抬起落下都触发此事件
                     searchView.setIconified(true);
                 }
@@ -92,5 +91,14 @@ public class SearchActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter_search.release();
+    }
 
+    @Override
+    public void searchBook(String keyword) {
+
+    }
 }

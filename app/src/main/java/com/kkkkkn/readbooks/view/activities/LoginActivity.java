@@ -1,34 +1,22 @@
 package com.kkkkkn.readbooks.view.activities;
 
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
-import android.text.Editable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Login;
-import com.kkkkkn.readbooks.util.StringUtil;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
-import com.kkkkkn.readbooks.view.view.LoginView;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import com.kkkkkn.readbooks.view.view.LoginActivityView;
 
 
-public class LoginActivity extends BaseActivity implements LoginView {
+public class LoginActivity extends BaseActivity implements LoginActivityView {
     private Button btn_login;
     private EditText edit_name,edit_password;
     private TextView jumpText;
@@ -72,13 +60,13 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void showMsgDialog(int type, String msg) {
-        Looper.prepare();
+        //Looper.prepare();
         if(type>0){
             CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
         }else {
             CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
         }
-        Looper.loop();
+        //Looper.loop();
     }
 
     @Override
