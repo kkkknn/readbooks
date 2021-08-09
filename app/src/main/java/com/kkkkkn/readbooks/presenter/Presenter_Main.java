@@ -118,7 +118,15 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
 
     @Override
     public void onSuccess(int type, Object object) {
-
+        switch (type){
+            case 1:
+                //mainActivityView
+                break;
+            case -1:
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

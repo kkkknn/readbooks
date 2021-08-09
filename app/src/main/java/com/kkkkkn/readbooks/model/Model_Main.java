@@ -17,7 +17,7 @@ import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Model_Main extends BaseModel implements Callback {
+public class Model_Main extends BaseModel {
 
 
     @Subscribe
@@ -38,24 +38,26 @@ public class Model_Main extends BaseModel implements Callback {
     }
 
     private void getBookShelf(int id,String token){
-        //okhttp post请求网络 todo 获取用户收藏的图书
-        /*FormBody.Builder formBody = new FormBody.Builder();
-        formBody.add("accountName", name);
-        formBody.add("accountPassword",password_val);
+        //okhttp post请求网络
+        FormBody.Builder formBody = new FormBody.Builder();
+        formBody.add("accountId", Integer.toString(id));
+        formBody.add("token",token);
         Request request = new Request.Builder()
-                .url(ServerConfig.IP+ServerConfig.login)
+                .url(ServerConfig.IP+ServerConfig.getFavoriteBook)
                 .post(formBody.build())//传递请求体
                 .build();
-        HttpUtil.getInstance().post(request, this);*/
+        HttpUtil.getInstance().post(request, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                getCallBack().onError(-1,"访问出错");
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                //解析返回值
+                
+            }
+        });
     }
 
-    @Override
-    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
-    }
-
-    @Override
-    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
-    }
 }

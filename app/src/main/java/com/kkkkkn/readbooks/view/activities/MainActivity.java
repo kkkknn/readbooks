@@ -69,7 +69,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             toLoginActivity();
         }
         //todo 获取书架信息
-
+        presenter_main.getBookShelfList();
         //todo 检查APK更新
 
        /* Presenter_Main.getInstance().getBookShelfList(getApplicationContext());
