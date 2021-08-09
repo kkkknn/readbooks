@@ -8,6 +8,7 @@ import android.util.Log;
 import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_Main;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
+import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.network.DownloadListener;
 import com.kkkkkn.readbooks.model.network.DownloadUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
@@ -19,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import okhttp3.OkHttpClient;
@@ -120,9 +122,16 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
     public void onSuccess(int type, Object object) {
         switch (type){
             case 1:
-                //mainActivityView
+                mainActivityView.updateBookShelf((ArrayList<BookInfo>) object);
                 break;
             case -1:
+                Log.i(TAG, (String) object);
+                break;
+            case -2:
+                String str=(String) object;
+                if(str.equals("令牌验证失败，请重新尝试")){
+                    mainActivityView.toLoginActivity();
+                }
                 break;
             default:
                 break;

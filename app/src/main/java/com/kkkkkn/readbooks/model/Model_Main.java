@@ -4,12 +4,18 @@ import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
+import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.network.HttpUtil;
+import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -55,7 +61,33 @@ public class Model_Main extends BaseModel {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 //解析返回值
-                
+                String ret_str=response.body().string();
+                if(!StringUtil.isEmpty(ret_str)){
+                    try {
+                        JSONObject jsonObject=new JSONObject(ret_str);
+                        String code_str=jsonObject.getString("code");
+                        String data_str=jsonObject.getString("data");
+                        if(!StringUtil.isEmpty(code_str)&&!StringUtil.isEmpty(data_str)){
+                            if(code_str.equals("success")){
+                                JSONArray jsonArray=new JSONArray(data_str);
+                                ArrayList<BookInfo> book_shelf=new ArrayList<>();
+                                for (int j = 0; j < jsonArray.length(); j++) {
+                                    BookInfo bookInfo=(BookInfo) jsonArray.get(j);
+                                    book_shelf.add(bookInfo);
+                                }
+                                getCallBack().onSuccess(1,book_shelf);
+                            }else if(code_str.equals("error")){
+                                getCallBack().onError(-2,data_str);
+                                return;
+                            }
+                        }
+                        getCallBack().onError(-1,"解析失败");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
         });
     }
