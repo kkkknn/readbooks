@@ -3,6 +3,7 @@ package com.kkkkkn.readbooks.view.activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,14 +49,14 @@ public class RegisterActivity extends BaseActivity implements RegisterActivityVi
 
     @Override
     public void showMsgDialog(int type, String msg) {
-        //Looper.prepare();
+        Looper.prepare();
         if(type>0){
             CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
 
         }else {
             CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
         }
-        //Looper.loop();
+        Looper.loop();
     }
 
     @Override

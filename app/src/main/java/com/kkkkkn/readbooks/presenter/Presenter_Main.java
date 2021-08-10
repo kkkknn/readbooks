@@ -124,6 +124,14 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
             case 1:
                 mainActivityView.updateBookShelf((ArrayList<BookInfo>) object);
                 break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onError(int type, Object object) {
+        switch (type){
             case -1:
                 Log.i(TAG, (String) object);
                 break;
@@ -136,10 +144,5 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
             default:
                 break;
         }
-    }
-
-    @Override
-    public void onError(int type, Object object) {
-
     }
 }

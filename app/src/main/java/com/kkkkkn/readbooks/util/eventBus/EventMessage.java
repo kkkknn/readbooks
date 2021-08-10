@@ -5,9 +5,9 @@ public enum EventMessage {
     //网络相关
     NET_ERROR,
     NET_OK,
+
     //登录相关
     LOGIN,
-
     //注册相关
     REGISTER,
 
@@ -25,6 +25,20 @@ public enum EventMessage {
     DOWNLOAD_SUCCESS,
     //下载失败
     DOWNLOAD_ERROR,
+
+    //搜索图书
+    SEARCH_BOOK,
+    //搜索失败
+    SEARCH_BOOK_ERROR,
+    //搜索成功
+    SEARCH_BOOK_SUCCESS,
+
+    //收藏图书
+    ADD_BOOK,
+    //收藏成功
+    ADD_BOOK_SUCCESS,
+    //收藏失败
+    ADD_BOOK_ERROR,
 
 
     //更新搜索结果列表

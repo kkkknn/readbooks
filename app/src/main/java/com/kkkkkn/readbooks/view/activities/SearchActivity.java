@@ -43,11 +43,8 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //点击选项进行跳转图书详情
-                BookInfo item=arrayList.get(position);
-                Intent intent=new Intent(getApplicationContext(),BookInfoActivity.class);
-                intent.putExtra("bookInfo",item);
-                startActivity(intent);
+                toBrowsingActivity(arrayList.get(position));
+
             }
         });
         searchView=findViewById(R.id.searchView);
@@ -57,7 +54,7 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
                 //请求字符串不为空，开始进行网络请求
                 if(!query.isEmpty()){
                     //请求搜索
-                    presenter_search.searchBook(query,1);
+                    presenter_search.searchBook(query);
                     //防止抬起落下都触发此事件
                     searchView.setIconified(true);
                 }
@@ -100,5 +97,12 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
     @Override
     public void searchBook(String keyword) {
 
+    }
+
+    @Override
+    public void toBrowsingActivity(BookInfo bookInfo) {
+        Intent intent=new Intent(getApplicationContext(),BookInfoActivity.class);
+        intent.putExtra("bookInfo",bookInfo);
+        startActivity(intent);
     }
 }

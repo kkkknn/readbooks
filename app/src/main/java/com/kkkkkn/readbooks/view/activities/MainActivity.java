@@ -68,7 +68,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
             toLoginActivity();
         }
-        //todo 获取书架信息
         presenter_main.getBookShelfList();
         //todo 检查APK更新
 
@@ -180,9 +179,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
                 break;
             case R.id.navigation_dashboard:
-                //点击了搜索框，开始跳转
-                Intent intent=new Intent(MainActivity.this,SearchActivity.class);
-                startActivity(intent);
+                toSearchActivity();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -357,7 +354,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     @Override
     public void toSearchActivity() {
-
+        startActivity(new Intent(getApplicationContext(),SearchActivity.class));
     }
 
     @Override

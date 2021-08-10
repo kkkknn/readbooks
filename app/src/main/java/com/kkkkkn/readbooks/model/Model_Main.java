@@ -1,5 +1,7 @@
 package com.kkkkkn.readbooks.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
@@ -74,6 +76,7 @@ public class Model_Main extends BaseModel {
                                 for (int j = 0; j < jsonArray.length(); j++) {
                                     BookInfo bookInfo=(BookInfo) jsonArray.get(j);
                                     book_shelf.add(bookInfo);
+                                    Log.i("TAG", "onResponse: "+bookInfo.getBookName());
                                 }
                                 getCallBack().onSuccess(1,book_shelf);
                             }else if(code_str.equals("error")){
