@@ -94,15 +94,17 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
         presenter_search.release();
     }
 
-    @Override
-    public void searchBook(String keyword) {
-
-    }
 
     @Override
     public void toBrowsingActivity(BookInfo bookInfo) {
         Intent intent=new Intent(getApplicationContext(),BookInfoActivity.class);
         intent.putExtra("bookInfo",bookInfo);
         startActivity(intent);
+    }
+
+    @Override
+    public void syncBookList(ArrayList<BookInfo> list) {
+        arrayList.addAll(list);
+        adapter.notifyAll();
     }
 }

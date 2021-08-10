@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -51,7 +52,7 @@ public class Model_Search extends BaseModel  {
         formBody.add("pageSize",Integer.toString(info.getPage_size()));
 
         Request request = new Request.Builder()
-                .url(ServerConfig.IP+ServerConfig.getFavoriteBook)
+                .url(ServerConfig.IP+ServerConfig.searchBook)
                 .post(formBody.build())//传递请求体
                 .addHeader("accountId",Integer.toString(info.getAccount_id()))
                 .addHeader("token",info.getToken())
@@ -70,11 +71,18 @@ public class Model_Search extends BaseModel  {
                         return;
                     }
                     if(code.equals("success")){
-
+                        //解析json数组
+                        JSONArray jsonArray=new JSONArray(data);
+                        ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
+                        for (int j = 0; j < jsonArray.length(); j++) {
+                            arrayList.add((BookInfo) jsonArray.get(j));
+                        }
+                        getCallBack().onSuccess(1,arrayList);
+                        return;
                     }else if(code.equals("error")){
-
+                        getCallBack().onError(-2,data);
+                        return;
                     }
-                    return;
 
                 } catch (JSONException e) {
                     e.printStackTrace();
