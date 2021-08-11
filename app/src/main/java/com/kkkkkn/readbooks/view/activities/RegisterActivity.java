@@ -48,15 +48,19 @@ public class RegisterActivity extends BaseActivity implements RegisterActivityVi
 
 
     @Override
-    public void showMsgDialog(int type, String msg) {
-        Looper.prepare();
-        if(type>0){
-            CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
+    public void showMsgDialog(final int type, final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(type>0){
+                    CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
 
-        }else {
-            CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
-        }
-        Looper.loop();
+                }else {
+                    CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
+                }
+            }
+        });
+
     }
 
     @Override

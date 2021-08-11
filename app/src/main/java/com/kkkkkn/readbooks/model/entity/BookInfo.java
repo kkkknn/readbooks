@@ -27,6 +27,8 @@ public class BookInfo  implements Serializable {
     private int bookFromType;
     private String chapterPagesUrlStr;
     private int pageSum;
+    private int chapterSum;
+    private String sourceName;
 
     public boolean isEnjoy() {
         return enjoy;
@@ -136,5 +138,21 @@ public class BookInfo  implements Serializable {
             return true;
         }
         return false;
+    }
+
+    public int getChapterSum() {
+        return chapterSum;
+    }
+
+    public void setChapterSum(int chapterSum) {
+        this.chapterSum = chapterSum;
+    }
+
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
     }
 }

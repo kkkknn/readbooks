@@ -42,6 +42,7 @@ public class Presenter_Search extends BasePresenter implements BaseModel.CallBac
         if (str==null||str.isEmpty()){
             return;
         }
+        //todo 搜索加载设置
         SearchInfo info=new SearchInfo();
         AccountInfo accountInfo=getAccountCache();
         info.setAccount_id(accountInfo.getAccount_id());
@@ -49,7 +50,6 @@ public class Presenter_Search extends BasePresenter implements BaseModel.CallBac
         info.setKey_word(str);
         info.setPage_count(1);
         info.setPage_size(20);
-
         EventBus.getDefault().post(new MessageEvent(EventMessage.SEARCH_BOOK,info));
 
     }
@@ -59,6 +59,7 @@ public class Presenter_Search extends BasePresenter implements BaseModel.CallBac
     public void onSuccess(int type, Object object) {
         switch (type){
             case 1:
+                searchActivityView.syncBookList((ArrayList<BookInfo>)object);
                 break;
             default:
                 break;
@@ -69,10 +70,14 @@ public class Presenter_Search extends BasePresenter implements BaseModel.CallBac
     public void onError(int type, Object object) {
         switch (type){
             case -1:
-                searchActivityView.syncBookList((ArrayList<BookInfo>)object);
+                Log.i("TAG", "onError: "+object);
                 break;
             case -2:
+                String str=(String) object;
                 Log.i("TAG", "onError: "+object);
+                if (str.equals("令牌验证失败，请重新尝试")) {
+                    searchActivityView.toLoginActivity();
+                }
                 break;
             default:
                 break;

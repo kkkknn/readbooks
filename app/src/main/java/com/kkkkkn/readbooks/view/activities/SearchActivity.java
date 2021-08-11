@@ -44,7 +44,6 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 toBrowsingActivity(arrayList.get(position));
-
             }
         });
         searchView=findViewById(R.id.searchView);
@@ -71,7 +70,6 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void eventCallBack(MessageEvent event){
         switch (event.message){
             case SYNC_SEARCH_RESULT:
@@ -95,16 +93,29 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
     }
 
 
-    @Override
-    public void toBrowsingActivity(BookInfo bookInfo) {
+    private void toBrowsingActivity(BookInfo bookInfo) {
         Intent intent=new Intent(getApplicationContext(),BookInfoActivity.class);
         intent.putExtra("bookInfo",bookInfo);
         startActivity(intent);
     }
 
     @Override
-    public void syncBookList(ArrayList<BookInfo> list) {
-        arrayList.addAll(list);
-        adapter.notifyAll();
+    public void syncBookList(final ArrayList<BookInfo> list) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (arrayList != null) {
+                    arrayList.clear();
+                    arrayList.addAll(list);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void toLoginActivity() {
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+
     }
 }

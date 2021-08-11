@@ -7,8 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.util.ImageUtil;
 import com.kkkkkn.readbooks.view.viewHolder.SearchBookResultAdapter_ViewHolder;
 
 import java.util.ArrayList;
@@ -17,6 +22,8 @@ public class SearchBookResultAdapter extends BaseAdapter {
     private ArrayList<BookInfo> resultList;
     private Context mContext;
     private LayoutInflater mInflater;
+    private int id;
+    private String token;
 
     public SearchBookResultAdapter(ArrayList<BookInfo> resultList, Context mContext) {
         this.resultList = resultList;
@@ -54,7 +61,8 @@ public class SearchBookResultAdapter extends BaseAdapter {
         if(book!=null){
             viewHolder.authorName.setText(book.getAuthorName());
             viewHolder.bookName.setText(book.getBookName());
-            Glide.with(mContext).load(book.getBookImgUrl()).into(viewHolder.bookImg);;
+            ImageUtil.loadImage(book.getBookImgUrl(),mContext,viewHolder.bookImg);
+
         }
         return convertView;
     }

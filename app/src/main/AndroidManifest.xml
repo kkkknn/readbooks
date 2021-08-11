@@ -12,11 +12,14 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
         <activity android:name=".view.activities.SettingActivity"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoTitle_FullScreen"/>
         <activity
             android:name=".view.activities.RegisterActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor" />
         <activity
+            android:launchMode="singleInstance"
             android:name=".view.activities.LoginActivity"
             android:screenOrientation="fullSensor">
 
@@ -24,18 +27,22 @@
 
         <activity
             android:name=".view.activities.SearchActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoTitle_FullScreen" />
         <activity
             android:name=".view.activities.BookBrowsingActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoTitle_FullScreen" />
         <activity
             android:name=".view.activities.BookInfoActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoTitle_FullScreen" />
         <activity
             android:name=".view.activities.MainActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoTitle_FullScreen">
             <intent-filter>

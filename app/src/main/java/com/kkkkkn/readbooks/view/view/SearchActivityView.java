@@ -5,6 +5,6 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 import java.util.ArrayList;
 
 public interface SearchActivityView {
-    void toBrowsingActivity(BookInfo bookInfo);
     void syncBookList(ArrayList<BookInfo> arrayList);
+    void toLoginActivity();
 }

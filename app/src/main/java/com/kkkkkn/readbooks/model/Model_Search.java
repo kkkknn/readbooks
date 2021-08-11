@@ -75,7 +75,17 @@ public class Model_Search extends BaseModel  {
                         JSONArray jsonArray=new JSONArray(data);
                         ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
                         for (int j = 0; j < jsonArray.length(); j++) {
-                            arrayList.add((BookInfo) jsonArray.get(j));
+                            BookInfo bookInfo=new BookInfo();
+                            JSONObject jsonObject1= (JSONObject) jsonArray.get(j);
+                            bookInfo.setAuthorName(jsonObject1.getString("author_name"));
+                            bookInfo.setBookAbout(jsonObject1.getString("book_about"));
+                            bookInfo.setChapterSum(jsonObject1.getInt("book_chapter_sum"));
+                            bookInfo.setBookId(jsonObject1.getInt("book_id"));
+                            bookInfo.setBookImgUrl(jsonObject1.getString("book_img_url"));
+                            bookInfo.setBookName(jsonObject1.getString("book_name"));
+                            bookInfo.setBookUrl(jsonObject1.getString("book_url"));
+                            bookInfo.setSourceName(jsonObject1.getString("source_name"));
+                            arrayList.add(bookInfo);
                         }
                         getCallBack().onSuccess(1,arrayList);
                         return;

@@ -33,6 +33,11 @@ public enum EventMessage {
     //搜索成功
     SEARCH_BOOK_SUCCESS,
 
+    //获取章节列表
+    GET_BOOK_CHAPTER_LIST,
+    GET_BOOK_CHAPTER_LIST_SUCCESS,
+    GET_BOOK_CHAPTER_LIST_ERROR,
+
     //收藏图书
     ADD_BOOK,
     //收藏成功

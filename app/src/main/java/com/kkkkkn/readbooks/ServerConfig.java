@@ -15,6 +15,7 @@ public class ServerConfig {
     public final static String getChapterList="/book/getChapterList";
     public final static String getBookInfo="/book/getBookInfo";
     public final static String searchBook="/book/searchBook";
+    public final static String downloadBookImage="/book/downloadBookImage";
 
     //APP模块
     public final static String getVersionInfo="/app/getVersionInfo";

@@ -21,6 +21,9 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtil;
 import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.model.scrap.sqlite.SqlBookUtil;
+import com.kkkkkn.readbooks.presenter.Presenter_Info;
+import com.kkkkkn.readbooks.presenter.Presenter_Login;
+import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +32,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class BookInfoActivity extends BaseActivity {
+public class BookInfoActivity extends BaseActivity implements BookInfoActivityView {
     private final static String TAG="BookInfoActivity";
     private TextView book_name,author_name,book_about;
     private ImageView book_img;
@@ -77,12 +80,16 @@ public class BookInfoActivity extends BaseActivity {
         }
     });
 
+    private Presenter_Info presenter_info;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_info);
 
         initView();
+
+        presenter_info=new Presenter_Info(getApplicationContext(),this);
+        presenter_info.init();
 
         //查找图书信息是否存在
         Intent intent=getIntent();
@@ -187,6 +194,11 @@ public class BookInfoActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void syncChapterList() {
+
     }
 
     //获取图书信息
