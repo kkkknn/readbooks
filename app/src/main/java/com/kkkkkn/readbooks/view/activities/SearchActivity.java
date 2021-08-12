@@ -5,9 +5,14 @@ import androidx.appcompat.widget.SearchView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
@@ -26,8 +31,12 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
     private final static String TAG="SearchActivity";
     private SearchView searchView;
     private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
-    private SearchBookResultAdapter adapter;
     private Presenter_Search presenter_search;
+    private String searchStr;
+    private boolean isEnd=false;
+    private ProgressBar loading;
+    private ListView listView;
+    private TextView nothing_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +45,21 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
 
         presenter_search=new Presenter_Search(getApplicationContext(),this);
         presenter_search.init();
+        initView();
+
+
+    }
+
+    private void initView(){
         //listview相关初始化
-        adapter=new SearchBookResultAdapter(arrayList,this);
-        ListView listView=findViewById(R.id.search_listView);
+        SearchBookResultAdapter adapter=new SearchBookResultAdapter(arrayList,this);
+        listView=findViewById(R.id.search_listView);
+        View footView;
+        LayoutInflater inflater = LayoutInflater.from(this);
+        footView = inflater.inflate(R.layout.loading_layout, null);
+        loading = footView.findViewById(R.id.loading_view);
+        nothing_tv = footView.findViewById(R.id.nothing_view);
+        listView.addFooterView(footView);//添加底部加载框，在setAdapter之前add
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -46,14 +67,47 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
                 toBrowsingActivity(arrayList.get(position));
             }
         });
+        //滑动到底部监听
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                if (i == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    // 判断是否滚动到底部
+                    if (absListView.getLastVisiblePosition() == absListView.getCount() - 1) {
+                        //是否还有未加载的数据
+                        if(isEnd){
+                            //listview 展示没有更多标签
+                            nothing_tv.setVisibility(View.VISIBLE);
+                        }else {
+                            //显示加载框
+                            nothing_tv.setVisibility(View.GONE);
+                            loading.setVisibility(View.VISIBLE);
+                            //加载更多功能的代码
+                            presenter_search.searchBook(arrayList.size(),searchStr);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+            }
+
+        } );
         searchView=findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //请求字符串不为空，开始进行网络请求
                 if(!query.isEmpty()){
+                    isEnd=false;
+                    //清空当前列表
+                    arrayList.clear();
+                    ((SearchBookResultAdapter)((HeaderViewListAdapter)listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
                     //请求搜索
-                    presenter_search.searchBook(query);
+                    searchStr=query;
+                    presenter_search.searchBook(arrayList.size(),searchStr);
                     //防止抬起落下都触发此事件
                     searchView.setIconified(true);
                 }
@@ -62,29 +116,12 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                System.out.println("文字改变"+newText);
                 return false;
             }
         });
         searchView.setIconifiedByDefault(false);
-
     }
 
-    public void eventCallBack(MessageEvent event){
-        switch (event.message){
-            case SYNC_SEARCH_RESULT:
-                arrayList.clear();
-                if(event.value instanceof ArrayList<?>){
-                    ArrayList<?> list=(ArrayList<?>) event.value;
-                    for (Object o:list) {
-                        arrayList.add((BookInfo) o);
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-                Log.i(TAG, "eventCallBack: sssssssssssssss   "+arrayList.size());
-                break;
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -105,9 +142,13 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
             @Override
             public void run() {
                 if (arrayList != null) {
-                    arrayList.clear();
+                    if(list.size()<presenter_search.getPageSize()){
+                        isEnd=true;
+                    }
+                    loading.setVisibility(View.GONE);
                     arrayList.addAll(list);
-                    adapter.notifyDataSetChanged();
+                    ((SearchBookResultAdapter)((HeaderViewListAdapter)listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
+
                 }
             }
         });

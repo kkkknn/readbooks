@@ -45,6 +45,8 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
     private Button btnStartRead,btnAddEnjoy;
     private int countPage=0;
     private int pageSum=0;
+    private boolean isEnd=false;
+
     private Handler mHandler=new Handler(Looper.getMainLooper(),new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {

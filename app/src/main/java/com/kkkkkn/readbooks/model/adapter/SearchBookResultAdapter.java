@@ -22,8 +22,6 @@ public class SearchBookResultAdapter extends BaseAdapter {
     private ArrayList<BookInfo> resultList;
     private Context mContext;
     private LayoutInflater mInflater;
-    private int id;
-    private String token;
 
     public SearchBookResultAdapter(ArrayList<BookInfo> resultList, Context mContext) {
         this.resultList = resultList;

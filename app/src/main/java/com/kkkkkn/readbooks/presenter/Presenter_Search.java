@@ -27,6 +27,7 @@ import java.util.ArrayList;
 public class Presenter_Search extends BasePresenter implements BaseModel.CallBack {
     private SearchActivityView searchActivityView;
     private Model_Search model_search;
+    private final static int PAGE_SIZE=20;
     public Presenter_Search(Context context, SearchActivityView view) {
         super(context,new Model_Search());
         this.searchActivityView=view;
@@ -37,19 +38,17 @@ public class Presenter_Search extends BasePresenter implements BaseModel.CallBac
 
 
     //根据关键字/作者搜索图书，添加到list中并展示  eventbus 发送
-    public void searchBook(String str){
-        Log.i("asdasd", "searchBook: 开始搜索" +str );
+    public void searchBook(int size,String str){
         if (str==null||str.isEmpty()){
             return;
         }
-        //todo 搜索加载设置
         SearchInfo info=new SearchInfo();
         AccountInfo accountInfo=getAccountCache();
         info.setAccount_id(accountInfo.getAccount_id());
         info.setToken(accountInfo.getAccount_token());
         info.setKey_word(str);
-        info.setPage_count(1);
-        info.setPage_size(20);
+        info.setPage_count((size/PAGE_SIZE)+1);
+        info.setPage_size(PAGE_SIZE);
         EventBus.getDefault().post(new MessageEvent(EventMessage.SEARCH_BOOK,info));
 
     }
@@ -82,5 +81,9 @@ public class Presenter_Search extends BasePresenter implements BaseModel.CallBac
             default:
                 break;
         }
+    }
+
+    public int getPageSize() {
+        return PAGE_SIZE;
     }
 }

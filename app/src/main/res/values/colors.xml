@@ -10,6 +10,7 @@
     <color name="colorRed">#EF0000</color>
 
 
+    <color name="loading_color">#B3A3B4B5</color>
 
     <color name="tab_checked">#D3673C</color>
     <color name="tab_unchecked">#757575</color>
