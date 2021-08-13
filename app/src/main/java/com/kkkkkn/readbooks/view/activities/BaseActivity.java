@@ -23,6 +23,7 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.presenter.BasePresenter;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.view.customView.CustomToast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -112,6 +113,8 @@ public class BaseActivity extends AppCompatActivity {
             logRun=false;
         }
     }
+
+
 
 
 

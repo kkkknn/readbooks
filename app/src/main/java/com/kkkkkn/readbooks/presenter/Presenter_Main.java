@@ -35,8 +35,8 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
     public Presenter_Main(Context context, MainActivityView view) {
         super(context,new Model_Main());
         this.mainActivityView =view;
-        model_main=(Model_Main) getBaseModel();
-        model_main.setCallback(this);
+        this.model_main=(Model_Main) getBaseModel();
+        this.model_main.setCallback(this);
     }
 
     /**

@@ -24,8 +24,6 @@ public class BookInfo  implements Serializable {
     private String bookImgUrl;
     private String newChapterName;
     private boolean enjoy;
-    private int bookFromType;
-    private String chapterPagesUrlStr;
     private int pageSum;
     private int chapterSum;
     private String sourceName;
@@ -42,16 +40,6 @@ public class BookInfo  implements Serializable {
         this.pageSum = pageSum;
     }
 
-
-    public String getChapterPagesUrlStr() {
-        return chapterPagesUrlStr;
-    }
-
-    public void setChapterPagesUrlStr(String chapterPageUrlStr) {
-        this.chapterPagesUrlStr = chapterPageUrlStr;
-    }
-
-
     public int getBookId() {
         return bookId;
     }
@@ -63,14 +51,6 @@ public class BookInfo  implements Serializable {
 
     public void setEnjoy(boolean enjoy) {
         this.enjoy = enjoy;
-    }
-
-    public int getBookFromType() {
-        return bookFromType;
-    }
-
-    public void setBookFromType(int bookFromType) {
-        this.bookFromType = bookFromType;
     }
 
     public String getNewChapterName() {

@@ -21,8 +21,8 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
     public Presenter_Login(Context context, LoginActivityView loginActivityView) {
         super(context,new Model_Login());
         this.loginActivityView = loginActivityView;
-        model_login=(Model_Login)getBaseModel();
-        model_login.setCallback(this);
+        this.model_login=(Model_Login)getBaseModel();
+        this.model_login.setCallback(this);
     }
 
     /**

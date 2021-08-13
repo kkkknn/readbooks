@@ -6,8 +6,6 @@ import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.SearchInfo;
 import com.kkkkkn.readbooks.model.network.HttpUtil;
-import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtil;
-import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 

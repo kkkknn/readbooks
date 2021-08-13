@@ -13,6 +13,7 @@ import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
@@ -20,6 +21,7 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Login;
 import com.kkkkkn.readbooks.presenter.Presenter_Search;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.SearchActivityView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -126,6 +128,7 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        arrayList.clear();
         presenter_search.release();
     }
 
@@ -158,5 +161,19 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
     public void toLoginActivity() {
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 
+    }
+
+    @Override
+    public void showMsgDialog(final int type,final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(type>0){
+                    CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
+                }else {
+                    CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
+                }
+            }
+        });
     }
 }

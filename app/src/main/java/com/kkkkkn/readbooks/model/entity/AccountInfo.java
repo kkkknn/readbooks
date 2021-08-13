@@ -1,5 +1,7 @@
 package com.kkkkkn.readbooks.model.entity;
 
+import com.kkkkkn.readbooks.util.StringUtil;
+
 public class AccountInfo {
     private int account_id;
     private String account_name;
@@ -36,6 +38,10 @@ public class AccountInfo {
 
     public void setAccount_token(String account_token) {
         this.account_token = account_token;
+    }
+
+    public boolean isHasToken(){
+        return account_id>0 && !StringUtil.isEmpty(account_token);
     }
 
 }

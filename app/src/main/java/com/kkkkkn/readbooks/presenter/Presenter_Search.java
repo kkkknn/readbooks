@@ -10,8 +10,6 @@ import com.kkkkkn.readbooks.model.Model_Search;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.SearchInfo;
-import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtil;
-import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtilImp;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.view.SearchActivityView;
@@ -31,8 +29,8 @@ public class Presenter_Search extends BasePresenter implements BaseModel.CallBac
     public Presenter_Search(Context context, SearchActivityView view) {
         super(context,new Model_Search());
         this.searchActivityView=view;
-        model_search=(Model_Search) getBaseModel();
-        model_search.setCallback(this);
+        this.model_search=(Model_Search) getBaseModel();
+        this.model_search.setCallback(this);
     }
 
 

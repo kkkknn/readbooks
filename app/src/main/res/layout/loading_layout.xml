@@ -8,7 +8,7 @@
         android:id="@+id/loading_view"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="match_parent"
-        android:layout_height="40dp"/>
+        android:layout_height="20dp"/>
 
     <TextView
         android:visibility="gone"
@@ -16,7 +16,7 @@
         android:id="@+id/nothing_view"
         android:gravity="center"
         android:textSize="12sp"
-        android:paddingVertical="20dp"
+        android:paddingVertical="10dp"
         android:textColor="@color/colorWhite"
         android:background="@color/loading_color"
         android:layout_width="match_parent"

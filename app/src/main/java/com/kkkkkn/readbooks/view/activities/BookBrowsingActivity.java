@@ -23,8 +23,6 @@ import android.widget.TextView;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.scrap.jsoup.JsoupUtilImp;
-import com.kkkkkn.readbooks.model.scrap.sqlite.SqlBookUtil;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
 
@@ -236,7 +234,7 @@ public class BookBrowsingActivity extends BaseActivity {
         //获取图书的当前页章节名及链接并添加chapterList
         String thisPageUrl = getPageUrl(bookInfo, page);
         //开启线程，获取当前页章节列表
-        JsoupUtilImp util = JsoupUtilImp.getInstance().setSource(bookInfo.getBookFromType());
+       /* JsoupUtilImp util = JsoupUtilImp.getInstance().setSource(bookInfo.getBookFromType());
         try {
             String value = util.getBookChapterList(thisPageUrl);
             JSONArray jsonArray = (JSONArray) new JSONObject(value).get("chapters");
@@ -268,7 +266,7 @@ public class BookBrowsingActivity extends BaseActivity {
                 //browsingVIew.setChapterNameStr(chapterList.get(chapterFlag)[0]);
                 //browsingVIew.setProgressStr(chapterFlag +"/"+chapterList.size());
             }
-        }
+        }*/
     }
 
     //获取章节文字的网络线程内部类
@@ -284,7 +282,7 @@ public class BookBrowsingActivity extends BaseActivity {
         @Override
         public void run() {
             //利用handle 通知显示加载框
-            mHandler.sendEmptyMessage(11);
+            /*mHandler.sendEmptyMessage(11);
             //获取当前点击章节文字
             JsoupUtilImp util = JsoupUtilImp.getInstance().setSource(type);
             try {
@@ -306,7 +304,7 @@ public class BookBrowsingActivity extends BaseActivity {
             } finally {
                 //取消显示加载框
                 mHandler.sendEmptyMessage(12);
-            }
+            }*/
         }
     }
 
@@ -324,14 +322,14 @@ public class BookBrowsingActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         //写入浏览进度到数据库
-        SqlBookUtil sqlBookUtil= SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
+        /*SqlBookUtil sqlBookUtil= SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
 
         boolean flag=sqlBookUtil.setReadProgress(pageFlag,chapterFlag,browsingVIew.getlineFlag(),bookInfo.getBookId());
         if(flag){
             Log.i(TAG, "onStop: 写入成功");
         }else{
             Log.i(TAG, "onStop: 写入失败");
-        }
+        }*/
     }
 
     public interface BookCallback {
@@ -345,12 +343,13 @@ public class BookBrowsingActivity extends BaseActivity {
 
     //获取当前页章节链接
     private String getPageUrl(BookInfo bookInfo, int count) {
-        if (bookInfo == null || bookInfo.getChapterPagesUrlStr().isEmpty()) {
+        /*if (bookInfo == null || bookInfo.getChapterPagesUrlStr().isEmpty()) {
             return null;
         }
         String str = bookInfo.getChapterPagesUrlStr();
         String[] values = str.substring(1, str.length() - 1).split(", ");
-        return values[count];
+        return values[count];*/
+        return null;
     }
 
 

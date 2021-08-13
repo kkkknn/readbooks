@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 import com.kkkkkn.readbooks.R;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends BaseActivity {
 
 
     @Override

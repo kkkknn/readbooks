@@ -1,7 +1,6 @@
 package com.kkkkkn.readbooks.view.view;
 
-public interface LoginActivityView {
-    void showMsgDialog(int type,String msg);
+public interface LoginActivityView  extends BaseView {
     void toRegisterActivity();
     void toMainActivity();
     void flushEditView();

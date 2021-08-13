@@ -31,7 +31,6 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
-import com.kkkkkn.readbooks.model.scrap.sqlite.SqlBookUtil;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -118,7 +117,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     //跳转到阅读页面
     private void jump2ReadView(BookInfo info){
         //根据图书ID确定当前读书进度
-        SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
+       /* SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
         String str=sqlBookUtil.getReadProgress(info.getBookId());
         int pageCount=0;
         int chapterCount=0;
@@ -144,7 +143,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
         } catch ( JSONException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     //监听返回键，连续按2次直接退出程序
@@ -371,5 +370,10 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     protected void onDestroy() {
         super.onDestroy();
         presenter_main.release();
+    }
+
+    @Override
+    public void showMsgDialog(int type, String msg) {
+
     }
 }

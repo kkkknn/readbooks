@@ -19,8 +19,8 @@ public class Presenter_Register extends BasePresenter implements BaseModel.CallB
     public Presenter_Register(Context context, RegisterActivityView view) {
         super(context,new Model_Register());
         this.registerActivityView =view;
-        model_register=(Model_Register) getBaseModel();
-        model_register.setCallback(this);
+        this.model_register=(Model_Register) getBaseModel();
+        this.model_register.setCallback(this);
     }
 
     /**

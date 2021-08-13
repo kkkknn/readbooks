@@ -8,16 +8,17 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.view.viewHolder.BookChaptersAdapter_ViewHolder;
 
 import java.util.ArrayList;
 
 public class BookChaptersAdapter extends BaseAdapter {
-    private ArrayList<String[]> chapterList;
+    private ArrayList<ChapterInfo> chapterList;
     private Context mContext;
     private LayoutInflater mInflater;
 
-    public BookChaptersAdapter(ArrayList<String[]> chapterList, Context mContext) {
+    public BookChaptersAdapter(ArrayList<ChapterInfo> chapterList, Context mContext) {
         this.chapterList = chapterList;
         this.mContext = mContext;
         this.mInflater = LayoutInflater.from(mContext);
@@ -50,9 +51,9 @@ public class BookChaptersAdapter extends BaseAdapter {
 
         }
 
-        String[] strings=chapterList.get(position);
-        if(strings!=null){
-            viewHolder.chapterName.setText(strings[0]);
+        ChapterInfo chapterInfo=chapterList.get(position);
+        if(chapterInfo!=null){
+            viewHolder.chapterName.setText(chapterInfo.getChapter_name());
         }
 
         return convertView;
