@@ -33,7 +33,16 @@ public class Presenter_Info extends BasePresenter implements BaseModel.CallBack 
         this.model_bookInfo.setCallback(this);
     }
 
+    //添加到用户收藏列表
+    public void addBookShelf(int book_id){
+        AccountInfo accountInfo=getAccountCache();
+        if(!accountInfo.isHasToken()){
+            onError(-2,"用户信息错误");
+            return;
+        }
+        //todo 添加到用户收藏
 
+    }
 
     //读取图书信息，返回相关对象，然后进行展示 eventbus 返回
     public void getBookChapters(int size,int bookid){

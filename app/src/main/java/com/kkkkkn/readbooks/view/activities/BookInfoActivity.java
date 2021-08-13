@@ -30,9 +30,6 @@ import com.kkkkkn.readbooks.util.ImageUtil;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,7 +113,7 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
         btnAddEnjoy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bookInfo.setEnjoy(true);
+
                 /*SqlBookUtil util=SqlBookUtil.getInstance(getApplicationContext());
                 util.initDataBase();
                 if(util.addEnjoyBook(bookInfo)){
