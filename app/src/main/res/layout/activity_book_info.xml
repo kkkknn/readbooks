@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/browsingview"
     tools:context=".view.activities.BookInfoActivity">
 
     <LinearLayout
@@ -15,6 +14,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/img_background"
             android:paddingVertical="40dp"
             android:orientation="horizontal"
             android:gravity="center"
@@ -84,6 +84,7 @@
 
         <TextView
             android:id="@+id/bookInfo_bookAbout"
+            android:layout_marginVertical="20dp"
             android:textSize="16sp"
             android:textAlignment="textStart"
             android:textColor="@color/colorBlack"

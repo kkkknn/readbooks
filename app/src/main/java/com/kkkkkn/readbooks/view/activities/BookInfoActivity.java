@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -98,14 +99,7 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
             @Override
             public void onClick(View view) {
                 showMsgDialog(11,"开始阅读");
-                /*Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putSerializable("bookInfo",bookInfo);
-                bundle.putInt("pageFlag",0);
-                bundle.putInt("chapterFlag",0);
-                bundle.putInt("lineFlag",0);
-                intent.putExtras(bundle);
-                startActivity(intent);*/
+                
             }
         });
 
@@ -113,14 +107,7 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
         btnAddEnjoy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                /*SqlBookUtil util=SqlBookUtil.getInstance(getApplicationContext());
-                util.initDataBase();
-                if(util.addEnjoyBook(bookInfo)){
-                    //showToast(getApplicationContext(),"加入书架成功");
-                }else {
-                    //showToast(getApplicationContext(),"加入书架失败");
-                }*/
+                presenter_info.addBookShelf(bookInfo.getBookId());
             }
         });
 

@@ -9,7 +9,6 @@ import com.kkkkkn.readbooks.model.Model_Main;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
-import com.kkkkkn.readbooks.model.entity.GetChapterInfo;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
@@ -17,6 +16,8 @@ import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
 import com.kkkkkn.readbooks.view.view.LoginActivityView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,8 +41,16 @@ public class Presenter_Info extends BasePresenter implements BaseModel.CallBack 
             onError(-2,"用户信息错误");
             return;
         }
-        //todo 添加到用户收藏
-
+        //添加到用户收藏 json 字符串
+        JSONObject jsonObject=new JSONObject();
+        try {
+            jsonObject.put("account_id",accountInfo.getAccount_id());
+            jsonObject.put("token",accountInfo.getAccount_token());
+            jsonObject.put("book_id",book_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        EventBus.getDefault().post(new MessageEvent(EventMessage.ADD_BOOK,jsonObject));
     }
 
     //读取图书信息，返回相关对象，然后进行展示 eventbus 返回
@@ -57,15 +66,17 @@ public class Presenter_Info extends BasePresenter implements BaseModel.CallBack 
             onError(-2,"用户信息错误");
             return;
         }
-
-        GetChapterInfo getChapterInfo=new GetChapterInfo();
-        getChapterInfo.setBook_id(bookid);
-        getChapterInfo.setToken(accountInfo.getAccount_token());
-        getChapterInfo.setAccount_id(accountInfo.getAccount_id());
-        getChapterInfo.setPage_size(PAGE_SIZE);
-        getChapterInfo.setPage_count((size/PAGE_SIZE)+1);
-
-        EventBus.getDefault().post(new MessageEvent(EventMessage.GET_BOOK_CHAPTER_LIST,getChapterInfo));
+        JSONObject jsonObject=new JSONObject();
+        try {
+            jsonObject.put("account_id",accountInfo.getAccount_id());
+            jsonObject.put("token",accountInfo.getAccount_token());
+            jsonObject.put("book_id",bookid);
+            jsonObject.put("page_size",PAGE_SIZE);
+            jsonObject.put("page_count",(size/PAGE_SIZE)+1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        EventBus.getDefault().post(new MessageEvent(EventMessage.GET_BOOK_CHAPTER_LIST,jsonObject));
 
     }
 
