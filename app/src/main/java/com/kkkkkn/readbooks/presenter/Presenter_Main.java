@@ -122,7 +122,7 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
     public void onSuccess(int type, Object object) {
         switch (type){
             case 1:
-                mainActivityView.updateBookShelf((ArrayList<BookInfo>) object);
+                mainActivityView.syncBookShelf((ArrayList<BookInfo>) object);
                 break;
             default:
                 break;

@@ -44,10 +44,11 @@ public class Model_BookInfo extends BaseModel {
     private void addEnjoyBook(JSONObject jsonObject){
         FormBody.Builder formBody = new FormBody.Builder();
         try {
-            formBody.add("bookId", Integer.toString(jsonObject.getInt("book_id")));
+            formBody.add("book_id", Integer.toString(jsonObject.getInt("book_id")));
+            formBody.add("account_id", Integer.toString(jsonObject.getInt("account_id")));
 
             Request request = new Request.Builder()
-                    .url(ServerConfig.IP+ServerConfig.getChapterList)
+                    .url(ServerConfig.IP+ServerConfig.addFavoriteBook)
                     .addHeader("accountId",Integer.toString(jsonObject.getInt("account_id")))
                     .addHeader("token",jsonObject.getString("token"))
                     .post(formBody.build())//传递请求体
@@ -62,16 +63,9 @@ public class Model_BookInfo extends BaseModel {
                         String ret_code=ret_json.getString("code");
                         String ret_data=ret_json.getString("data");
                         if(ret_code.equals("success")){
-                            //解析返回值
-                            JSONArray jsonArray=new JSONArray(ret_data);
-                            ArrayList<ChapterInfo> arrayList=new ArrayList<>();
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                ChapterInfo chapterInfo=new ChapterInfo(jsonArray.get(i));
-                                arrayList.add(chapterInfo);
-                            }
-                            getCallBack().onSuccess(1,arrayList);
+                            getCallBack().onSuccess(1002,"收藏成功");
                         }else if(ret_code.equals("error")){
-                            getCallBack().onError(-1,ret_data);
+                            getCallBack().onError(-1002,ret_data);
                         }else{
                             getCallBack().onError(-1,"请求失败");
                         }
@@ -122,9 +116,9 @@ public class Model_BookInfo extends BaseModel {
                                 ChapterInfo chapterInfo=new ChapterInfo(jsonArray.get(i));
                                 arrayList.add(chapterInfo);
                             }
-                            getCallBack().onSuccess(1,arrayList);
+                            getCallBack().onSuccess(1001,arrayList);
                         }else if(ret_code.equals("error")){
-                            getCallBack().onError(-1,ret_data);
+                            getCallBack().onError(-1001,ret_data);
                         }else{
                             getCallBack().onError(-1,"请求失败");
                         }

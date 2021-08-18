@@ -140,7 +140,7 @@ public class BookBrowsingActivity extends BaseActivity {
                     Log.i(TAG, "jump2nextChapter: chapterFlag：" + chapterFlag);
                     //显示遮罩层
 
-                } else if (pageFlag < bookInfo.getPageSum()) {
+                }/*if (pageFlag < bookInfo.getPageSum()) {
                     //弹窗或者提示阅读已经完成
                     //查看是否还有下一页面，并重置相关数据
                     new Thread() {
@@ -149,7 +149,7 @@ public class BookBrowsingActivity extends BaseActivity {
                             resetChapterData(++pageFlag, 2);
                         }
                     }.start();
-                }
+                }*/
             }
 
             @Override

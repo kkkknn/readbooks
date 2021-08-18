@@ -1,6 +1,9 @@
 package com.kkkkkn.readbooks.model.entity;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -23,22 +26,9 @@ public class BookInfo  implements Serializable {
     private String bookAbout;
     private String bookImgUrl;
     private String newChapterName;
-    private boolean enjoy;
-    private int pageSum;
     private int chapterSum;
     private String sourceName;
 
-    public boolean isEnjoy() {
-        return enjoy;
-    }
-
-    public int getPageSum() {
-        return pageSum;
-    }
-
-    public void setPageSum(int pageSum) {
-        this.pageSum = pageSum;
-    }
 
     public int getBookId() {
         return bookId;
@@ -48,10 +38,6 @@ public class BookInfo  implements Serializable {
         this.bookId = bookId;
     }
 
-
-    public void setEnjoy(boolean enjoy) {
-        this.enjoy = enjoy;
-    }
 
     public String getNewChapterName() {
         return newChapterName;
@@ -135,4 +121,22 @@ public class BookInfo  implements Serializable {
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
     }
+
+    public static BookInfo changeObject(JSONObject object){
+        BookInfo bookInfo=new BookInfo();
+        try {
+            bookInfo.authorName=object.getString("author_name");
+            bookInfo.chapterSum=object.getInt("book_chapter_sum");
+            bookInfo.bookAbout=object.getString("book_about");
+            bookInfo.bookId=object.getInt("book_id");
+            bookInfo.bookImgUrl=object.getString("book_img_url");
+            bookInfo.bookName=object.getString("book_name");
+            bookInfo.bookUrl=object.getString("book_url");
+            bookInfo.sourceName=object.getString("source_name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return bookInfo;
+    }
+
 }

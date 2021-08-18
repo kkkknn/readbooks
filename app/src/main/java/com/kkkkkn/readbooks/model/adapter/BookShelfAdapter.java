@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
+import com.kkkkkn.readbooks.util.ImageUtil;
 import com.kkkkkn.readbooks.view.viewHolder.BookChaptersAdapter_ViewHolder;
 import com.kkkkkn.readbooks.view.viewHolder.BookShelfAdapter_ViewHolder;
 
@@ -51,21 +52,24 @@ public class BookShelfAdapter extends BaseAdapter {
         BookShelfAdapter_ViewHolder bookShelfAdapter_viewHolder=null;
 
         if(convertView==null){
-            convertView=mInflater.inflate(R.layout.activity_book_info_chapter_item,parent,false);
+            convertView=mInflater.inflate(R.layout.activity_main_item,parent,false);
             bookShelfAdapter_viewHolder=new BookShelfAdapter_ViewHolder(convertView);
             convertView.setTag(bookShelfAdapter_viewHolder);
         }else {
             bookShelfAdapter_viewHolder=(BookShelfAdapter_ViewHolder) convertView.getTag();
         }
         BookInfo bookInfo=mArrayList.get(position);
-
         if(bookInfo!=null){
-            bookShelfAdapter_viewHolder.bookName.setText(bookInfo.getBookName());
             String url=bookInfo.getBookImgUrl();
-            if(url!=null&&!url.isEmpty()){
-                Glide.with(mContext).load(url).into(bookShelfAdapter_viewHolder.bookImg);
+            String name=bookInfo.getBookName();
+            if(name!=null&&!name.isEmpty()){
+                bookShelfAdapter_viewHolder.bookName.setText(bookInfo.getBookName());
             }
-            bookShelfAdapter_viewHolder.updateView.setVisibility(bookInfo.isEnjoy()?View.VISIBLE:View.GONE);
+            if(url!=null&&!url.isEmpty()){
+                ImageUtil.loadImage(url,mContext,bookShelfAdapter_viewHolder.bookImg);
+                //Glide.with(mContext).load(url).into(bookShelfAdapter_viewHolder.bookImg);
+            }
+            //bookShelfAdapter_viewHolder.updateView.setVisibility(bookInfo.isEnjoy()?View.VISIBLE:View.GONE);
         }
 
 

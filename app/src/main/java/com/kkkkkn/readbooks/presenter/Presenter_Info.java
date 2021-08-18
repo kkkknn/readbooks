@@ -83,8 +83,11 @@ public class Presenter_Info extends BasePresenter implements BaseModel.CallBack 
     @Override
     public void onSuccess(int type, Object object) {
         switch (type){
-            case 1:
+            case 1001:
                 bookInfoActivityView.syncChapterList((ArrayList<ChapterInfo>) object);
+                break;
+            case 1002:
+                bookInfoActivityView.showMsgDialog(type,(String) object);
                 break;
             default:
                 break;
@@ -94,7 +97,10 @@ public class Presenter_Info extends BasePresenter implements BaseModel.CallBack 
     @Override
     public void onError(int type, Object object) {
         switch (type){
-            case -1:
+            case -1001:
+                bookInfoActivityView.showMsgDialog(type,(String) object);
+                break;
+            case -1002:
                 bookInfoActivityView.showMsgDialog(type,(String) object);
                 break;
             case -2:

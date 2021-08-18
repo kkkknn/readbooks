@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.HeaderViewListAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -26,6 +27,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.BookShelfAdapter;
+import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
@@ -51,9 +53,11 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private String ApkDirPath="";
     private String ApkName="";
     private NotificationManager mNotifyManager;
+    private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
     private Notification.Builder mBuilder=null;
-    private GridView mGridView;
     private Presenter_Main presenter_main;
+    private BookShelfAdapter mAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,26 +74,35 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         presenter_main.getBookShelfList();
         //todo 检查APK更新
 
-       /* Presenter_Main.getInstance().getBookShelfList(getApplicationContext());
-
-        new Thread(){
-            @Override
-            public void run() {
-                Presenter_Main.getInstance().checkUpdate(getApplicationContext());
-            }
-        }.start();*/
     }
     private void initView(){
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        GridView mGridView;
         mGridView=findViewById(R.id.main_booksGridView);
-        final SwipeRefreshLayout swipeRefreshLayout=findViewById(R.id.main_SwipeRefreshLayout);
+        swipeRefreshLayout=findViewById(R.id.main_SwipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //Presenter_Main.getInstance().getBookShelfList(getApplicationContext());;
-                swipeRefreshLayout.setRefreshing(false);
+                presenter_main.getBookShelfList();
+            }
+        });
+        if(mGridView.getAdapter()==null){
+            mAdapter = new BookShelfAdapter(arrayList,getApplicationContext());
+        }
+
+        mGridView.setAdapter(mAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
+                if(bookInfo!=null){
+                    //跳转到阅读页面
+                    //jump2ReadView(bookInfo);
+                    Toast.makeText(getApplicationContext(),bookInfo.getBookName(),Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
 
@@ -107,44 +120,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         mNotifyManager.notify(1,mBuilder.build());*/
     }
 
-
-    private void syncBookShelf(ArrayList<BookShelfItem> object){
-
-
-    }
-
-
-    //跳转到阅读页面
-    private void jump2ReadView(BookInfo info){
-        //根据图书ID确定当前读书进度
-       /* SqlBookUtil sqlBookUtil=SqlBookUtil.getInstance(getApplicationContext()).initDataBase();
-        String str=sqlBookUtil.getReadProgress(info.getBookId());
-        int pageCount=0;
-        int chapterCount=0;
-        int lineFlag=0;
-        try {
-            if(str!=null){
-                JSONObject jsonObject=new JSONObject(str);
-                pageCount=jsonObject.getInt("chapterPageCount");
-                chapterCount=jsonObject.getInt("chapterCount");
-                lineFlag=jsonObject.getInt("chapterLineCount");
-                Log.i(TAG, "jump2ReadView: pageCount "+pageCount+" || "+chapterCount+" || "+lineFlag);
-            }
-
-            //跳转到阅读页面
-            Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
-            Bundle bundle=new Bundle();
-            bundle.putSerializable("bookInfo",info);
-            bundle.putInt("chapterFlag",chapterCount);
-            bundle.putInt("lineFlag",lineFlag);
-            bundle.putInt("pageFlag",pageCount);
-            intent.putExtras(bundle);
-            startActivity(intent);
-
-        } catch ( JSONException e) {
-            e.printStackTrace();
-        }*/
-    }
 
     //监听返回键，连续按2次直接退出程序
     @Override
@@ -329,21 +304,18 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
 
     @Override
-    public void updateBookShelf(ArrayList<BookInfo> list) {
-         if(list !=null){
-            BookShelfAdapter mAdapter = new BookShelfAdapter(list,getApplicationContext());
-            mGridView.setAdapter(mAdapter);
-            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
-                    if(bookInfo!=null){
-                        jump2ReadView(bookInfo);
-                        Log.i(TAG, "onItemClick: "+bookInfo.getBookId());
-                    }
+    public void syncBookShelf(final ArrayList<BookInfo> list) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (arrayList != null) {
+                    arrayList.clear();
+                    arrayList.addAll(list);
+                    mAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -356,10 +328,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         startActivity(new Intent(getApplicationContext(),SearchActivity.class));
     }
 
-    @Override
-    public void toBrowsingActivity() {
-
-    }
 
     @Override
     public void toLoginActivity() {
@@ -369,6 +337,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        arrayList.clear();
         presenter_main.release();
     }
 

@@ -49,8 +49,9 @@ public class Model_Main extends BaseModel {
         //okhttp post请求网络
         FormBody.Builder formBody = new FormBody.Builder();
         formBody.add("accountId", Integer.toString(id));
-        formBody.add("token",token);
         Request request = new Request.Builder()
+                .addHeader("accountId",Integer.toString(id))
+                .addHeader("token",token)
                 .url(ServerConfig.IP+ServerConfig.getFavoriteBook)
                 .post(formBody.build())//传递请求体
                 .build();
@@ -74,11 +75,16 @@ public class Model_Main extends BaseModel {
                                 JSONArray jsonArray=new JSONArray(data_str);
                                 ArrayList<BookInfo> book_shelf=new ArrayList<>();
                                 for (int j = 0; j < jsonArray.length(); j++) {
-                                    BookInfo bookInfo=(BookInfo) jsonArray.get(j);
-                                    book_shelf.add(bookInfo);
-                                    Log.i("TAG", "onResponse: "+bookInfo.getBookName());
+                                    JSONObject object=(JSONObject) jsonArray.get(j);
+                                    BookInfo bookInfo=BookInfo.changeObject(object);
+                                    if(!bookInfo.isEmpty()){
+
+                                        book_shelf.add(bookInfo);
+                                        Log.i("TAG", "onResponse: "+bookInfo.getBookName());
+                                    }
                                 }
                                 getCallBack().onSuccess(1,book_shelf);
+                                return;
                             }else if(code_str.equals("error")){
                                 getCallBack().onError(-2,data_str);
                                 return;
