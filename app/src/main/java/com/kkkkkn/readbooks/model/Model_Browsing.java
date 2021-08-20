@@ -1,18 +1,26 @@
 package com.kkkkkn.readbooks.model;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
-import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.util.network.HttpUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import okhttp3.Call;
@@ -21,67 +29,20 @@ import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Model_BookInfo extends BaseModel {
-
+public class Model_Browsing extends BaseModel{
 
     @Subscribe
     @Override
     public void syncProgress(MessageEvent event) {
-        JSONObject jsonObject;
         switch (event.message){
             case GET_BOOK_CHAPTER_LIST:
-                jsonObject= (JSONObject) event.value;
-                getChapterList(jsonObject);
-                break;
-            case ADD_BOOK:
-                jsonObject= (JSONObject) event.value;
-                addEnjoyBook(jsonObject);
-                break;
-        }
-    }
-
-    private void addEnjoyBook(JSONObject jsonObject){
-        FormBody.Builder formBody = new FormBody.Builder();
-        try {
-            formBody.add("book_id", Integer.toString(jsonObject.getInt("book_id")));
-            formBody.add("account_id", Integer.toString(jsonObject.getInt("account_id")));
-
-            Request request = new Request.Builder()
-                    .url(ServerConfig.IP+ServerConfig.addFavoriteBook)
-                    .addHeader("accountId",Integer.toString(jsonObject.getInt("account_id")))
-                    .addHeader("token",jsonObject.getString("token"))
-                    .post(formBody.build())//传递请求体
-                    .build();
-
-            HttpUtil.getInstance().post(request, new Callback() {
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    String ret_str=response.body().string();
-                    try {
-                        JSONObject ret_json=new JSONObject(ret_str);
-                        String ret_code=ret_json.getString("code");
-                        String ret_data=ret_json.getString("data");
-                        if(ret_code.equals("success")){
-                            getCallBack().onSuccess(1002,"收藏成功");
-                        }else if(ret_code.equals("error")){
-                            getCallBack().onError(-1002,ret_data);
-                        }else{
-                            getCallBack().onError(-1,"请求失败");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                JSONObject jsonObject=(JSONObject) event.value;
+                if(jsonObject==null){
+                    getCallBack().onError(-1,"参数错误");
+                }else {
+                    getChapterList(jsonObject);
                 }
-
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    getCallBack().onError(-1,"请求失败");
-                }
-            });
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            getCallBack().onError(-1,"解析失败");
+                break;
         }
     }
 
@@ -136,6 +97,84 @@ public class Model_BookInfo extends BaseModel {
             e.printStackTrace();
             getCallBack().onError(-1,"解析失败");
         }
-
     }
+
+    public int getReadProgress(int book_id,Context context) {
+        String str=getProgressString(context);
+        JSONObject jsonObject= null;
+        int flag=0;
+        try {
+            jsonObject = new JSONObject(str);
+            flag=jsonObject.getInt(Integer.toString(book_id));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            flag=-1;
+        }
+        return flag;
+    }
+
+    public boolean setReadProgress(int book_id,int progress,Context context){
+        String str=getProgressString(context);
+        JSONObject jsonObject= null;
+        try {
+            jsonObject = new JSONObject(str);
+            jsonObject.put(Integer.toString(book_id),progress);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return setProgressString(jsonObject.toString(),context);
+    }
+
+    //获取写入的json字符串
+    private String getProgressString(Context context){
+        FileInputStream fileInputStream;
+        BufferedReader reader = null;
+        StringBuilder content = new StringBuilder();
+        try {
+            fileInputStream=context.openFileInput("book_progress");
+            reader = new BufferedReader(new InputStreamReader(fileInputStream));
+            String tmp = "";
+            while((tmp = reader.readLine()) != null){
+                content.append(tmp);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(reader != null){
+                try{
+                    reader.close();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return content.toString();
+    }
+
+    //写入读书进度的json字符串
+    private boolean setProgressString(String str,Context context){
+        boolean flag=false;
+        FileOutputStream fileOutputStream=null;
+        try {
+            fileOutputStream=context.openFileOutput("book_progress",Context.MODE_PRIVATE);
+            fileOutputStream.write(str.getBytes("UTF-8"));
+            fileOutputStream.flush();
+            flag=true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            flag=false;
+        }finally {
+            if(fileOutputStream!=null){
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return flag;
+    }
+
+
 }

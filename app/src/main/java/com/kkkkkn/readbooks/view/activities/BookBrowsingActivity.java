@@ -20,11 +20,15 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
+import com.kkkkkn.readbooks.view.customView.CustomToast;
+import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -33,11 +37,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class BookBrowsingActivity extends BaseActivity {
+public class BookBrowsingActivity extends BaseActivity implements BrowsingActivityView {
     private final static String TAG = "BookBrowsingActivity";
-    private LinkedList<String[]> chapterList = new LinkedList<>();
+    private ArrayList<ChapterInfo> chapterList = new ArrayList<>();
     private int chapterFlag = 0;
     private int lineFlag = 0;
     private int pageFlag = 0;
@@ -135,12 +140,12 @@ public class BookBrowsingActivity extends BaseActivity {
         browsingVIew.setListener(new BookCallback() {
             @Override
             public void jump2nextChapter() {
-                if (chapterFlag < chapterList.size()) {
+               /* if (chapterFlag < chapterList.size()) {
                     new GetContentThread(chapterList.get(++chapterFlag)[1], 1).start();
                     Log.i(TAG, "jump2nextChapter: chapterFlag：" + chapterFlag);
                     //显示遮罩层
 
-                }/*if (pageFlag < bookInfo.getPageSum()) {
+                }*//*if (pageFlag < bookInfo.getPageSum()) {
                     //弹窗或者提示阅读已经完成
                     //查看是否还有下一页面，并重置相关数据
                     new Thread() {
@@ -154,7 +159,7 @@ public class BookBrowsingActivity extends BaseActivity {
 
             @Override
             public void jump2lastChapter() {
-                if (chapterFlag > 0) {
+                /*if (chapterFlag > 0) {
                     new GetContentThread(chapterList.get(--chapterFlag)[1], 2).start();
                     Log.i(TAG, "jump2lastChapter: chapterFlag" + chapterFlag);
                 } else if (pageFlag > 0) {
@@ -165,7 +170,7 @@ public class BookBrowsingActivity extends BaseActivity {
                             resetChapterData(--pageFlag, 1);
                         }
                     }.start();
-                }
+                }*/
 
             }
 
@@ -267,6 +272,31 @@ public class BookBrowsingActivity extends BaseActivity {
                 //browsingVIew.setProgressStr(chapterFlag +"/"+chapterList.size());
             }
         }*/
+    }
+
+    @Override
+    public void showMsgDialog(final int type, final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(type>0){
+                    CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
+                }else {
+                    CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void syncChapterList(ArrayList<ChapterInfo> list) {
+        chapterList.addAll(list);
+    }
+
+    @Override
+    public void toLoginActivity() {
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+
     }
 
     //获取章节文字的网络线程内部类

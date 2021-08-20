@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.SearchInfo;
-import com.kkkkkn.readbooks.model.network.HttpUtil;
+import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
@@ -16,7 +16,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;

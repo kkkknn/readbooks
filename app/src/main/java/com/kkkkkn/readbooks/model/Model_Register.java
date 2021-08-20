@@ -3,7 +3,7 @@ package com.kkkkkn.readbooks.model;
 import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
-import com.kkkkkn.readbooks.model.network.HttpUtil;
+import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;

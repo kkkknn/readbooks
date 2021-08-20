@@ -1,22 +1,15 @@
 package com.kkkkkn.readbooks.model;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
-import com.kkkkkn.readbooks.model.network.HttpUtil;
+import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 

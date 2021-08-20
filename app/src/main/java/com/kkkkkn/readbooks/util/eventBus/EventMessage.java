@@ -2,9 +2,10 @@ package com.kkkkkn.readbooks.util.eventBus;
 
 public enum EventMessage {
 
-    //网络相关
-    NET_ERROR,
-    NET_OK,
+    //获取章节进度
+    GET_BOOK_CHAPTER_FLAG,
+    //写入章节进度
+    SET_BOOK_CHAPTER_FLAG,
 
     //登录相关
     LOGIN,
@@ -23,32 +24,16 @@ public enum EventMessage {
     DOWNLOAD_PROGRESS,
     //下载完成
     DOWNLOAD_SUCCESS,
-    //下载失败
-    DOWNLOAD_ERROR,
-
     //搜索图书
     SEARCH_BOOK,
-    //搜索失败
-    SEARCH_BOOK_ERROR,
-    //搜索成功
-    SEARCH_BOOK_SUCCESS,
 
     //获取章节列表
     GET_BOOK_CHAPTER_LIST,
-    GET_BOOK_CHAPTER_LIST_SUCCESS,
-    GET_BOOK_CHAPTER_LIST_ERROR,
 
     //收藏图书
     ADD_BOOK,
-    //收藏成功
-    ADD_BOOK_SUCCESS,
-    //收藏失败
-    ADD_BOOK_ERROR,
-
 
     //更新搜索结果列表
     SYNC_SEARCH_RESULT,
 
-    //token 非法
-    TOKEN_ERROR;
 }

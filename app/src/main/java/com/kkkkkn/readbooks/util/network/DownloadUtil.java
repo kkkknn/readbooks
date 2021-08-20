@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.model.network;
+package com.kkkkkn.readbooks.util.network;
 
 import android.util.Log;
 

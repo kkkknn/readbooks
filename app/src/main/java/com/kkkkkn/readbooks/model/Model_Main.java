@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.network.HttpUtil;
+import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
@@ -100,5 +100,6 @@ public class Model_Main extends BaseModel {
             }
         });
     }
+
 
 }
