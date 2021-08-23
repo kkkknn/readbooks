@@ -16,8 +16,8 @@ public enum EventMessage {
     SYNC_BOOKSHELF,
     //更新窗口
     SYNC_DIALOG,
-    //检查更新
-    CHECK_VERSION,
+    //获取最新版本信息
+    GET_VERSION,
     //准备下载
     DOWNLOAD_APK,
     //更新进度

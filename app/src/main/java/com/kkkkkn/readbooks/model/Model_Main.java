@@ -31,18 +31,37 @@ public class Model_Main extends BaseModel {
     @Subscribe
     @Override
     public void syncProgress(MessageEvent event) {
+        JSONObject jsonObject=(JSONObject)event.value;
+        int id;
+        String token;
+        try {
+            if(jsonObject.getInt("accountId")==0
+                    ||StringUtil.isEmpty(jsonObject.getString("token"))){
+                getCallBack().onError(-2,"获取登录信息异常");
+                return;
+            }
+            id=jsonObject.getInt("accountId");
+            token=jsonObject.getString("token");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            getCallBack().onError(-2,"获取登录信息异常");
+            return;
+        }
+
         switch (event.message){
             case SYNC_BOOKSHELF:
-                //获取当前登录信息
-                AccountInfo info=(AccountInfo)event.value;
-                if(info==null||info.getAccount_id()<=0||info.getAccount_token().isEmpty()){
-                    getCallBack().onError(-2,"获取登录信息异常");
-                    return;
-                }
                 //获取书架
-                getBookShelf(info.getAccount_id(),info.getAccount_token());
+                getBookShelf(id,token);
+                break;
+            case GET_VERSION:
+                getVersion(id,token);
                 break;
         }
+    }
+
+    private void getVersion(int id, String token){
+        //todo 请求最新版本信息
+
     }
 
     private void getBookShelf(int id,String token){

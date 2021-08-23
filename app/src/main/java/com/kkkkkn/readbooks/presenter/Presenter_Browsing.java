@@ -48,12 +48,12 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
 
     //获取章节内容
     public void getChapterContent(String chapterUrl){
-
+        //todo 获取章节内容
     }
 
     //获取保存的章节进度
     public int getBookProgress(int book_id){
-
+        //TODO  获取保存的章节进度
         return 0;
     }
 

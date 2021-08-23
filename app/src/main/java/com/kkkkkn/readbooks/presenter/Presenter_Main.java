@@ -52,45 +52,57 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
      *
      */
     public void getBookShelfList(){
-        //获取缓存内的用户账户数据
-        AccountInfo info=getAccountCache();
-        //请求图书列表
-        EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_BOOKSHELF,info));
+
+        try {
+            JSONObject jsonObject=new JSONObject();
+            AccountInfo accountInfo=getAccountCache();
+            jsonObject.put("accountId",accountInfo.getAccount_id());
+            jsonObject.put("token",accountInfo.getAccount_token());
+            //请求图书列表
+            EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_BOOKSHELF,jsonObject));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            onError(-1,"获取图书列表失败");
+        }
     }
 
+    /**
+     *获取当前应用版本号
+     * @return 版本号字符串 "1.0.1"
+     */
+    private String getLocalVersion(){
+        PackageManager manager = getContext().getPackageManager();
+        PackageInfo info = null;
+        String version="";
+        try {
+            info = manager.getPackageInfo(getContext().getPackageName(), 0);
+            version = info.versionName;
+            Log.i(TAG, "checkUpdate: "+version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return version;
+    }
 
     /**
      * 获取APP更新信息，通过eventbus发送
      *
      */
     public void checkUpdate(){
-        //获取当前应用版本号
         try {
-            PackageManager manager = getContext().getPackageManager();
-            PackageInfo info = manager.getPackageInfo(getContext().getPackageName(), 0);
-            String version = info.versionName;
-            Log.i(TAG, "checkUpdate: "+version);
-
+            JSONObject jsonObject=new JSONObject();
+            AccountInfo accountInfo=getAccountCache();
+            jsonObject.put("accountId",accountInfo.getAccount_id());
+            jsonObject.put("token",accountInfo.getAccount_token());
             //在线获取最新版本号
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("http://www.kkkkknn.com:8005/version/")
-                    .build();
-            Response response = client.newCall(request).execute();
-            if(response.code()==200){
-                String responseStr= Objects.requireNonNull(response.body()).string();
-                Log.i(TAG, "checkUpdate: "+responseStr);
-                //转换为json对象进行解析
-                JSONObject jsonObject=new JSONObject(responseStr);
-                String versionStr=jsonObject.getString("version");
-                if(!version.equals(versionStr)){
-                    //EventBus.getDefault().postSticky(new MessageEvent(EventMessage.SYNC_DIALOG,jsonObject));
+            EventBus.getDefault().post(new MessageEvent(EventMessage.GET_VERSION,jsonObject));
 
-                }
-            }
-        } catch (IOException | JSONException | PackageManager.NameNotFoundException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
+            onError(-1,"检查更新失败");
         }
+
     }
 
     /**
