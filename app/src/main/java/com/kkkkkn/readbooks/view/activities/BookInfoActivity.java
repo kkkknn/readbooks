@@ -107,6 +107,7 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
         btnAddEnjoy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //todo 弹窗或者动画效果 自定义加载框
                 presenter_info.addBookShelf(bookInfo.getBookId());
             }
         });
@@ -115,7 +116,7 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
         chapter_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //跳转到浏览界面，携带章节列表及点击项
+                //todo 跳转到浏览界面，携带章节列表及点击项
                 Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("chapterInfo",chapterList.get(i));

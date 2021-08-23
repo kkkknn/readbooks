@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
                 if(bookInfo!=null){
-                    //跳转到阅读页面
+                    //todo 跳转到阅读页面
                     //jump2ReadView(bookInfo);
                     Toast.makeText(getApplicationContext(),bookInfo.getBookName(),Toast.LENGTH_SHORT).show();
 
