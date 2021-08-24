@@ -11,7 +11,7 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.util.eventBus.events.BookInfoEvent;
 import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
 import com.kkkkkn.readbooks.view.view.LoginActivityView;
 
@@ -41,16 +41,12 @@ public class Presenter_Info extends BasePresenter implements BaseModel.CallBack 
             onError(-2,"用户信息错误");
             return;
         }
-        //添加到用户收藏 json 字符串
-        JSONObject jsonObject=new JSONObject();
-        try {
-            jsonObject.put("account_id",accountInfo.getAccount_id());
-            jsonObject.put("token",accountInfo.getAccount_token());
-            jsonObject.put("book_id",book_id);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        EventBus.getDefault().post(new MessageEvent(EventMessage.ADD_BOOK,jsonObject));
+        EventBus.getDefault().post(
+                new BookInfoEvent(
+                        EventMessage.ADD_BOOK,
+                        accountInfo.getAccount_token(),
+                        accountInfo.getAccount_id(),
+                        book_id));
     }
 
     //读取图书信息，返回相关对象，然后进行展示 eventbus 返回
@@ -66,17 +62,14 @@ public class Presenter_Info extends BasePresenter implements BaseModel.CallBack 
             onError(-2,"用户信息错误");
             return;
         }
-        JSONObject jsonObject=new JSONObject();
-        try {
-            jsonObject.put("account_id",accountInfo.getAccount_id());
-            jsonObject.put("token",accountInfo.getAccount_token());
-            jsonObject.put("book_id",bookid);
-            jsonObject.put("page_size",PAGE_SIZE);
-            jsonObject.put("page_count",(size/PAGE_SIZE)+1);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        EventBus.getDefault().post(new MessageEvent(EventMessage.GET_BOOK_CHAPTER_LIST,jsonObject));
+        EventBus.getDefault().post(
+                new BookInfoEvent(
+                        EventMessage.GET_BOOK_CHAPTER_LIST,
+                        accountInfo.getAccount_token(),
+                        accountInfo.getAccount_id(),
+                        bookid,
+                        PAGE_SIZE,
+                        (size/PAGE_SIZE)+1));
 
     }
 

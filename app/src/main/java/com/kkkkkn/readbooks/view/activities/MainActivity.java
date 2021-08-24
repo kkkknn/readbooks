@@ -32,7 +32,6 @@ import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -160,7 +159,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+   /* @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void syncProgress(MessageEvent event){
         switch(event.message){
             case DOWNLOAD_PROGRESS:
@@ -190,7 +189,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 break;
         }
 
-    }
+    }*/
 
     private void showUpdateDialog(Object object){
         JSONObject jsonObject=(JSONObject)object;

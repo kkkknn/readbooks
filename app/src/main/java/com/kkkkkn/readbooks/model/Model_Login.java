@@ -4,10 +4,10 @@ import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
+import com.kkkkkn.readbooks.util.eventBus.events.LoginEvent;
 import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
@@ -76,12 +76,9 @@ public class Model_Login extends BaseModel  {
     }
 
     @Subscribe
-    @Override
-    public void syncProgress(MessageEvent event) {
+    public void syncProgress(LoginEvent event) {
         if (event.message == EventMessage.LOGIN) {
-            String[] arr = (String[]) event.value;
-            if (arr == null) return;
-            login(arr[0], arr[1]);
+            login(event.name, event.password);
         }
     }
 

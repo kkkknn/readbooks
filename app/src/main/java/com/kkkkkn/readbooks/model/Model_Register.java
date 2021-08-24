@@ -3,10 +3,10 @@ package com.kkkkkn.readbooks.model;
 import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
+import com.kkkkkn.readbooks.util.eventBus.events.RegisterEvent;
 import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
@@ -72,12 +72,9 @@ public class Model_Register extends BaseModel  {
     }
 
     @Subscribe
-    @Override
-    public void syncProgress(MessageEvent event) {
+    public void syncProgress(RegisterEvent event) {
         if (event.message == EventMessage.REGISTER) {
-            String[] arr = (String[]) event.value;
-            if (arr == null) return;
-            register(arr[0], arr[1]);
+            register(event.name, event.password);
         }
     }
 

@@ -7,7 +7,7 @@ import com.kkkkkn.readbooks.model.Model_Login;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.util.eventBus.events.LoginEvent;
 import com.kkkkkn.readbooks.view.view.LoginActivityView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,13 +36,8 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
             loginActivityView.showMsgDialog(-1,"登陆失败");
             return;
         }
-        String[] arr={name,password};
-        this.name=name;
-        this.password=password;
-        EventBus.getDefault().post(new MessageEvent(EventMessage.LOGIN,arr));
+        EventBus.getDefault().post(new LoginEvent(EventMessage.LOGIN,name,password));
     }
-
-
 
 
 

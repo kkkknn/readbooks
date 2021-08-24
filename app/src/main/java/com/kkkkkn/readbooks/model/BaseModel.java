@@ -1,6 +1,5 @@
 package com.kkkkkn.readbooks.model;
 
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,8 +35,6 @@ public abstract class BaseModel {
             is_register=false;
         }
     }
-
-    public abstract void syncProgress(MessageEvent event);
 
 
 }

@@ -5,10 +5,11 @@ import android.content.Context;
 import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_BookInfo;
 import com.kkkkkn.readbooks.model.Model_Browsing;
+import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.util.eventBus.events.BrowsingEvent;
 import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
@@ -30,25 +31,46 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
         this.model_browsing.setCallback(this);
     }
 
+    /**
+     * 获取阅读设置
+     * @return
+     */
+    public SettingConf getConfig(){
+        return null;
+    }
+
+
     //获取章节列表 ，页码数
     public void getChapterList(int book_id,int chapter_count){
         AccountInfo accountInfo=getAccountCache();
-        JSONObject jsonObject=new JSONObject();
-        try {
-            jsonObject.put("account_id",accountInfo.getAccount_id());
-            jsonObject.put("token",accountInfo.getAccount_token());
-            jsonObject.put("book_id",book_id);
-            jsonObject.put("page_size",PAGE_SIZE);
-            jsonObject.put("page_count",(chapter_count/PAGE_SIZE)+1);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(!accountInfo.isHasToken()){
+            onError(-2,"获取用户信息失败");
+            return;
         }
-        EventBus.getDefault().post(new MessageEvent(EventMessage.GET_BOOK_CHAPTER_LIST,jsonObject.toString()));
+        EventBus.getDefault().post(
+                new BrowsingEvent(
+                        EventMessage.GET_BOOK_CHAPTER_LIST,
+                        accountInfo.getAccount_token(),
+                        accountInfo.getAccount_id(),
+                        book_id,
+                        PAGE_SIZE,
+                        (chapter_count/PAGE_SIZE)+1));
     }
 
     //获取章节内容
     public void getChapterContent(String chapterUrl){
-        //todo 获取章节内容
+        AccountInfo accountInfo=getAccountCache();
+        if(!accountInfo.isHasToken()){
+            onError(-2,"获取用户信息失败");
+            return;
+        }
+
+        EventBus.getDefault().post(
+                new BrowsingEvent(
+                        EventMessage.GET_CHAPTER_CONTENT,
+                        accountInfo.getAccount_token(),
+                        accountInfo.getAccount_id(),
+                        chapterUrl));
     }
 
     //获取保存的章节进度

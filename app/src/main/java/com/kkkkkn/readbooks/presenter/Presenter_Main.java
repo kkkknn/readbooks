@@ -9,23 +9,14 @@ import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_Main;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.util.eventBus.events.MainEvent;
 import com.kkkkkn.readbooks.util.network.DownloadListener;
 import com.kkkkkn.readbooks.util.network.DownloadUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class Presenter_Main extends BasePresenter implements BaseModel.CallBack {
     private static String TAG="Presenter_Main";
@@ -47,24 +38,23 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
         return getAccountCache();
     }
 
+
     /**
      * 获取书架信息，并显示到页面上 通过eventbus发送
      *
      */
     public void getBookShelfList(){
-
-        try {
-            JSONObject jsonObject=new JSONObject();
-            AccountInfo accountInfo=getAccountCache();
-            jsonObject.put("accountId",accountInfo.getAccount_id());
-            jsonObject.put("token",accountInfo.getAccount_token());
-            //请求图书列表
-            EventBus.getDefault().post(new MessageEvent(EventMessage.SYNC_BOOKSHELF,jsonObject));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            onError(-1,"获取图书列表失败");
+        AccountInfo accountInfo=getAccountCache();
+        if(!accountInfo.isHasToken()){
+            onError(-2,"获取用户信息失败");
+            return;
         }
+        //请求图书列表
+        EventBus.getDefault().post(
+                new MainEvent(
+                        EventMessage.SYNC_BOOKSHELF,
+                        accountInfo.getAccount_id(),
+                        accountInfo.getAccount_token()));
     }
 
     /**
@@ -90,18 +80,18 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
      *
      */
     public void checkUpdate(){
-        try {
-            JSONObject jsonObject=new JSONObject();
-            AccountInfo accountInfo=getAccountCache();
-            jsonObject.put("accountId",accountInfo.getAccount_id());
-            jsonObject.put("token",accountInfo.getAccount_token());
-            //在线获取最新版本号
-            EventBus.getDefault().post(new MessageEvent(EventMessage.GET_VERSION,jsonObject));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            onError(-1,"检查更新失败");
+        AccountInfo accountInfo=getAccountCache();
+        if(!accountInfo.isHasToken()){
+            onError(-2,"获取用户信息失败");
+            return;
         }
+        //在线获取最新版本号
+        EventBus.getDefault().post(
+                new MainEvent(
+                        EventMessage.GET_VERSION,
+                        accountInfo.getAccount_id(),
+                        accountInfo.getAccount_token()));
+
 
     }
 

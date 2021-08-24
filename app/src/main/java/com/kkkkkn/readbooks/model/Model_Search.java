@@ -5,9 +5,9 @@ import androidx.annotation.NonNull;
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.SearchInfo;
+import com.kkkkkn.readbooks.util.eventBus.events.SearchEvent;
 import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.StringUtil;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
@@ -26,33 +26,32 @@ import okhttp3.Response;
 public class Model_Search extends BaseModel  {
 
     @Subscribe
-    @Override
-    public void syncProgress(MessageEvent event) {
+    public void syncProgress(SearchEvent event) {
         switch (event.message){
             case SEARCH_BOOK:
-                SearchInfo searchInfo=(SearchInfo) event.value;
-                if(searchInfo==null||searchInfo.getKey_word().isEmpty()){
-                    getCallBack().onError(-1,"搜索失败，请重新输入");
-                    return;
-                }
-                //id token 页面数 页码
-                searchBook(searchInfo);
+
+                //搜索图书
+                searchBook(event.keyWord,
+                        event.pageCount,
+                        event.pageSize,
+                        event.accountId,
+                        event.token);
                 break;
         }
 
     }
 
-    private void searchBook(SearchInfo info){
+    private void searchBook(String key_word,int page_count,int page_size,int account_id,String token){
         FormBody.Builder formBody = new FormBody.Builder();
-        formBody.add("str", info.getKey_word());
-        formBody.add("pageCount",Integer.toString(info.getPage_count()));
-        formBody.add("pageSize",Integer.toString(info.getPage_size()));
+        formBody.add("str", key_word);
+        formBody.add("pageCount",Integer.toString(page_count));
+        formBody.add("pageSize",Integer.toString(page_size));
 
         Request request = new Request.Builder()
                 .url(ServerConfig.IP+ServerConfig.searchBook)
                 .post(formBody.build())//传递请求体
-                .addHeader("accountId",Integer.toString(info.getAccount_id()))
-                .addHeader("token",info.getToken())
+                .addHeader("accountId",Integer.toString(account_id))
+                .addHeader("token",token)
                 .build();
         HttpUtil.getInstance().post(request, new Callback() {
 
@@ -85,10 +84,8 @@ public class Model_Search extends BaseModel  {
                             arrayList.add(bookInfo);
                         }
                         getCallBack().onSuccess(1,arrayList);
-                        return;
                     }else if(code.equals("error")){
                         getCallBack().onError(-2,data);
-                        return;
                     }
 
                 } catch (JSONException e) {

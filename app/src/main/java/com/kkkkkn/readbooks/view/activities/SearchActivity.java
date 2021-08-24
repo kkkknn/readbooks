@@ -18,9 +18,7 @@ import android.widget.Toast;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.presenter.Presenter_Login;
 import com.kkkkkn.readbooks.presenter.Presenter_Search;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.SearchActivityView;
 

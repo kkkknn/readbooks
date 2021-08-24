@@ -7,9 +7,9 @@ import androidx.annotation.NonNull;
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.util.eventBus.events.MainEvent;
 import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.StringUtil;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
@@ -29,32 +29,18 @@ public class Model_Main extends BaseModel {
 
 
     @Subscribe
-    @Override
-    public void syncProgress(MessageEvent event) {
-        JSONObject jsonObject=(JSONObject)event.value;
+    public void syncProgress(MainEvent event) {
+        JSONObject jsonObject;
         int id;
         String token;
-        try {
-            if(jsonObject.getInt("accountId")==0
-                    ||StringUtil.isEmpty(jsonObject.getString("token"))){
-                getCallBack().onError(-2,"获取登录信息异常");
-                return;
-            }
-            id=jsonObject.getInt("accountId");
-            token=jsonObject.getString("token");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            getCallBack().onError(-2,"获取登录信息异常");
-            return;
-        }
-
         switch (event.message){
             case SYNC_BOOKSHELF:
                 //获取书架
-                getBookShelf(id,token);
+                getBookShelf(event.accountId,event.token);
                 break;
             case GET_VERSION:
-                getVersion(id,token);
+                //获取版本号
+                getVersion(event.accountId,event.token);
                 break;
         }
     }
@@ -89,30 +75,25 @@ public class Model_Main extends BaseModel {
                         JSONObject jsonObject=new JSONObject(ret_str);
                         String code_str=jsonObject.getString("code");
                         String data_str=jsonObject.getString("data");
-                        if(!StringUtil.isEmpty(code_str)&&!StringUtil.isEmpty(data_str)){
-                            if(code_str.equals("success")){
-                                JSONArray jsonArray=new JSONArray(data_str);
-                                ArrayList<BookInfo> book_shelf=new ArrayList<>();
-                                for (int j = 0; j < jsonArray.length(); j++) {
-                                    JSONObject object=(JSONObject) jsonArray.get(j);
-                                    BookInfo bookInfo=BookInfo.changeObject(object);
-                                    if(!bookInfo.isEmpty()){
-
-                                        book_shelf.add(bookInfo);
-                                        Log.i("TAG", "onResponse: "+bookInfo.getBookName());
-                                    }
+                        if(code_str.equals("success")){
+                            JSONArray jsonArray=new JSONArray(data_str);
+                            ArrayList<BookInfo> book_shelf=new ArrayList<>();
+                            for (int j = 0; j < jsonArray.length(); j++) {
+                                JSONObject object=(JSONObject) jsonArray.get(j);
+                                BookInfo bookInfo=BookInfo.changeObject(object);
+                                if(!bookInfo.isEmpty()){
+                                    book_shelf.add(bookInfo);
+                                    Log.i("TAG", "onResponse: "+bookInfo.getBookName());
                                 }
-                                getCallBack().onSuccess(1,book_shelf);
-                                return;
-                            }else if(code_str.equals("error")){
-                                getCallBack().onError(-2,data_str);
-                                return;
                             }
+                            getCallBack().onSuccess(1,book_shelf);
+                        }else if(code_str.equals("error")){
+                            getCallBack().onError(-2,data_str);
                         }
-                        getCallBack().onError(-1,"解析失败");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        getCallBack().onError(-1,"解析失败");
                     }
                 }
 

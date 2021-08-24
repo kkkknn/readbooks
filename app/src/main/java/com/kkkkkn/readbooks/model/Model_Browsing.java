@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.util.eventBus.events.BrowsingEvent;
 import com.kkkkkn.readbooks.util.network.HttpUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -32,71 +32,64 @@ import okhttp3.Response;
 public class Model_Browsing extends BaseModel{
 
     @Subscribe
-    @Override
-    public void syncProgress(MessageEvent event) {
+    public void syncProgress(BrowsingEvent event) {
         switch (event.message){
             case GET_BOOK_CHAPTER_LIST:
-                JSONObject jsonObject=(JSONObject) event.value;
-                if(jsonObject==null){
-                    getCallBack().onError(-1,"参数错误");
-                }else {
-                    getChapterList(jsonObject);
-                }
+                getChapterList(event.bookId,
+                        event.pageCount,
+                        event.pageSize,
+                        event.accountId,
+                        event.token);
                 break;
         }
     }
 
-    private void getChapterList(JSONObject info){
+    private void getChapterList(int book_id,int page_count,int page_size,int account_id,String token){
         FormBody.Builder formBody = new FormBody.Builder();
-        try {
-            formBody.add("bookId", Integer.toString(info.getInt("book_id")));
-            formBody.add("pageCount", Integer.toString(info.getInt("page_count")));
-            formBody.add("pageSize", Integer.toString(info.getInt("page_size")));
+        formBody.add("bookId", Integer.toString(book_id));
+        formBody.add("pageCount", Integer.toString(page_count));
+        formBody.add("pageSize", Integer.toString(page_size));
 
-            Request request = new Request.Builder()
-                    .url(ServerConfig.IP+ServerConfig.getChapterList)
-                    .addHeader("accountId",Integer.toString(info.getInt("account_id")))
-                    .addHeader("token",info.getString("token"))
-                    .post(formBody.build())//传递请求体
-                    .build();
+        Request request = new Request.Builder()
+                .url(ServerConfig.IP+ServerConfig.getChapterList)
+                .addHeader("accountId",Integer.toString(account_id))
+                .addHeader("token",token)
+                .post(formBody.build())//传递请求体
+                .build();
 
-            HttpUtil.getInstance().post(request, new Callback() {
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    String ret_str=response.body().string();
-                    try {
-                        JSONObject ret_json=new JSONObject(ret_str);
-                        String ret_code=ret_json.getString("code");
-                        String ret_data=ret_json.getString("data");
-                        if(ret_code.equals("success")){
-                            //解析返回值
-                            JSONArray jsonArray=new JSONArray(ret_data);
-                            ArrayList<ChapterInfo> arrayList=new ArrayList<>();
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                ChapterInfo chapterInfo=new ChapterInfo(jsonArray.get(i));
-                                arrayList.add(chapterInfo);
-                            }
-                            getCallBack().onSuccess(1001,arrayList);
-                        }else if(ret_code.equals("error")){
-                            getCallBack().onError(-1001,ret_data);
-                        }else{
-                            getCallBack().onError(-1,"请求失败");
+        HttpUtil.getInstance().post(request, new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String ret_str=response.body().string();
+                try {
+                    JSONObject ret_json=new JSONObject(ret_str);
+                    String ret_code=ret_json.getString("code");
+                    String ret_data=ret_json.getString("data");
+                    if(ret_code.equals("success")){
+                        //解析返回值
+                        JSONArray jsonArray=new JSONArray(ret_data);
+                        ArrayList<ChapterInfo> arrayList=new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            ChapterInfo chapterInfo=new ChapterInfo(jsonArray.get(i));
+                            arrayList.add(chapterInfo);
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        getCallBack().onSuccess(1001,arrayList);
+                    }else if(ret_code.equals("error")){
+                        getCallBack().onError(-1001,ret_data);
+                    }else{
+                        getCallBack().onError(-1,"请求失败");
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    getCallBack().onError(-1,"请求失败");
-                }
-            });
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                getCallBack().onError(-1,"请求失败");
+            }
+        });
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-            getCallBack().onError(-1,"解析失败");
-        }
     }
 
     public int getReadProgress(int book_id,Context context) {

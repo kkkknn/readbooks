@@ -98,8 +98,9 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
         btnStartRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showMsgDialog(11,"开始阅读");
-                
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("bookInfo",bookInfo);
+                toBrowsingActivity(bundle);
             }
         });
 
@@ -116,12 +117,10 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
         chapter_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //todo 跳转到浏览界面，携带章节列表及点击项
-                Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("chapterInfo",chapterList.get(i));
-                intent.putExtras(bundle);
-                startActivity(intent);
+                bundle.putSerializable("bookInfo",bookInfo);
+                toBrowsingActivity(bundle);
             }
         });
 
@@ -172,6 +171,13 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
     @Override
     public void toLoginActivity() {
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+    }
+
+    @Override
+    public void toBrowsingActivity(Bundle bundle) {
+        Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

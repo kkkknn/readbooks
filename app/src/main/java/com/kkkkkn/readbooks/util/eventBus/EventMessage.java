@@ -36,4 +36,7 @@ public enum EventMessage {
     //更新搜索结果列表
     SYNC_SEARCH_RESULT,
 
+    //获取章节内容
+    GET_CHAPTER_CONTENT
+
 }

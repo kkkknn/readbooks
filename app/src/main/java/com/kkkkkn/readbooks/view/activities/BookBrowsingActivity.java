@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,32 +24,25 @@ import android.widget.Toast;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.presenter.Presenter_Browsing;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class BookBrowsingActivity extends BaseActivity implements BrowsingActivityView {
     private final static String TAG = "BookBrowsingActivity";
     private ArrayList<ChapterInfo> chapterList = new ArrayList<>();
-    private int chapterFlag = 0;
-    private int lineFlag = 0;
-    private int pageFlag = 0;
+    private int chapterCount = 0;
     private String[] chapterContent;
     private BrowsingVIew browsingVIew;
     private ProgressDialog progressDialog;
     private BookInfo bookInfo;
-    private ImageView imageView;
+    private ChapterInfo chapterInfo;
+    private float readProgress;
+    private Presenter_Browsing presenterBrowsing;
 
     private Handler mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
@@ -62,7 +54,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
                         browsingVIew.setTextContent(chapterContent);
                         browsingVIew.setTextColor(Color.BLACK);
                         browsingVIew.setTextSize(40f);
-                        browsingVIew.setProgress(lineFlag, false);
+                        browsingVIew.setProgress(readProgress);
                         browsingVIew.invalidate();
 
                     }
@@ -77,7 +69,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
                         browsingVIew.setTextContent(chapterContent);
                         browsingVIew.setTextColor(Color.BLACK);
                         browsingVIew.setTextSize(40f);
-                        browsingVIew.setProgress(lineFlag, true);
+                        browsingVIew.setProgress(readProgress);
                         browsingVIew.invalidate();
                     }
                     //接收完成,隐藏遮罩层
@@ -129,14 +121,8 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             }
         }
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_browsing);
-
+    private void initView(){
         browsingVIew = findViewById(R.id.browView);
-
         browsingVIew.setListener(new BookCallback() {
             @Override
             public void jump2nextChapter() {
@@ -181,6 +167,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             }
 
         });
+
         //加载框设置
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);//转盘
@@ -190,29 +177,34 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         progressDialog.setMessage("正在加载，请稍后……");
 
 
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_book_browsing);
+
+         initView();
+
+        presenterBrowsing=new Presenter_Browsing(getApplicationContext(),this);
+        presenterBrowsing.init();
+
         //获取携带信息
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             //没有携带信息
             finish();
-        } else {
-            //序列化处理，防止转换警告
-            bookInfo = (BookInfo) bundle.getSerializable("bookInfo");
-            chapterFlag = bundle.getInt("chapterFlag");
-            lineFlag = bundle.getInt("lineFlag");
-            pageFlag = bundle.getInt("pageFlag");
-            Log.i(TAG, "onCreate: chapterFlag: " + chapterFlag + "  || lineFlag  " + lineFlag + " || " + pageFlag);
-
-            //开启线程进行数据初始化
-            new Thread() {
-                @Override
-                public void run() {
-                    resetChapterData(pageFlag, 0);
-                }
-            }.start();
-
-
+            return;
         }
+        //序列化处理，防止转换警告
+        bookInfo = (BookInfo) bundle.getSerializable("bookInfo");
+        chapterInfo = (ChapterInfo) bundle.getSerializable("chapterInfo");
+
+        //todo 请求并获取章节内容
+        if(chapterInfo!=null){
+            presenterBrowsing.getChapterContent(chapterInfo.getChapter_path());
+        }
+
         //注册静态广播
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
@@ -220,24 +212,14 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         registerReceiver(broadcastReceiver, filter);
 
         //读取存储设置信息
-        readSettingConfig();
+        presenterBrowsing.getConfig();
     }
 
-    //读取浏览设置 从 share_refence
-    private void readSettingConfig(){
-
-    }
-
-    //写入浏览设置，到share_refence
-    private void writeSettingConfig(){
-
-    }
 
 
     //初始化相关数据:章节列表，文字内容
     private void resetChapterData(int page, int type) {
         //获取图书的当前页章节名及链接并添加chapterList
-        String thisPageUrl = getPageUrl(bookInfo, page);
         //开启线程，获取当前页章节列表
        /* JsoupUtilImp util = JsoupUtilImp.getInstance().setSource(bookInfo.getBookFromType());
         try {
@@ -291,6 +273,12 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     @Override
     public void syncChapterList(ArrayList<ChapterInfo> list) {
         chapterList.addAll(list);
+        //todo 修改后的章节列表 根据章节ID进行从新排序，并更新chapterCount的值
+
+
+        //todo 判断是否超出章节限制，超出限制，清除一部分章节,防止内存过大
+
+
     }
 
     @Override
@@ -341,10 +329,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        presenterBrowsing.release();
         //取消注册静态广播
         unregisterReceiver(broadcastReceiver);
-        //写入阅读设置
-        writeSettingConfig();
 
     }
 
@@ -364,22 +351,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
     public interface BookCallback {
         void jump2nextChapter();
-
         void jump2lastChapter();
-
         void showSetting();
 
-    }
-
-    //获取当前页章节链接
-    private String getPageUrl(BookInfo bookInfo, int count) {
-        /*if (bookInfo == null || bookInfo.getChapterPagesUrlStr().isEmpty()) {
-            return null;
-        }
-        String str = bookInfo.getChapterPagesUrlStr();
-        String[] values = str.substring(1, str.length() - 1).split(", ");
-        return values[count];*/
-        return null;
     }
 
 
@@ -453,10 +427,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     };
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void eventMessage(MessageEvent event){
 
-    }
 
 
 }

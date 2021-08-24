@@ -6,7 +6,7 @@ import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_Register;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
-import com.kkkkkn.readbooks.util.eventBus.MessageEvent;
+import com.kkkkkn.readbooks.util.eventBus.events.RegisterEvent;
 import com.kkkkkn.readbooks.view.view.RegisterActivityView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,10 +37,10 @@ public class Presenter_Register extends BasePresenter implements BaseModel.CallB
             registerActivityView.showTip(0,"密码必须包含大小写字母和数字的组合，可以使用特殊字符，长度在8-10之间");
             return;
         }
-        String[] arr={name,password};
+        //赋值暂存 请求注册
         this.name=name;
         this.password=password;
-        EventBus.getDefault().post(new MessageEvent(EventMessage.REGISTER,arr));
+        EventBus.getDefault().post(new RegisterEvent(EventMessage.REGISTER,name,password));
 
     }
 

@@ -61,6 +61,7 @@ public class BrowsingVIew extends View {
     //绘图相关变量
     private TextPaint mTextPaint;
     private BookBrowsingActivity.BookCallback bookCallback;
+    private float read_progress;
 
     private Paint mPaint;
     private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
@@ -101,10 +102,8 @@ public class BrowsingVIew extends View {
         return thisPage_flag;
     }
 
-    public void setProgress(int count,boolean isReverse){
-        if(count<=skipList.size()){
-            this.thisPage_flag = isReverse ? (skipList.size()-1) : count;
-        }
+    public void setProgress(float progress){
+        this.read_progress=progress;
     }
 
     public BrowsingVIew(Context context) {
