@@ -41,9 +41,67 @@ public class Model_Browsing extends BaseModel{
                         event.accountId,
                         event.token);
                 break;
+            case GET_CHAPTER_CONTENT:
+                getChapterContent(event.accountId,
+                        event.token,
+                        event.path);
+                break;
         }
     }
 
+    /**
+     * 获取指定章节内容
+     * @param accountId 用户ID
+     * @param token 用户token
+     * @param path  章节存储路径
+     */
+    private void getChapterContent(int accountId, String token, String path) {
+        FormBody.Builder formBody = new FormBody.Builder();
+        formBody.add("chapter_path", path);
+
+        Request request = new Request.Builder()
+                .url(ServerConfig.IP+ServerConfig.getChapterList)
+                .addHeader("accountId",Integer.toString(accountId))
+                .addHeader("token",token)
+                .post(formBody.build())//传递请求体
+                .build();
+
+        HttpUtil.getInstance().post(request, new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String ret_str=response.body().string();
+                try {
+                    JSONObject ret_json=new JSONObject(ret_str);
+                    String ret_code=ret_json.getString("code");
+                    String ret_data=ret_json.getString("data");
+                    if(ret_code.equals("success")){
+                        //todo 返回值处理
+                        getCallBack().onSuccess(1001,ret_data);
+                    }else if(ret_code.equals("error")){
+                        getCallBack().onError(-1001,ret_data);
+                    }else{
+                        getCallBack().onError(-1,"请求失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                getCallBack().onError(-1,"请求失败");
+            }
+        });
+    }
+
+    /**
+     * 获取章节列表
+     * @param book_id   图书ID
+     * @param page_count    页码
+     * @param page_size     每页数量
+     * @param account_id    用户ID
+     * @param token     用户token
+     */
     private void getChapterList(int book_id,int page_count,int page_size,int account_id,String token){
         FormBody.Builder formBody = new FormBody.Builder();
         formBody.add("bookId", Integer.toString(book_id));
