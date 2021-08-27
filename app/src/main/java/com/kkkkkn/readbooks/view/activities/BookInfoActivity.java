@@ -100,6 +100,7 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
             public void onClick(View view) {
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("bookInfo",bookInfo);
+                bundle.putSerializable("chapterInfo",chapterList.get(0));
                 toBrowsingActivity(bundle);
             }
         });

@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-public class ChapterInfo implements Serializable {
+public class ChapterInfo implements Serializable,Comparable<ChapterInfo> {
     private int chapter_id;
     private String chapter_name;
     private String chapter_path;
@@ -47,4 +47,9 @@ public class ChapterInfo implements Serializable {
         this.chapter_path = chapter_path;
     }
 
+
+    @Override
+    public int compareTo(ChapterInfo chapterInfo) {
+        return chapter_id-chapterInfo.getChapter_id();
+    }
 }

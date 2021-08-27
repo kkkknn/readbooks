@@ -5,20 +5,15 @@ import android.util.Log;
 import android.widget.SearchView;
 
 import com.kkkkkn.readbooks.model.BaseModel;
-import com.kkkkkn.readbooks.model.Model_Login;
 import com.kkkkkn.readbooks.model.Model_Search;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.entity.SearchInfo;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.events.SearchEvent;
 import com.kkkkkn.readbooks.view.view.SearchActivityView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;

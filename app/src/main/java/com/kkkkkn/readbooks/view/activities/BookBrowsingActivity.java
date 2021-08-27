@@ -30,13 +30,17 @@ import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class BookBrowsingActivity extends BaseActivity implements BrowsingActivityView {
     private final static String TAG = "BookBrowsingActivity";
     private ArrayList<ChapterInfo> chapterList = new ArrayList<>();
     private int chapterCount = 0;
-    private String[] chapterContent;
+    private ArrayList<String> contentList=new ArrayList<>();
     private BrowsingVIew browsingVIew;
     private ProgressDialog progressDialog;
     private BookInfo bookInfo;
@@ -44,7 +48,8 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private float readProgress;
     private Presenter_Browsing presenterBrowsing;
 
-    private Handler mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
+
+    /*private Handler mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
@@ -91,7 +96,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             }
             return false;
         }
-    });
+    });*/
 
     //静态广播
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -200,8 +205,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         bookInfo = (BookInfo) bundle.getSerializable("bookInfo");
         chapterInfo = (ChapterInfo) bundle.getSerializable("chapterInfo");
 
-        //todo 请求并获取章节内容
+        //请求并获取章节内容
         if(chapterInfo!=null){
+            Log.i(TAG, "onCreate: 请求获取章节内容");
             presenterBrowsing.getChapterContent(chapterInfo.getChapter_path());
         }
 
@@ -272,12 +278,12 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
     @Override
     public void syncChapterList(ArrayList<ChapterInfo> list) {
+        ChapterInfo info=chapterList.get(chapterCount);
         chapterList.addAll(list);
-        //todo 修改后的章节列表 根据章节ID进行从新排序，并更新chapterCount的值
-
-
+        //修改后的章节列表 根据章节ID进行从新排序，并更新chapterCount的值
+        Collections.sort(chapterList);
+        chapterCount=chapterList.indexOf(info);
         //todo 判断是否超出章节限制，超出限制，清除一部分章节,防止内存过大
-
 
     }
 
@@ -285,6 +291,22 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     public void toLoginActivity() {
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 
+    }
+
+    @Override
+    public void syncReadView(JSONArray jsonArray) {
+
+        //设置view的字符串，并且刷新并重新绘制
+        int len=jsonArray.length();
+        String[] arrs=new String[len];
+        for (int i = 0; i < len; i++) {
+            try {
+                arrs[i]=jsonArray.getString(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        browsingVIew.setTextContent(arrs);
     }
 
     //获取章节文字的网络线程内部类

@@ -14,6 +14,7 @@ import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,7 +65,6 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
             onError(-2,"获取用户信息失败");
             return;
         }
-
         EventBus.getDefault().post(
                 new BrowsingEvent(
                         EventMessage.GET_CHAPTER_CONTENT,
@@ -84,6 +84,9 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
         switch (type){
             case 1001:
                 browsingActivityView.syncChapterList((ArrayList<ChapterInfo>) object);
+                break;
+            case 1002:
+                browsingActivityView.syncReadView((JSONArray) object);
                 break;
 
         }

@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.entity.SearchInfo;
 import com.kkkkkn.readbooks.util.eventBus.events.SearchEvent;
 import com.kkkkkn.readbooks.util.network.HttpUtil;
 import com.kkkkkn.readbooks.util.StringUtil;

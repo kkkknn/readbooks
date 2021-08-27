@@ -297,6 +297,8 @@ public class BrowsingVIew extends View {
         //判断是否需要绘制
         if(contentArr==null||contentArr.length==0){
             Log.i(TAG, "drawBitmap: 超出长度或没有文字内容，忽略绘制");
+            //todo  展示加载框
+
             return;
         }
 

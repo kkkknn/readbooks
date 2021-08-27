@@ -60,7 +60,7 @@ public class Model_Browsing extends BaseModel{
         formBody.add("chapter_path", path);
 
         Request request = new Request.Builder()
-                .url(ServerConfig.IP+ServerConfig.getChapterList)
+                .url(ServerConfig.IP+ServerConfig.getChapterContent)
                 .addHeader("accountId",Integer.toString(accountId))
                 .addHeader("token",token)
                 .post(formBody.build())//传递请求体
@@ -73,12 +73,11 @@ public class Model_Browsing extends BaseModel{
                 try {
                     JSONObject ret_json=new JSONObject(ret_str);
                     String ret_code=ret_json.getString("code");
-                    String ret_data=ret_json.getString("data");
                     if(ret_code.equals("success")){
-                        //todo 返回值处理
-                        getCallBack().onSuccess(1001,ret_data);
+                        JSONArray jsonArray=(JSONArray) ret_json.get("data");
+                        getCallBack().onSuccess(1002,jsonArray);
                     }else if(ret_code.equals("error")){
-                        getCallBack().onError(-1001,ret_data);
+                        getCallBack().onError(-1002,(String) ret_json.get("data"));
                     }else{
                         getCallBack().onError(-1,"请求失败");
                     }
