@@ -1,11 +1,15 @@
 package com.kkkkkn.readbooks.model;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Base64;
 
 import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.ServerConfig;
+import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
+import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.events.BrowsingEvent;
 import com.kkkkkn.readbooks.util.network.HttpUtil;
 
@@ -15,11 +19,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
@@ -152,13 +160,12 @@ public class Model_Browsing extends BaseModel{
     public int getReadProgress(int book_id,Context context) {
         String str=getProgressString(context);
         JSONObject jsonObject= null;
-        int flag=0;
+        int flag=1;
         try {
             jsonObject = new JSONObject(str);
             flag=jsonObject.getInt(Integer.toString(book_id));
         } catch (JSONException e) {
             e.printStackTrace();
-            flag=-1;
         }
         return flag;
     }
@@ -167,13 +174,60 @@ public class Model_Browsing extends BaseModel{
         String str=getProgressString(context);
         JSONObject jsonObject= null;
         try {
-            jsonObject = new JSONObject(str);
+            if(StringUtil.isEmpty(str)){
+                jsonObject = new JSONObject();
+            }else {
+                jsonObject = new JSONObject(str);
+            }
             jsonObject.put(Integer.toString(book_id),progress);
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
         }
         return setProgressString(jsonObject.toString(),context);
+    }
+
+    /**
+     * 获取阅读配置，字体，背景等
+     * @return
+     */
+    public SettingConf getReadConfig(Context context){
+        SharedPreferences sharedPreferences=context.getSharedPreferences("read_config",Context.MODE_PRIVATE);
+        String str=sharedPreferences.getString("SettingConf",null);
+        //采用序列化的方式，将SettingConf 对象写入到SharedPreferences 中
+        SettingConf settingConf=null;
+        if(!StringUtil.isEmpty(str)){
+            ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(Base64.decode(str,Base64.DEFAULT));
+            try {
+                ObjectInputStream objectInputStream=new ObjectInputStream(byteArrayInputStream);
+                settingConf=(SettingConf) objectInputStream.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return settingConf;
+    }
+
+    /**
+     * 获取阅读配置，字体，背景等
+     * @return
+     */
+    public boolean setReadConfig(Context context,SettingConf conf){
+        SharedPreferences sharedPreferences=context.getSharedPreferences("read_config",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
+        //采用序列化的方式，将SettingConf 对象写入到SharedPreferences 中
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(conf);//把对象写到流里
+            String temp = new String(Base64.encode(baos.toByteArray(), Base64.DEFAULT));
+            editor.putString("SettingConf", temp);
+            editor.apply();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     //获取写入的json字符串

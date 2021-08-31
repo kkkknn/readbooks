@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 public class ChapterInfo implements Serializable,Comparable<ChapterInfo> {
     private int chapter_id;
+    private int chapter_num;
     private String chapter_name;
     private String chapter_path;
 
@@ -16,7 +17,11 @@ public class ChapterInfo implements Serializable,Comparable<ChapterInfo> {
         JSONObject jsonObject=(JSONObject) object;
         try {
             chapter_id=jsonObject.getInt("chapter_id");
-            chapter_name=jsonObject.getString("chapter_name");
+            //拆分章节字符串，取出名字和章节数
+            String str=jsonObject.getString("chapter_name");
+            String[] arr=str.split("_");
+            chapter_num=Integer.parseInt(arr[0]);
+            chapter_name=arr[1];
             chapter_path=jsonObject.getString("chapter_url");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -27,29 +32,21 @@ public class ChapterInfo implements Serializable,Comparable<ChapterInfo> {
         return chapter_id;
     }
 
-    public void setChapter_id(int chapter_id) {
-        this.chapter_id = chapter_id;
-    }
-
     public String getChapter_name() {
         return chapter_name;
     }
 
-    public void setChapter_name(String chapter_name) {
-        this.chapter_name = chapter_name;
-    }
 
     public String getChapter_path() {
         return chapter_path;
     }
 
-    public void setChapter_path(String chapter_path) {
-        this.chapter_path = chapter_path;
+    public int getChapter_num() {
+        return chapter_num;
     }
-
 
     @Override
     public int compareTo(ChapterInfo chapterInfo) {
-        return chapter_id-chapterInfo.getChapter_id();
+        return chapter_num-chapterInfo.getChapter_num();
     }
 }

@@ -66,6 +66,9 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         presenter_main=new Presenter_Main(getApplicationContext(),this);
         presenter_main.init();
 
+        //申请权限
+        checkPermission();
+
         AccountInfo info=presenter_main.getToken();
         if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
             toLoginActivity();
@@ -74,6 +77,23 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         //todo 检查APK更新
 
     }
+
+    private void checkPermission(){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager()) {
+            Toast.makeText(this, "已获得访问所有文件权限", Toast.LENGTH_SHORT).show();
+        } else {
+            new AlertDialog.Builder(this)
+                .setMessage("本程序需要您同意允许访问所有文件权限")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                        startActivity(intent);
+                    }
+                }).show();
+        }
+    }
+
     private void initView(){
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -97,9 +117,9 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
                 if(bookInfo!=null){
-                    //todo 跳转到阅读页面
-                    //jump2ReadView(bookInfo);
-                    Toast.makeText(getApplicationContext(),bookInfo.getBookName(),Toast.LENGTH_SHORT).show();
+                    //跳转到阅读页面
+                    jump2ReadView(bookInfo);
+                    //Toast.makeText(getApplicationContext(),bookInfo.getBookName(),Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -136,6 +156,14 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             return false;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void jump2ReadView(BookInfo bookInfo){
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("bookInfo",bookInfo);
+        Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

@@ -123,10 +123,7 @@ public class BrowsingVIew extends View {
     }
 
     //初始化view
-    private void initView(Context context) {
-        mViewWidth = getMeasuredWidth();
-        mViewHeight = getMeasuredHeight();
-        statusBarHeight = getStatusBarHeight(context)+30;
+    private void initView(final Context context) {
         mTextPaint = new TextPaint();
         mPaint = new Paint();
 
@@ -136,6 +133,16 @@ public class BrowsingVIew extends View {
         mTextPaint.setTextSize(textSize);
         mTextPaint.setColor(textColor);
         mTextPaint.setAntiAlias(true);
+
+        this.post(new Runnable() {
+              @Override
+              public void run() {
+                  mViewWidth = getMeasuredWidth();
+                  mViewHeight = getMeasuredHeight();
+                  statusBarHeight = getStatusBarHeight(context)+30;
+                  setTextSize(textSize);
+              }
+          });
     }
 
     public void setTextSize(float textSize) {
@@ -157,9 +164,12 @@ public class BrowsingVIew extends View {
 
     //根据章节计算页面数量和标志位置并添加到list中
     private void setChapterFlags(){
+        Log.i(TAG, "setChapterFlags: 开始");
         if(this.textLineSum==0){
             return;
         }
+        Log.i(TAG, "为什么！！！！！！！！: "+textLineSum);
+        Log.i(TAG, "为什么！！！！！！！！: "+linePageSum);
         skipList.clear();
         thisPage_flag=0;
         //计算页面绘制完成后的锚点
@@ -184,6 +194,7 @@ public class BrowsingVIew extends View {
             }
         }
 
+        Log.i(TAG, "setChapterFlags: 结束");
     }
 
     public void setTextContent(String[] content) {
@@ -351,10 +362,15 @@ public class BrowsingVIew extends View {
                 }
                 break;
             default:
-                canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
-                canvas.translate(offsetX, 0);
-                int[] arr2=skipList.get(thisPage_flag);
-                drawTextView(canvas,arr2[0],arr2[1],true);
+                if(skipList.size()>0){
+                    canvas.drawBitmap(thisBitmap, offsetX, 0, mPaint);
+                    canvas.translate(offsetX, 0);
+                    Log.i(TAG, "drawBitmap: skipList"+skipList.size());
+                    Log.i(TAG, "drawBitmap: contentArr"+contentArr.length);
+                    int[] arr2=skipList.get(thisPage_flag);
+                    drawTextView(canvas,arr2[0],arr2[1],true);
+                }
+
                 break;
         }
 

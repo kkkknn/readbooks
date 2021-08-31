@@ -37,7 +37,7 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
      * @return
      */
     public SettingConf getConfig(){
-        return null;
+        return model_browsing.getReadConfig(getContext());
     }
 
 
@@ -73,10 +73,25 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
                         chapterUrl));
     }
 
-    //获取保存的章节进度
+
+    /**
+     * 获取保存的章节进度
+     * @param book_id 图书id
+     * @return  缓存的阅读进度
+     */
     public int getBookProgress(int book_id){
-        //TODO  获取保存的章节进度
-        return 0;
+        return model_browsing.getReadProgress(book_id,getContext());
+    }
+
+
+    /**
+     * 设置图书的阅读章节进度
+     * @param book_id   图书id
+     * @param progress  章节进度
+     * @return  是否成功
+     */
+    public boolean setBookProgress(int book_id,int progress){
+        return model_browsing.setReadProgress(book_id,progress,getContext());
     }
 
     @Override
