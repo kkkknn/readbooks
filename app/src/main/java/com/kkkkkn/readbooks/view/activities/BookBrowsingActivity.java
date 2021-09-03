@@ -24,6 +24,7 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Browsing;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
+import com.kkkkkn.readbooks.view.customView.BrowsingVIew2;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
@@ -39,7 +40,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private ArrayList<ChapterInfo> chapterList = new ArrayList<>();
     private int chapterCount = 0;
     private ArrayList<String> contentList=new ArrayList<>();
-    private BrowsingVIew browsingVIew;
+    private BrowsingVIew2 browsingVIew;
     private ProgressDialog progressDialog;
     private BookInfo bookInfo;
     private float readProgress;

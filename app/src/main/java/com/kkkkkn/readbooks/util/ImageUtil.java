@@ -12,6 +12,7 @@ import com.kkkkkn.readbooks.ServerConfig;
 import java.util.Objects;
 
 public class ImageUtil {
+
     public static void loadImage(String path, Context context, ImageView imageView){
         String url= ServerConfig.IP+ServerConfig.downloadBookImage+"?urlPath="+path;
         //获取缓存内的id token

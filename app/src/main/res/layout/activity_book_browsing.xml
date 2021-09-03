@@ -7,7 +7,7 @@
     tools:context=".view.activities.BookBrowsingActivity"
     android:orientation="horizontal">
 
-    <com.kkkkkn.readbooks.view.customView.BrowsingVIew
+    <com.kkkkkn.readbooks.view.customView.BrowsingVIew2
         android:id="@+id/browView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
