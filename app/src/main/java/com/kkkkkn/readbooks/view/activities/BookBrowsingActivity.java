@@ -24,7 +24,6 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Browsing;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
-import com.kkkkkn.readbooks.view.customView.BrowsingVIew2;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
@@ -40,7 +39,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private ArrayList<ChapterInfo> chapterList = new ArrayList<>();
     private int chapterCount = 0;
     private ArrayList<String> contentList=new ArrayList<>();
-    private BrowsingVIew2 browsingVIew;
+    private BrowsingVIew browsingVIew;
     private ProgressDialog progressDialog;
     private BookInfo bookInfo;
     private float readProgress;
@@ -129,7 +128,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         browsingVIew.setListener(new BookCallback() {
             @Override
             public void jump2nextChapter() {
-                if(chapterCount==(chapterList.size()-1)){
+                //todo 修改跳转章节
+                Log.i(TAG, "jump2nextChapter: 跳转到下一章节");
+                if(chapterCount<chapterList.size()){
                     ChapterInfo chapterInfo=chapterList.get(chapterCount);
                     int count=chapterInfo.getChapter_num();
                     if(count==bookInfo.getChapterSum()){
@@ -144,6 +145,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
             @Override
             public void jump2lastChapter() {
+                //todo 修改跳转章节
                 if(chapterCount==0){
                     ChapterInfo chapterInfo=chapterList.get(chapterCount);
                     int count=chapterInfo.getChapter_num();
