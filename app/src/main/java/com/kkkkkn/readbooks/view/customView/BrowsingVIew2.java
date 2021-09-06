@@ -168,41 +168,45 @@ public class BrowsingVIew2 extends View {
          }
          Canvas canvas=new Canvas();
          //根据行数创建字符串数组 每页
-         String[] arr=new String[linePageSum];
-         int line_flag=0;
+         LinkedList<String> line_list=new LinkedList<>();
          for (int i = 0; i < contentArr.length; i++) {
              float[] ss=new float[contentArr[i].length()];
-             int width=mPaint.getTextWidths(contentArr[i],ss);
+             mPaint.getTextWidths(contentArr[i],ss);
              float line_width=0;
              int start=0;
              for (int l = 0; l < ss.length; l++) {
                  line_width+=ss[l];
-                 if(line_width>mViewWidth){
-                     Log.i(TAG, "text2bitmap: width "+line_width+"view width"+mViewWidth);
-                     arr[line_flag]=contentArr[i].substring(start,l-1) ;
-                     start=l-1;
+                 if(line_width>=mViewWidth){
+                     line_list.add(contentArr[i].substring(start,l));
+                     start=l;
                      line_width=ss[l];
-                     line_flag++;
-
-                     if(line_flag==linePageSum){
-                         //绘制当前页所有文字，并添加到list中
-                         Bitmap bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                         canvas.setBitmap(bitmap);
-                         canvas.save();
-                         canvas.translate(0,statusBarHeight);
-                         for (int k = 0; k < arr.length; k++) {
-                             canvas.drawText(arr[k],0,arr[k].length(),0,k*textSize,mPaint);
-                         }
-                         canvas.restore();
-                         bitmapLinkedList.add(bitmap);
-                         arr=new String[linePageSum];
-                         line_flag=0;
-
-                     }
+                 }
+                 //每行结尾拆分
+                 if((l==(ss.length-1))&&line_width>0){
+                     line_list.add(contentArr[i].substring(start,ss.length));
                  }
              }
-             //todo 判断是否还有剩余
 
+         }
+
+         canvas.translate(0,statusBarHeight);
+         int line_count=0;
+         Bitmap bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+         canvas.setBitmap(bitmap);
+         for (int i = 0; i < line_list.size(); i++) {
+             String str=line_list.get(i);
+             canvas.drawText(str,0,str.length(),0,line_count*textSize,mPaint);
+             line_count++;
+            if(line_count==linePageSum){
+                line_count=0;
+                //绘制当前页所有文字，并添加到list中
+                bitmapLinkedList.add(bitmap);
+                bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
+                canvas.setBitmap(bitmap);
+            }
+         }
+         if(line_count>0){
+             bitmapLinkedList.add(bitmap);
          }
      }
 

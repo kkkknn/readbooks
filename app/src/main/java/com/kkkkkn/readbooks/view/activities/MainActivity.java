@@ -187,38 +187,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
 
-   /* @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void syncProgress(MessageEvent event){
-        switch(event.message){
-            case DOWNLOAD_PROGRESS:
-                mBuilder.setProgress(100,(int)event.value,false);
-                mNotifyManager.notify(1,mBuilder.build());
-                Log.i(TAG, "syncProgress: "+(int)event.value);
-                break;
-            case DOWNLOAD_SUCCESS:
-                //下载完成后 调用安装APK
-                File apk=new File((String) event.value);
-                //File apk=new File("/sdcard/app-debug (1).apk");
-                Log.i(TAG, "syncProgress: "+(String) event.value);
-                if(apk.exists()){
-                    installApk(apk);
-                }
-                break;
-            case SYNC_DIALOG:
-                showUpdateDialog(event.value);
-                break;
-            case SYNC_BOOKSHELF:
-                Log.i(TAG, "syncProgress: 接收到了");
-                //ArrayList<BookInfo> list=(ArrayList<BookInfo>) event.value;
-                //syncBookShelf(list);
-                break;
-            case SYNC_SEARCH_RESULT:
-                Log.i(TAG, "syncProgress: 1111111111111");
-                break;
-        }
-
-    }*/
-
     private void showUpdateDialog(Object object){
         JSONObject jsonObject=(JSONObject)object;
         String code= null;
@@ -329,6 +297,13 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         return ApkDirPath;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(presenter_main!=null){
+            presenter_main.getBookShelfList();
+        }
+    }
 
     @Override
     public void syncBookShelf(final ArrayList<BookInfo> list) {

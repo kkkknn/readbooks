@@ -36,6 +36,8 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
             loginActivityView.showMsgDialog(-1,"登陆失败");
             return;
         }
+        this.name=name;
+        this.password=password;
         EventBus.getDefault().post(new LoginEvent(EventMessage.LOGIN,name,password));
     }
 
