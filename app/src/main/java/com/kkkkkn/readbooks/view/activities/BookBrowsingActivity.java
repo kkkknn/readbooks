@@ -46,55 +46,6 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private Presenter_Browsing presenterBrowsing;
 
 
-    /*private Handler mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case 22:
-                    chapterContent = (String[]) msg.obj;
-                    if (chapterContent != null && chapterContent.length > 0) {
-                        browsingVIew.setTextContent(chapterContent);
-                        browsingVIew.setTextColor(Color.BLACK);
-                        browsingVIew.setTextSize(40f);
-                        browsingVIew.setProgress(readProgress);
-                        browsingVIew.invalidate();
-
-                    }
-                    //接收完成,隐藏遮罩层
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
-                    }
-                    break;
-                case 23:
-                    chapterContent = (String[]) msg.obj;
-                    if (chapterContent != null && chapterContent.length > 0) {
-                        browsingVIew.setTextContent(chapterContent);
-                        browsingVIew.setTextColor(Color.BLACK);
-                        browsingVIew.setTextSize(40f);
-                        browsingVIew.setProgress(readProgress);
-                        browsingVIew.invalidate();
-                    }
-                    //接收完成,隐藏遮罩层
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
-                    }
-                    break;
-                case 11://显示加载框遮罩层
-                    if (progressDialog != null) {
-                        progressDialog.show();
-                    }
-                    break;
-                case 12://出错，隐藏加载框遮罩层
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
-                    }
-                    break;
-
-            }
-            return false;
-        }
-    });*/
-
     //静态广播
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -128,18 +79,21 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         browsingVIew.setListener(new BookCallback() {
             @Override
             public void jump2nextChapter() {
-                //todo 修改跳转章节
                 Log.i(TAG, "jump2nextChapter: 跳转到下一章节");
-                if(chapterCount<chapterList.size()){
-                    ChapterInfo chapterInfo=chapterList.get(chapterCount);
-                    int count=chapterInfo.getChapter_num();
-                    if(count==bookInfo.getChapterSum()){
-                        Toast.makeText(getApplicationContext(),"已无更多章节",Toast.LENGTH_SHORT).show();
-                    }else {
+                ChapterInfo chapterInfo=chapterList.get(chapterCount);
+                int count=chapterInfo.getChapter_num();
+                if(count==bookInfo.getChapterSum()){
+                    Toast.makeText(getApplicationContext(),"已无更多章节",Toast.LENGTH_SHORT).show();
+                }else {
+                    if(chapterCount<(chapterList.size()-1)){
+                        ChapterInfo next_chapter_info=chapterList.get(++chapterCount);
+                        presenterBrowsing.getChapterContent(next_chapter_info.getChapter_path());
+                    }else{
                         presenterBrowsing.getChapterList(bookInfo.getBookId(), count+1);
                     }
-
                 }
+
+
 
             }
 
@@ -236,46 +190,6 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
     }
 
-
-    //初始化相关数据:章节列表，文字内容
-    private void resetChapterData(int page, int type) {
-        //获取图书的当前页章节名及链接并添加chapterList
-        //开启线程，获取当前页章节列表
-       /* JsoupUtilImp util = JsoupUtilImp.getInstance().setSource(bookInfo.getBookFromType());
-        try {
-            String value = util.getBookChapterList(thisPageUrl);
-            JSONArray jsonArray = (JSONArray) new JSONObject(value).get("chapters");
-            chapterList.clear();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                String[] arr = new String[2];
-                arr[0] = (String) jsonObject.get("chapterName");
-                arr[1] = (String) jsonObject.get("chapterUrl");
-                chapterList.add(arr);
-            }
-            switch (type){
-                case 1:
-                    chapterFlag = chapterList.size() - 1;
-                    break;
-                case 2:
-                    chapterFlag = 0;
-                    break;
-                default:
-                    break;
-            }
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        } finally {
-            //获取章节内容
-            if (chapterList.size() > 0) {
-                new GetContentThread(chapterList.get(chapterFlag)[1], bookInfo.getBookFromType()).start();
-                //只显示当前章节名字 和当前时间，
-                //browsingVIew.setChapterNameStr(chapterList.get(chapterFlag)[0]);
-                //browsingVIew.setProgressStr(chapterFlag +"/"+chapterList.size());
-            }
-        }*/
-    }
-
     @Override
     public void showMsgDialog(final int type, final String msg) {
         runOnUiThread(new Runnable() {
@@ -292,6 +206,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
     @Override
     public void syncChapterList(ArrayList<ChapterInfo> list) {
+        //刷新章节列表
         chapterList.addAll(list);
         //修改后的章节列表 根据章节ID进行从新排序，并更新chapterCount的值
         Collections.sort(chapterList);
@@ -310,7 +225,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
     @Override
     public void syncReadView(JSONArray jsonArray) {
-
+        Log.i(TAG, "syncReadView: 刷新章节内容");
         //设置view的字符串，并且刷新并重新绘制
         int len=jsonArray.length();
         final String[] arrs=new String[len];

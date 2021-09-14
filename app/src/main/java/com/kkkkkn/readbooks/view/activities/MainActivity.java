@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -72,10 +73,10 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         AccountInfo info=presenter_main.getToken();
         if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
             toLoginActivity();
+        }else{
+            presenter_main.getBookShelfList();
+            //todo 检查APK更新
         }
-        presenter_main.getBookShelfList();
-        //todo 检查APK更新
-
     }
 
     private void checkPermission(){
@@ -91,6 +92,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                         startActivity(intent);
                     }
                 }).show();
+
         }
     }
 

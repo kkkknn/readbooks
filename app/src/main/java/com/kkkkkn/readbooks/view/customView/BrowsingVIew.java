@@ -151,7 +151,10 @@ public class BrowsingVIew extends View {
                 //计算偏移量及行数，每行字数
                 textLineSum = (int) Math.ceil(mViewWidth / (double) textSize);
                 linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight) / (double)textSize);
-                text2bitmap();
+
+                if(contentArr!=null&&bitmapLinkedList.size()==0){
+                    text2bitmap();
+                }
             }
         });
     }
@@ -168,7 +171,7 @@ public class BrowsingVIew extends View {
     }
 
     private void text2bitmap(){
-        if(contentArr==null){
+        if(contentArr==null||contentArr.length==0){
             return;
         }
         Canvas canvas=new Canvas();
@@ -193,8 +196,7 @@ public class BrowsingVIew extends View {
             }
 
         }
-
-        canvas.translate(0,statusBarHeight);
+        canvas.translate(0,statusBarHeight+ ((int) textSize >> 1));
         int line_count=0;
         Bitmap bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
         canvas.setBitmap(bitmap);
@@ -213,6 +215,13 @@ public class BrowsingVIew extends View {
         if(line_count>0){
             bitmapLinkedList.add(bitmap);
         }
+
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                invalidate();
+            }
+        });
     }
 
     public void setTextColor(int textColor) {
@@ -223,13 +232,17 @@ public class BrowsingVIew extends View {
 
     public void setTextContent(String[] content) {
         this.contentArr=content;
-
         //根据章节重新设置3个页面的进度
         mClipX = -1;
         offsetX=0;
         drawStyle=0;
-
+        if(mViewWidth>0&&mViewHeight>0){
+            //处理章节函数，章节转换为bitmap
+            text2bitmap();
+        }
     }
+
+
 
     @Override
     public boolean performClick() {
@@ -327,10 +340,8 @@ public class BrowsingVIew extends View {
     //绘制阅读界面 2个页面  1，当前页面  2，根据当前手势判断绘制上一页/下一页
     private void drawBitmap(Canvas canvas) {
         //判断是否需要绘制
-        if(contentArr==null||contentArr.length==0){
-            Log.i(TAG, "drawBitmap: 超出长度或没有文字内容，忽略绘制");
-            //todo  展示加载框
-
+        if(contentArr==null||bitmapLinkedList.size()==0){
+            Log.i(TAG, "drawBitmap: 超出长度或没有文字内容，忽略绘制"+Boolean.toString(contentArr==null)+"||"+bitmapLinkedList.size());
             return;
         }
         canvas.save();
