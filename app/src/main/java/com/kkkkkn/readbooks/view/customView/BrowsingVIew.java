@@ -22,7 +22,13 @@ import com.kkkkkn.readbooks.view.activities.BookBrowsingActivity;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import static com.kkkkkn.readbooks.view.customView.BrowsingVIew.FlushType.NEXT_PAGE;
+import static com.kkkkkn.readbooks.view.customView.BrowsingVIew.FlushType.THIS_PAGE;
+
 public class BrowsingVIew extends View {
+    public enum FlushType{
+        THIS_PAGE,LAST_PAGE,NEXT_PAGE;
+    }
     private final static String TAG="BrowsingVIew";
     //当前时间字符串
     private String timeStr;
@@ -150,10 +156,10 @@ public class BrowsingVIew extends View {
                 textSize=(float) mViewWidth/12;
                 //计算偏移量及行数，每行字数
                 textLineSum = (int) Math.ceil(mViewWidth / (double) textSize);
-                linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight) / (double)textSize);
+                linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight-((int)textSize>>1)) / (double)textSize);
 
                 if(contentArr!=null&&bitmapLinkedList.size()==0){
-                    text2bitmap();
+                    text2bitmap(THIS_PAGE);
                 }
             }
         });
@@ -164,13 +170,13 @@ public class BrowsingVIew extends View {
         this.textSize = textSize;
         if(mViewWidth>0&&mViewHeight>0){
             textLineSum = (int) Math.ceil(mViewWidth / (double) textSize);
-            linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight) / (double)textSize);
-            text2bitmap();
+            linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight -((int)textSize>>1)) / (double)textSize);
+            text2bitmap(FlushType.THIS_PAGE);
         }
 
     }
 
-    private void text2bitmap(){
+    private void text2bitmap(FlushType type){
         if(contentArr==null||contentArr.length==0){
             return;
         }
@@ -195,6 +201,16 @@ public class BrowsingVIew extends View {
                 }
             }
 
+        }
+        //判断渲染的方向
+        switch (type){
+            case LAST_PAGE:
+                break;
+            case NEXT_PAGE:
+                break;
+            default:
+                //当前页面的渲染，不进行添加
+                break;
         }
         canvas.translate(0,statusBarHeight+ ((int) textSize >> 1));
         int line_count=0;
@@ -230,7 +246,7 @@ public class BrowsingVIew extends View {
     }
 
 
-    public void setTextContent(String[] content) {
+    public void setTextContent(String[] content,FlushType type) {
         this.contentArr=content;
         //根据章节重新设置3个页面的进度
         mClipX = -1;
@@ -238,7 +254,8 @@ public class BrowsingVIew extends View {
         drawStyle=0;
         if(mViewWidth>0&&mViewHeight>0){
             //处理章节函数，章节转换为bitmap
-            text2bitmap();
+            //根据设置的章节方向，决定渲染图添加到前页还是后页
+            text2bitmap(type);
         }
     }
 

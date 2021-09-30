@@ -71,6 +71,8 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
                         accountInfo.getAccount_token(),
                         accountInfo.getAccount_id(),
                         chapterUrl));
+        //todo 调用显示主页面加载框
+        browsingActivityView.setLoading(true);
     }
 
 
@@ -102,6 +104,7 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
                 break;
             case 1002:
                 browsingActivityView.syncReadView((JSONArray) object);
+                browsingActivityView.setLoading(false);
                 break;
 
         }

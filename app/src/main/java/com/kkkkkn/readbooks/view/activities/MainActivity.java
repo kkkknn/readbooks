@@ -267,7 +267,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 e.printStackTrace();
             }
             //弹出安装界面
-                startActivity(intent);
+            startActivity(intent);
         } else {
             Log.i(TAG, "installApk: 不是apk文件!");
         }

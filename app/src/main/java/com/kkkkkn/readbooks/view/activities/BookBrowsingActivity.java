@@ -41,6 +41,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private ArrayList<String> contentList=new ArrayList<>();
     private BrowsingVIew browsingVIew;
     private ProgressDialog progressDialog;
+    private ProgressDialog loadingDialog;
     private BookInfo bookInfo;
     private float readProgress;
     private Presenter_Browsing presenterBrowsing;
@@ -236,7 +237,17 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
                 e.printStackTrace();
             }
         }
-        browsingVIew.setTextContent(arrs);
+        browsingVIew.setTextContent(arrs, BrowsingVIew.FlushType.THIS_PAGE);
+    }
+
+    @Override
+    public void setLoading(boolean type) {
+        //根据设置显示、隐藏加载框
+        if(type){
+
+        }else{
+
+        }
     }
 
 
@@ -244,22 +255,21 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     protected void onDestroy() {
         super.onDestroy();
         //写入当前浏览记录到数据库
-        presenterBrowsing.setBookProgress(bookInfo.getBookId(),chapterCount);
+        ChapterInfo info=chapterList.get(chapterCount);
+        presenterBrowsing.setBookProgress(bookInfo.getBookId(),info.getChapter_num());
         presenterBrowsing.release();
         //取消注册静态广播
         unregisterReceiver(broadcastReceiver);
-
     }
 
     public interface BookCallback {
         void jump2nextChapter();
         void jump2lastChapter();
         void showSetting();
-
     }
 
 
-    //弹出设置dialog
+    //弹出设置dialog 动画弹出
     private void showSettingDialog() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.setting_dialog);
