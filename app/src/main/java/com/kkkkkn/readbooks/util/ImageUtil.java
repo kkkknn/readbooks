@@ -23,7 +23,7 @@ public class ImageUtil {
                         .addHeader("accountId", Integer.toString(sharedPreferences.getInt("account_id",-1)))
                         .addHeader("token", Objects.requireNonNull(sharedPreferences.getString("account_token", "")))
                         .build());
-         Glide.with(context).load(glideUrl).into(imageView);;
+         Glide.with(context).load(glideUrl).into(imageView);
     }
 
 }
