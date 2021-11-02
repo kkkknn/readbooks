@@ -12,7 +12,7 @@ public class SettingConf implements Serializable {
     public String fontFamily;
     //字体颜色
     public int fontColor;
-    //背景图样式
+    //背景图样式,示例
     public int backgroundStyle;
     //当前亮度 为0 情况则使用系统亮度
     public int brightness;

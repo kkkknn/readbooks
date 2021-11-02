@@ -3,6 +3,7 @@ package com.kkkkkn.readbooks.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -35,6 +36,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Model_Browsing extends BaseModel{
@@ -63,7 +65,7 @@ public class Model_Browsing extends BaseModel{
      * @param token 用户token
      * @param path  章节存储路径
      */
-    private void getChapterContent(int accountId, String token, String path) {
+    private void getChapterContent(int accountId, String token,final String path) {
         FormBody.Builder formBody = new FormBody.Builder();
         formBody.add("chapter_path", path);
 
@@ -82,8 +84,8 @@ public class Model_Browsing extends BaseModel{
                     JSONObject ret_json=new JSONObject(ret_str);
                     String ret_code=ret_json.getString("code");
                     if(ret_code.equals("success")){
-                        JSONArray jsonArray=(JSONArray) ret_json.get("data");
-                        getCallBack().onSuccess(1002,jsonArray);
+                        ret_json.put("url",path);
+                        getCallBack().onSuccess(1002,ret_json);
                     }else if(ret_code.equals("error")){
                         getCallBack().onError(-1002,(String) ret_json.get("data"));
                     }else{

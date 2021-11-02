@@ -53,4 +53,13 @@ public class StringUtil {
         }
         return "";
     }
+
+    //章节链接转换为文件名
+    public static String Url2fileName(String chapterUrl) {
+        if(chapterUrl==null||chapterUrl.isEmpty()){
+            return null;
+        }
+        String[] path_arr=chapterUrl.split("/");
+        return path_arr[4]+path_arr[5]+path_arr[7];
+    }
 }

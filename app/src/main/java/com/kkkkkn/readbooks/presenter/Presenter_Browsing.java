@@ -1,6 +1,7 @@
 package com.kkkkkn.readbooks.presenter;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_BookInfo;
@@ -8,6 +9,8 @@ import com.kkkkkn.readbooks.model.Model_Browsing;
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
+import com.kkkkkn.readbooks.util.ChapterUtil;
+import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.events.BrowsingEvent;
 import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
@@ -24,6 +27,7 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
     private BrowsingActivityView browsingActivityView;
     private Model_Browsing model_browsing;
     private final static int PAGE_SIZE=20;
+    private final static String TAG="Presenter_Browsing";
 
     public Presenter_Browsing(Context context, BrowsingActivityView view) {
         super(context,new Model_Browsing());
@@ -65,14 +69,30 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
             onError(-2,"获取用户信息失败");
             return;
         }
-        EventBus.getDefault().post(
-                new BrowsingEvent(
-                        EventMessage.GET_CHAPTER_CONTENT,
-                        accountInfo.getAccount_token(),
-                        accountInfo.getAccount_id(),
-                        chapterUrl));
-        //todo 调用显示主页面加载框
+        //显示加载框
         browsingActivityView.setLoading(true);
+        //读取判断是否有缓存
+        String[] arr=null;
+        String fileName=null;
+        fileName= StringUtil.Url2fileName(chapterUrl);
+        arr=ChapterUtil.readCacheChapter(getContext().getFilesDir().getAbsolutePath(),fileName);
+        if(arr==null){
+            //请求网络获取文章内容
+            EventBus.getDefault().post(
+                    new BrowsingEvent(
+                            EventMessage.GET_CHAPTER_CONTENT,
+                            accountInfo.getAccount_token(),
+                            accountInfo.getAccount_id(),
+                            chapterUrl));
+        }else {
+            JSONArray jsonArray=new JSONArray();
+            for (String str:arr) {
+                jsonArray.put(str);
+            }
+            arr=null;
+            browsingActivityView.syncReadView(jsonArray);
+            browsingActivityView.setLoading(false);
+        }
     }
 
 
@@ -103,8 +123,27 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
                 browsingActivityView.syncChapterList((ArrayList<ChapterInfo>) object);
                 break;
             case 1002:
-                browsingActivityView.syncReadView((JSONArray) object);
-                browsingActivityView.setLoading(false);
+                //写入读取到的章节缓存
+                JSONObject jsonObject=(JSONObject)object;
+                JSONArray jsonArray= null;
+                String chapterUrl=null;
+                try {
+                    chapterUrl=jsonObject.getString("url");
+                    jsonArray = jsonObject.getJSONArray("data");
+                    String fileName= StringUtil.Url2fileName(chapterUrl);
+                    if(!ChapterUtil.cacheChapter(jsonArray,getContext().getFilesDir().getAbsolutePath(),fileName)){
+                        Log.e(TAG, "onSuccess:  缓存章节失败");
+                    }else {
+                        Log.i(TAG, "onSuccess: 缓存章节成功");
+                    }
+                    browsingActivityView.syncReadView((JSONArray) jsonArray);
+                    browsingActivityView.setLoading(false);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
                 break;
 
         }
@@ -117,6 +156,7 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
                 browsingActivityView.showMsgDialog(type,(String) object);
                 break;
             case -1002:
+                browsingActivityView.setLoading(false);
                 browsingActivityView.showMsgDialog(type,(String) object);
                 break;
             case -2:
