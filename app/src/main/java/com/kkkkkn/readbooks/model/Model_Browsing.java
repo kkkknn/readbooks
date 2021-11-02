@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,7 +41,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Model_Browsing extends BaseModel{
-
+    private static final String cachePath="cache";
+    private static final String TAG="Model_Browsing";
     @Subscribe
     public void syncProgress(BrowsingEvent event) {
         switch (event.message){
@@ -160,7 +162,8 @@ public class Model_Browsing extends BaseModel{
     }
 
     public int getReadProgress(int book_id,Context context) {
-        String str=getProgressString(context);
+        String path=context.getFilesDir().getAbsolutePath();
+        String str=getProgressString(path+"");
         JSONObject jsonObject= null;
         int flag=1;
         try {
@@ -173,7 +176,8 @@ public class Model_Browsing extends BaseModel{
     }
 
     public boolean setReadProgress(int book_id,int progress,Context context){
-        String str=getProgressString(context);
+        String path=context.getFilesDir().getAbsolutePath()+cachePath;
+        String str=getProgressString(path);
         JSONObject jsonObject= null;
         try {
             if(StringUtil.isEmpty(str)){
@@ -186,7 +190,7 @@ public class Model_Browsing extends BaseModel{
             e.printStackTrace();
             return false;
         }
-        return setProgressString(jsonObject.toString(),context);
+        return setProgressString(jsonObject.toString(),path);
     }
 
     /**
@@ -233,12 +237,17 @@ public class Model_Browsing extends BaseModel{
     }
 
     //获取写入的json字符串
-    private String getProgressString(Context context){
+    private String getProgressString(String path){
         FileInputStream fileInputStream;
         BufferedReader reader = null;
         StringBuilder content = new StringBuilder();
         try {
-            fileInputStream=context.openFileInput("book_progress");
+            File file=new File(path+"/book_progress");
+            if(!file.exists()||!file.isFile()){
+                Log.e(TAG, "getProgressString: 未找到章节记录文件");
+                return null;
+            }
+            fileInputStream=new FileInputStream(path+"/book_progress");
             reader = new BufferedReader(new InputStreamReader(fileInputStream));
             String tmp = "";
             while((tmp = reader.readLine()) != null){
@@ -259,11 +268,16 @@ public class Model_Browsing extends BaseModel{
     }
 
     //写入读书进度的json字符串
-    private boolean setProgressString(String str,Context context){
+    private boolean setProgressString(String str,String path){
         boolean flag=false;
         FileOutputStream fileOutputStream=null;
         try {
-            fileOutputStream=context.openFileOutput("book_progress",Context.MODE_PRIVATE);
+            File file=new File(path);
+            if(!file.exists())
+            {
+                file.mkdirs();
+            }
+            fileOutputStream=new FileOutputStream(path+"/book_progress");
             fileOutputStream.write(str.getBytes("UTF-8"));
             fileOutputStream.flush();
             flag=true;

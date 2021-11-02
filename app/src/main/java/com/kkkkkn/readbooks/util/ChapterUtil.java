@@ -32,10 +32,15 @@ public class ChapterUtil {
         FileOutputStream out = null;
         BufferedWriter writer = null;
         try{
+            File file=new File(path+filePath);
+            if(!file.exists()){
+                file.mkdirs();
+            }
             out = new FileOutputStream(new File(path+filePath+fileName));
             writer = new BufferedWriter(new OutputStreamWriter(out));
             for (int i = 0; i < jsonArray.length(); i++) {
                 writer.write(jsonArray.getString(i));
+                writer.newLine();
             }
             writer.flush();
             return true;
@@ -63,17 +68,19 @@ public class ChapterUtil {
         BufferedReader reader = null;
         ArrayList<String> arrayList=new ArrayList<String>();
         try{
-            File file=new File(filePath+fileName);
-            if(!file.exists()){
-                file.mkdirs();
+            File file=new File(path+filePath+fileName);
+            if(!file.exists()||!file.isFile()){
+                Log.e(TAG, "readCacheChapter: 未找到缓存文件");
+                return null;
             }
-            inputStream = new FileInputStream(path+filePath+fileName);
+            inputStream = new FileInputStream(file);
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String temp="";
             while ((temp=reader.readLine())!=null){
                 arrayList.add(temp);
             }
-            return (String[])arrayList.toArray();
+            int len=arrayList.size();
+            return (String[])arrayList.toArray(new String[len]);
         }catch (IOException e){
             e.printStackTrace();
             return null;
