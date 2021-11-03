@@ -141,7 +141,6 @@ public class Model_Main extends BaseModel {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 //解析返回值
                 String ret_str=response.body().string();
-                Log.i(TAG, "onResponse: "+ret_str);
                 if(!StringUtil.isEmpty(ret_str)){
                     try {
                         JSONObject jsonObject = new JSONObject(ret_str);

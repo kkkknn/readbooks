@@ -14,6 +14,9 @@ import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Presenter_Main extends BasePresenter implements BaseModel.CallBack {
@@ -56,21 +59,22 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
     }
 
     /**
-     *获取当前应用版本号
-     * @return 版本号字符串 "1.0.1"
+     * 检查当前应用版本号
+     * @return boolean 是否需要更新
      */
-    private String getLocalVersion(){
+    private boolean checkVersion(String jsonStr){
         PackageManager manager = getContext().getPackageManager();
-        PackageInfo info = null;
-        String version="";
         try {
-            info = manager.getPackageInfo(getContext().getPackageName(), 0);
-            version = info.versionName;
-            Log.i(TAG, "checkUpdate: "+version);
-        } catch (PackageManager.NameNotFoundException e) {
+            JSONObject jsonObject=new JSONObject(jsonStr);
+            String online_version=jsonObject.getString("version");
+            PackageInfo info = manager.getPackageInfo(getContext().getPackageName(), 0);
+            if(online_version.compareTo(info.versionName)>0){
+                return true;
+            }
+        } catch (PackageManager.NameNotFoundException | JSONException e) {
             e.printStackTrace();
         }
-        return version;
+        return false;
     }
 
     /**
@@ -89,7 +93,6 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
                         EventMessage.GET_VERSION,
                         accountInfo.getAccount_id(),
                         accountInfo.getAccount_token()));
-
 
     }
 
@@ -113,6 +116,7 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
                         accountInfo.getAccount_token()));
 
 
+
     }
 
 
@@ -123,7 +127,21 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
                 mainActivityView.syncBookShelf((ArrayList<BookInfo>) object);
                 break;
             case 2001:
-                mainActivityView.showUpdateDialog((String) object);
+                if(checkVersion((String)object)){
+                    JSONObject jsonObject= null;
+                    String code= null;
+                    String url= null;
+                    String verStr= null;
+                    try {
+                        jsonObject = new JSONObject((String) object);
+                        code = jsonObject.getString("version");
+                        url = jsonObject.getString("downloadUrl");
+                        verStr = jsonObject.getString("message");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    mainActivityView.showUpdateDialog(verStr,url,code);
+                }
                 break;
             case 3001:
                 Log.i(TAG, "onSuccess: "+object);

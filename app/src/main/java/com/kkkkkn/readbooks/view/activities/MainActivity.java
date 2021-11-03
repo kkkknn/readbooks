@@ -33,6 +33,7 @@ import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
+import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -50,11 +51,8 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity implements MainActivityView {
     private final static String TAG="主界面";
     private long lastBackClick;
-    private String ApkDirPath="";
-    private String ApkName="";
     private NotificationManager mNotifyManager;
     private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
-    private Notification.Builder mBuilder=null;
     private Presenter_Main presenter_main;
     private BookShelfAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -75,7 +73,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             toLoginActivity();
         }else{
             presenter_main.getBookShelfList();
-            //todo 检查APK更新
             presenter_main.checkUpdate();
         }
     }
@@ -240,22 +237,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         startActivity(intent);
     }
 
-    //初始化保存目录，没有进行创建
-    private String getDir(){
-        //是否插入SD卡
-        String status = Environment.getExternalStorageState();
-        boolean isSDCard=status.equals(Environment.DIRECTORY_DOWNLOADS);
-        if(isSDCard){
-            ApkDirPath=getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-        }else{
-            ApkDirPath=getApplicationContext().getFilesDir().getAbsolutePath();
-        }
-        File file=new File(ApkDirPath);
-        if(!file.exists()){
-            file.mkdirs();
-        }
-        return ApkDirPath;
-    }
 
     @Override
     protected void onStart() {
@@ -281,39 +262,25 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     @Override
-    public void showUpdateDialog(final String msg) {
+    public void showUpdateDialog(final String msg,final String url,final String version) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                JSONObject jsonObject= null;
-                String code= null;
-                String url= null;
-                String verStr= null;
-                try {
-                    jsonObject = new JSONObject(msg);
-                    code = jsonObject.getString("version");
-                    url = jsonObject.getString("downloadUrl");
-                    verStr = jsonObject.getString("message");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if(code!=null&&url!=null&&verStr!=null){
+                if(!StringUtil.isEmpty(version)&&!StringUtil.isEmpty(msg)&&!StringUtil.isEmpty(url)){
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("检测到新版本");
-                    builder.setMessage(verStr);
+                    builder.setMessage(msg);
                     builder.setIcon(R.mipmap.ic_launcher);
                     builder.setCancelable(false);            //点击对话框以外的区域是否让对话框消失
 
                     //设置正面按钮
-                    final String name = code+".apk";
+                    final String name = version+".apk";
                     final String path = getApplicationContext().getFilesDir().getAbsolutePath()+"/apks/";
-                    final String finalUrl = url;
                     builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            Log.i(TAG, "onClick: "+name+"||"+path+"||"+finalUrl);
-                            presenter_main.updateAPK(name,path,finalUrl);
+                            presenter_main.updateAPK(name,path,url);
                         }
                     });
                     //设置反面按钮
