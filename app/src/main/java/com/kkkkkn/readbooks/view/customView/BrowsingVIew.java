@@ -63,10 +63,6 @@ public class BrowsingVIew extends View {
     private boolean isAdsorb = false;
     //当前页起止标志
     private int thisPage_flag=0;
-    //当前页bitmap
-    private static Bitmap thisBitmap = null;
-    //绘制翻页锚点
-    private ArrayList<int[]> skipList=new ArrayList<>();
     //状态栏高度
     private int statusBarHeight;
     //绘图相关变量
@@ -74,7 +70,7 @@ public class BrowsingVIew extends View {
     private float read_progress;
 
     private Paint mPaint;
-    private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
+    private final Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
     private LinkedList<Bitmap> bitmapLinkedList=new LinkedList<>();
     private int bitmap_flag=0;
 
@@ -171,7 +167,7 @@ public class BrowsingVIew extends View {
         if(mViewWidth>0&&mViewHeight>0){
             textLineSum = (int) Math.ceil(mViewWidth / (double) textSize);
             linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight -((int)textSize>>1)) / (double)textSize);
-            text2bitmap(FlushType.THIS_PAGE);
+            text2bitmap(THIS_PAGE);
         }
 
     }
@@ -202,16 +198,7 @@ public class BrowsingVIew extends View {
             }
 
         }
-        //判断渲染的方向
-        switch (type){
-            case LAST_PAGE:
-                break;
-            case NEXT_PAGE:
-                break;
-            default:
-                //当前页面的渲染，不进行添加
-                break;
-        }
+        bitmapLinkedList.clear();
         canvas.translate(0,statusBarHeight+ ((int) textSize >> 1));
         int line_count=0;
         Bitmap bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
@@ -230,6 +217,16 @@ public class BrowsingVIew extends View {
         }
         if(line_count>0){
             bitmapLinkedList.add(bitmap);
+        }
+        switch (type){
+            case LAST_PAGE:
+                bitmap_flag=bitmapLinkedList.size()-1;
+                break;
+            case THIS_PAGE:
+            case NEXT_PAGE:
+            default:
+                bitmap_flag=0;
+                break;
         }
 
         this.post(new Runnable() {

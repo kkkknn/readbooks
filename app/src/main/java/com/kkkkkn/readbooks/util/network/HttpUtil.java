@@ -12,11 +12,11 @@ public class HttpUtil {
     private HttpUtil() {
         okHttpClient=new OkHttpClient().newBuilder()
                 //访问超时
-                .callTimeout(5, TimeUnit.SECONDS)
+                .callTimeout(2, TimeUnit.MINUTES)
                 //读取超时
-                .readTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
                 //写入超时
-                .writeTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
                 .build();
 
     }
@@ -32,8 +32,22 @@ public class HttpUtil {
         return httpUtil;
     }
 
-    public void post(Request request,Callback callback){
-        okHttpClient.newCall(request).enqueue(callback);
+    public void post(final Request request,final Callback callback){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                okHttpClient.newCall(request).enqueue(callback);
+            }
+        }).start();
+    }
+
+    public void get(final Request request,final Callback callback){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                okHttpClient.newCall(request).enqueue(callback);
+            }
+        }).start();
     }
 
 }

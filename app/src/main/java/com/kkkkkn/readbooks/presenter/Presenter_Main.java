@@ -10,8 +10,6 @@ import com.kkkkkn.readbooks.model.Model_Main;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.util.eventBus.events.MainEvent;
-import com.kkkkkn.readbooks.util.network.DownloadListener;
-import com.kkkkkn.readbooks.util.network.DownloadUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
@@ -99,33 +97,39 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
      * 弹窗显示更新APK
      */
     public void updateAPK(final String name,final String path,final String url){
-        DownloadUtil.downloadFile(name,url,path,new DownloadListener() {
-            @Override
-            public void onSuccess() {
-                //EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_SUCCESS,path+"/"+name));
+        AccountInfo accountInfo=getAccountCache();
+        if(!accountInfo.isHasToken()){
+            onError(-2,"获取用户信息失败");
+            return;
+        }
+        //在线获取最新版本号
+        EventBus.getDefault().post(
+                new MainEvent(
+                        EventMessage.DOWNLOAD_APK,
+                        name,
+                        path,
+                        url,
+                        accountInfo.getAccount_id(),
+                        accountInfo.getAccount_token()));
 
-            }
 
-            @Override
-            public void onProgress(int i) {
-                //EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_PROGRESS,(int)i));
-            }
-
-            @Override
-            public void onError(Exception e) {
-                //EventBus.getDefault().post(new MessageEvent(EventMessage.DOWNLOAD_ERROR,e));
-
-            }
-        });
     }
 
 
     @Override
     public void onSuccess(int type, Object object) {
         switch (type){
-            case 1:
+            case 1001:
                 mainActivityView.syncBookShelf((ArrayList<BookInfo>) object);
                 break;
+            case 2001:
+                mainActivityView.showUpdateDialog((String) object);
+                break;
+            case 3001:
+                Log.i(TAG, "onSuccess: "+object);
+                break;
+            case 3002:
+                Log.i(TAG, "onSuccess: 进度 "+object);
             default:
                 break;
         }
@@ -134,10 +138,13 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
     @Override
     public void onError(int type, Object object) {
         switch (type){
-            case -1:
+            case -1001:
+            case -2001:
+            case -2002:
+            case -3001:
                 Log.i(TAG, (String) object);
                 break;
-            case -2:
+            case -1002:
                 String str=(String) object;
                 if(str.equals("令牌验证失败，请重新尝试")){
                     mainActivityView.toLoginActivity();

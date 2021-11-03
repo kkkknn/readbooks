@@ -76,6 +76,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         }else{
             presenter_main.getBookShelfList();
             //todo 检查APK更新
+            presenter_main.checkUpdate();
         }
     }
 
@@ -189,49 +190,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
 
-    private void showUpdateDialog(Object object){
-        JSONObject jsonObject=(JSONObject)object;
-        String code= null;
-        String url= null;
-        String verStr= null;
-        try {
-            code = jsonObject.getString("version");
-            url = jsonObject.getString("downloadUrl");
-            verStr = jsonObject.getString("message");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if(code!=null&&url!=null&&verStr!=null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("检测到新版本");
-            builder.setMessage(verStr);
-            builder.setIcon(R.mipmap.ic_launcher);
-            builder.setCancelable(false);            //点击对话框以外的区域是否让对话框消失
-
-            //设置正面按钮
-            final String name = code+".apk";
-            final String path = Environment.getExternalStorageDirectory().getPath();
-            final String finalUrl = url;
-            builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    Log.i(TAG, "onClick: "+name+"||"+path+"||"+finalUrl);
-                    //Presenter_Main.getInstance().updateAPK(name,path,finalUrl);
-                }
-            });
-            //设置反面按钮
-            builder.setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog alertdialog = builder.create();
-            alertdialog.show();
-        }
-    }
-
 
     //安装APK
     private void installApk(File apk){
@@ -323,7 +281,54 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     @Override
-    public void showUpdateDialog(String msg) {
+    public void showUpdateDialog(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                JSONObject jsonObject= null;
+                String code= null;
+                String url= null;
+                String verStr= null;
+                try {
+                    jsonObject = new JSONObject(msg);
+                    code = jsonObject.getString("version");
+                    url = jsonObject.getString("downloadUrl");
+                    verStr = jsonObject.getString("message");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(code!=null&&url!=null&&verStr!=null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("检测到新版本");
+                    builder.setMessage(verStr);
+                    builder.setIcon(R.mipmap.ic_launcher);
+                    builder.setCancelable(false);            //点击对话框以外的区域是否让对话框消失
+
+                    //设置正面按钮
+                    final String name = code+".apk";
+                    final String path = getApplicationContext().getFilesDir().getAbsolutePath()+"/apks/";
+                    final String finalUrl = url;
+                    builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            Log.i(TAG, "onClick: "+name+"||"+path+"||"+finalUrl);
+                            presenter_main.updateAPK(name,path,finalUrl);
+                        }
+                    });
+                    //设置反面按钮
+                    builder.setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alertdialog = builder.create();
+                    alertdialog.show();
+                }
+            }
+        });
 
     }
 

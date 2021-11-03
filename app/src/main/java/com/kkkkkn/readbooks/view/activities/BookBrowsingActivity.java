@@ -38,13 +38,13 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private final static String TAG = "BookBrowsingActivity";
     private ArrayList<ChapterInfo> chapterList = new ArrayList<>();
     private int chapterCount = 0;
-    private ArrayList<String> contentList=new ArrayList<>();
     private BrowsingVIew browsingVIew;
     private ProgressDialog progressDialog;
     private ProgressDialog loadingDialog;
     private BookInfo bookInfo;
     private float readProgress;
     private Presenter_Browsing presenterBrowsing;
+    private BrowsingVIew.FlushType flushType;
 
 
     //静态广播
@@ -86,6 +86,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
                 if(count==bookInfo.getChapterSum()){
                     Toast.makeText(getApplicationContext(),"已无更多章节",Toast.LENGTH_SHORT).show();
                 }else {
+                    flushType=BrowsingVIew.FlushType.NEXT_PAGE;
                     if(chapterCount<(chapterList.size()-1)){
                         ChapterInfo next_chapter_info=chapterList.get(++chapterCount);
                         presenterBrowsing.getChapterContent(next_chapter_info.getChapter_path());
@@ -100,15 +101,20 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
             @Override
             public void jump2lastChapter() {
-                //todo 修改跳转章节
+                Log.i(TAG, "jump2nextChapter: 跳转到上一章节");
                 if(chapterCount==0){
                     ChapterInfo chapterInfo=chapterList.get(chapterCount);
                     int count=chapterInfo.getChapter_num();
                     if(count==0){
                         Toast.makeText(getApplicationContext(),"已是第一章节",Toast.LENGTH_SHORT).show();
                     }else {
+                        flushType=BrowsingVIew.FlushType.LAST_PAGE;
                         presenterBrowsing.getChapterList(bookInfo.getBookId(), count-1);
                     }
+                }else {
+                    flushType=BrowsingVIew.FlushType.LAST_PAGE;
+                    ChapterInfo last_chapter_info=chapterList.get(--chapterCount);
+                    presenterBrowsing.getChapterContent(last_chapter_info.getChapter_path());
                 }
             }
 
@@ -207,13 +213,31 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
     @Override
     public void syncChapterList(ArrayList<ChapterInfo> list) {
+        ChapterInfo info=null;
+        if(chapterList.size()>0){
+            //获取当前章节，并重新进行排序
+            info=chapterList.get(chapterCount);
+        }
         //刷新章节列表
         chapterList.addAll(list);
         //修改后的章节列表 根据章节ID进行从新排序，并更新chapterCount的值
         Collections.sort(chapterList);
-        //获取当前章节，并重新进行排序
-        ChapterInfo info=chapterList.get(chapterCount);
-        chapterCount=chapterList.indexOf(info);
+        if(info!=null){
+            switch (flushType){
+                case LAST_PAGE:
+                    chapterCount=chapterList.indexOf(info)-1;
+                    break;
+                case NEXT_PAGE:
+                    chapterCount=chapterList.indexOf(info)+1;
+                    break;
+                case THIS_PAGE:
+                default:
+                    chapterCount=chapterList.indexOf(info);
+                    break;
+            }
+        }else {
+            chapterCount=0;
+        }
         //todo 判断是否超出章节限制，超出限制，清除一部分章节,防止内存过大
         presenterBrowsing.getChapterContent(chapterList.get(chapterCount).getChapter_path());
     }
@@ -237,12 +261,12 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
                 e.printStackTrace();
             }
         }
-        browsingVIew.setTextContent(arrs, BrowsingVIew.FlushType.THIS_PAGE);
+        browsingVIew.setTextContent(arrs, flushType);
     }
 
     @Override
     public void setLoading(boolean type) {
-        //根据设置显示、隐藏加载框
+        //todo 根据设置显示、隐藏加载框
         if(type){
 
         }else{
