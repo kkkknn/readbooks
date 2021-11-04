@@ -71,7 +71,7 @@
             android:orientation="horizontal"
             android:layout_height="match_parent">
             <com.kkkkkn.readbooks.view.customView.BackgroundRadioButton
-                android:id="@+id/setting_radio1"
+                android:id="@+id/setting_radio_retro"
                 android:button="@null"
                 android:background="@drawable/read_setting_background_select"
                 android:layout_marginHorizontal="10dp"
@@ -80,7 +80,7 @@
                 app:imgLabel="@drawable/browsingview" />
 
             <com.kkkkkn.readbooks.view.customView.BackgroundRadioButton
-                android:id="@+id/setting_radio2"
+                android:id="@+id/setting_radio_gray"
                 android:button="@null"
                 android:background="@drawable/read_setting_background_select"
                 android:layout_marginHorizontal="10dp"
@@ -89,7 +89,7 @@
                 app:colorLabel="#22917A7A" />
 
             <com.kkkkkn.readbooks.view.customView.BackgroundRadioButton
-                android:id="@+id/setting_radio3"
+                android:id="@+id/setting_radio_green"
                 android:button="@null"
                 android:background="@drawable/read_setting_background_select"
                 android:layout_marginHorizontal="10dp"
@@ -98,7 +98,7 @@
                 app:colorLabel="#3FAA98" />
 
             <com.kkkkkn.readbooks.view.customView.BackgroundRadioButton
-                android:id="@+id/setting_radio4"
+                android:id="@+id/setting_radio_yellow"
                 android:button="@null"
                 android:background="@drawable/read_setting_background_select"
                 android:layout_marginHorizontal="10dp"

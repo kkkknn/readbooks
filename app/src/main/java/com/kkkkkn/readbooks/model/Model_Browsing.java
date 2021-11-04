@@ -162,8 +162,12 @@ public class Model_Browsing extends BaseModel{
     }
 
     public int getReadProgress(int book_id,Context context) {
-        String path=context.getFilesDir().getAbsolutePath();
-        String str=getProgressString(path+"");
+        String path=context.getFilesDir().getAbsolutePath()+cachePath;
+        String str=getProgressString(path);
+        //未找到进度就返回0
+        if(StringUtil.isEmpty(str)) {
+            return 0;
+        }
         JSONObject jsonObject= null;
         int flag=1;
         try {

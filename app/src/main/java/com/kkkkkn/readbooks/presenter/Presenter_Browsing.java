@@ -96,6 +96,16 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
     }
 
 
+    public int chapterCount2listCount(int count){
+        if((count/PAGE_SIZE)>0){
+            Log.i(TAG, "chapterCount2listCount: "+count%PAGE_SIZE);
+            return count%PAGE_SIZE;
+        }else {
+            Log.i(TAG, "chapterCount2listCount: "+count);
+            return count;
+        }
+    }
+
     /**
      * 获取保存的章节进度
      * @param book_id 图书id

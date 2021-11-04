@@ -25,6 +25,7 @@ import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Browsing;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
+import com.kkkkkn.readbooks.view.customView.LoadingDialog;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
 
@@ -40,7 +41,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private int chapterCount = 0;
     private BrowsingVIew browsingVIew;
     private ProgressDialog progressDialog;
-    private ProgressDialog loadingDialog;
+    private LoadingDialog loadingDialog;
     private BookInfo bookInfo;
     private float readProgress;
     private Presenter_Browsing presenterBrowsing;
@@ -134,7 +135,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         progressDialog.setTitle("提示");
         progressDialog.setMessage("正在加载，请稍后……");
 
-
+        loadingDialog=new LoadingDialog(this);
     }
 
     @Override
@@ -192,6 +193,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         }else{
             //获取缓存内是否有浏览章节进度
             int count=presenterBrowsing.getBookProgress(bookInfo.getBookId());
+            chapterCount=presenterBrowsing.chapterCount2listCount(count);
             presenterBrowsing.getChapterList(bookInfo.getBookId(), count);
         }
 
@@ -235,10 +237,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
                     chapterCount=chapterList.indexOf(info);
                     break;
             }
-        }else {
-            chapterCount=0;
         }
-        //todo 判断是否超出章节限制，超出限制，清除一部分章节,防止内存过大
         presenterBrowsing.getChapterContent(chapterList.get(chapterCount).getChapter_path());
     }
 
@@ -265,13 +264,17 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     }
 
     @Override
-    public void setLoading(boolean type) {
-        //todo 根据设置显示、隐藏加载框
-        if(type){
-
-        }else{
-
-        }
+    public void setLoading(final boolean type) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(type){
+                    loadingDialog.showLoading("加载中");
+                }else{
+                    loadingDialog.hideLoading();
+                }
+            }
+        });
     }
 
 
@@ -295,6 +298,8 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
     //弹出设置dialog 动画弹出
     private void showSettingDialog() {
+        //SettingConf settingConf=presenterBrowsing.getConfig();
+
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.setting_dialog);
         WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
@@ -316,17 +321,17 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+                Log.i(TAG, "onAnimationStart: ");
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-
+                Log.i(TAG, "onAnimationEnd: ");
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
+                Log.i(TAG, "onAnimationRepeat: ");
             }
         });
         //获取相应的组件并添加相应的时间监听
@@ -340,7 +345,20 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                Log.i(TAG, "onCheckedChanged: "+i);
+                switch (i){
+                    case R.id.setting_radio_retro:
+
+                        break;
+                    case R.id.setting_radio_yellow:
+
+                        break;
+                    case R.id.setting_radio_gray:
+
+                        break;
+                    case R.id.setting_radio_green:
+                        
+                        break;
+                }
             }
         });
     }
@@ -351,11 +369,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             switch (view.getId()){
                 case R.id.add_fontSize:
                     Log.i(TAG, "onClick: 文字增加");
-                    //通过eventbus通知修改文字大小，并重新绘制
                     break;
                 case R.id.subtract_fontSize:
                     Log.i(TAG, "onClick: 文字减小");
-                    //通过eventbus通知修改文字大小，并重新绘制
 
                     break;
             }

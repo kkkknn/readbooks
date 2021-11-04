@@ -70,7 +70,7 @@ public class BrowsingVIew extends View {
     private float read_progress;
 
     private Paint mPaint;
-    private final Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
+    private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
     private LinkedList<Bitmap> bitmapLinkedList=new LinkedList<>();
     private int bitmap_flag=0;
 
@@ -104,10 +104,6 @@ public class BrowsingVIew extends View {
 
     public void setBatteryStr(String batteryStr) {
         this.batteryStr = batteryStr;
-    }
-
-    public int getlineFlag(){
-        return thisPage_flag;
     }
 
     public void setProgress(float progress){
