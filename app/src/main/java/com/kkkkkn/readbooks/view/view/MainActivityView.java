@@ -9,4 +9,6 @@ public interface MainActivityView extends BaseView {
     void showUpdateDialog( String msg, String url, String version);
     void toSearchActivity();
     void toLoginActivity();
+    void updateProgress(int progress);
+    void installAPK(String filePath);
 }

@@ -7,7 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.kkkkkn.readbooks.ServerConfig;
+import com.kkkkkn.readbooks.util.ServerConfig;
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.util.StringUtil;
@@ -24,20 +24,17 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Model_Browsing extends BaseModel{

@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks;
+package com.kkkkkn.readbooks.util;
 
 public class ServerConfig {
     public final static String IP="http://81.70.239.217:8005";

@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.kkkkkn.readbooks.ServerConfig;
 
 import java.util.Objects;
 

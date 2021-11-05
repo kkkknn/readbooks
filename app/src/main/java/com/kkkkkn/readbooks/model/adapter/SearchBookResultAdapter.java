@@ -6,12 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
 import com.kkkkkn.readbooks.R;
-import com.kkkkkn.readbooks.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.util.ImageUtil;
 import com.kkkkkn.readbooks.view.viewHolder.SearchBookResultAdapter_ViewHolder;

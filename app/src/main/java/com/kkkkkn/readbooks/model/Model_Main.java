@@ -4,8 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.kkkkkn.readbooks.ServerConfig;
-import com.kkkkkn.readbooks.model.entity.AccountInfo;
+import com.kkkkkn.readbooks.util.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.util.eventBus.events.MainEvent;
 import com.kkkkkn.readbooks.util.network.HttpUtil;
@@ -28,9 +27,6 @@ import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
-import okio.BufferedSink;
-import okio.Okio;
-import okio.Sink;
 
 public class Model_Main extends BaseModel {
     private final static String TAG="Model_Main";

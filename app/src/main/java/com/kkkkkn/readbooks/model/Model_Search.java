@@ -2,7 +2,7 @@ package com.kkkkkn.readbooks.model;
 
 import androidx.annotation.NonNull;
 
-import com.kkkkkn.readbooks.ServerConfig;
+import com.kkkkkn.readbooks.util.ServerConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.util.eventBus.events.SearchEvent;
 import com.kkkkkn.readbooks.util.network.HttpUtil;

@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,10 +37,6 @@ import com.kkkkkn.readbooks.presenter.Presenter_Main;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,11 +48,11 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity implements MainActivityView {
     private final static String TAG="主界面";
     private long lastBackClick;
-    private NotificationManager mNotifyManager;
     private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
     private Presenter_Main presenter_main;
     private BookShelfAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private AlertDialog updateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +72,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             presenter_main.getBookShelfList();
             presenter_main.checkUpdate();
         }
+
     }
 
     private void checkPermission(){
@@ -125,18 +123,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             }
         });
 
-        //初始化通知栏
-        /*mNotifyManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        //ChannelId为"1",ChannelName为"Channel1"
-        NotificationChannel channel = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mBuilder=new Notification.Builder(this,"1");
-        }else {
-            mBuilder=new Notification.Builder(this);
-        }
-        mBuilder.setSmallIcon(R.mipmap.ic_launcher);
-        mBuilder.setContentTitle("正在下载");
-        mNotifyManager.notify(1,mBuilder.build());*/
+
     }
 
 
@@ -188,47 +175,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
 
 
-    //安装APK
-    private void installApk(File apk){
-        if (!apk.exists()) {
-            Log.i(TAG, "installApk: apk不存在");
-            return;
-        }
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (apk.getName().endsWith(".apk")) {
-            try {
-                //兼容7.0
-                Uri uri;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    boolean hasInstallPermission = getPackageManager().canRequestPackageInstalls();
-                    if(!hasInstallPermission){
-                        startInstallPermissionSettingActivity();
-                    }
-                    uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", apk);//通过FileProvider创建一个content类型的Uri
-                    intent.setDataAndType(uri, "application/vnd.android.package-archive"); // 对应apk类型
-
-                } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){// 适配Android 7系统版本
-                    uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", apk);//通过FileProvider创建一个content类型的Uri
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
-                    intent.setDataAndType(uri, "application/vnd.android.package-archive"); // 对应apk类型
-
-                }else{
-                    intent.setDataAndType(Uri.fromFile(apk), "application/vnd.android.package-archive");
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            //弹出安装界面
-            startActivity(intent);
-        } else {
-            Log.i(TAG, "installApk: 不是apk文件!");
-        }
-
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void startInstallPermissionSettingActivity() {
         //注意这个是8.0新API
@@ -267,32 +213,35 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             @Override
             public void run() {
                 if(!StringUtil.isEmpty(version)&&!StringUtil.isEmpty(msg)&&!StringUtil.isEmpty(url)){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle("检测到新版本");
-                    builder.setMessage(msg);
-                    builder.setIcon(R.mipmap.ic_launcher);
-                    builder.setCancelable(false);            //点击对话框以外的区域是否让对话框消失
 
-                    //设置正面按钮
-                    final String name = version+".apk";
-                    final String path = getApplicationContext().getFilesDir().getAbsolutePath()+"/apks/";
-                    builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            presenter_main.updateAPK(name,path,url);
-                        }
-                    });
-                    //设置反面按钮
-                    builder.setNegativeButton("稍后再说", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                    View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.update_dialog,null,false);
+                    updateDialog = new AlertDialog.Builder(getApplicationContext())
+                            .setView(view)
+                            .setTitle("检测到新版本")
+                            .setMessage(msg)
+                            .setIcon(R.mipmap.ic_launcher)
+                            .setCancelable(false)
+                            .setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    //todo 开启下载服务，后台进行下载
+                                    final String name = version+".apk";
+                                    final String path = getApplicationContext().getFilesDir().getAbsolutePath()+"/apks/";
+                                    presenter_main.updateAPK(name,path,url);
+                                }
+                            })
+                            .setNegativeButton("下次再说", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .create();
 
-                    AlertDialog alertdialog = builder.create();
-                    alertdialog.show();
+                    updateDialog.show();
+
+
                 }
             }
         });
@@ -308,6 +257,54 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     public void toLoginActivity() {
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+    }
+
+    @Override
+    public void updateProgress(int progress) {
+        //更新进度
+
+    }
+
+    @Override
+    public void installAPK(String filePath) {
+        //apk安装跳转
+        File apk=new File(filePath);
+        if (!apk.exists()) {
+            Log.i(TAG, "installApk: apk不存在");
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (apk.getName().endsWith(".apk")) {
+            try {
+                //兼容7.0
+                Uri uri;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    boolean hasInstallPermission = getPackageManager().canRequestPackageInstalls();
+                    if(!hasInstallPermission){
+                        startInstallPermissionSettingActivity();
+                    }
+                    uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", apk);//通过FileProvider创建一个content类型的Uri
+                    intent.setDataAndType(uri, "application/vnd.android.package-archive"); // 对应apk类型
+
+                } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){// 适配Android 7系统版本
+                    uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", apk);//通过FileProvider创建一个content类型的Uri
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+                    intent.setDataAndType(uri, "application/vnd.android.package-archive"); // 对应apk类型
+
+                }else{
+                    intent.setDataAndType(Uri.fromFile(apk), "application/vnd.android.package-archive");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //弹出安装界面
+            startActivity(intent);
+        } else {
+            Log.i(TAG, "installApk: 不是apk文件!");
+        }
     }
 
     @Override
