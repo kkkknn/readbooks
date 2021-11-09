@@ -27,17 +27,9 @@ import static com.kkkkkn.readbooks.view.customView.BrowsingVIew.FlushType.THIS_P
 
 public class BrowsingVIew extends View {
     public enum FlushType{
-        THIS_PAGE,LAST_PAGE,NEXT_PAGE;
+        THIS_PAGE,LAST_PAGE,NEXT_PAGE,FLUSH_PAGE;
     }
     private final static String TAG="BrowsingVIew";
-    //当前时间字符串
-    private String timeStr;
-    //当前章节名字
-    private String chapterNameStr;
-    //当前章节/总章节字符串
-    private String progressStr;
-    //当前电量字符串
-    private String batteryStr;
     //当前划屏位置
     private float mClipX = 0;
     //左右滑动偏移量 变量
@@ -53,62 +45,20 @@ public class BrowsingVIew extends View {
     private float textSize = 40f;
     //文字颜色
     private int textColor = Color.BLACK;
-    //每行最大显示文字数量
-    private int textLineSum;
     //每页最大显示行数
     private int linePageSum;
     //展示模式相关 true 左滑动绘制下一页  false 右滑动绘制上一页
     private int drawStyle = 0;
-    //是否需要进行吸附处理
-    private boolean isAdsorb = false;
-    //当前页起止标志
-    private int thisPage_flag=0;
     //状态栏高度
     private int statusBarHeight;
     //绘图相关变量
     private BookBrowsingActivity.BookCallback bookCallback;
-    private float read_progress;
 
     private Paint mPaint;
-    private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
+    private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview).copy(Bitmap.Config.ARGB_8888, true);
     private LinkedList<Bitmap> bitmapLinkedList=new LinkedList<>();
     private int bitmap_flag=0;
 
-    public String getTimeStr() {
-        return timeStr;
-    }
-
-    public void setTimeStr(String timeStr) {
-        this.timeStr = timeStr;
-    }
-
-    public String getChapterNameStr() {
-        return chapterNameStr;
-    }
-
-    public void setChapterNameStr(String chapterNameStr) {
-        this.chapterNameStr = chapterNameStr;
-    }
-
-    public String getProgressStr() {
-        return progressStr;
-    }
-
-    public void setProgressStr(String progressStr) {
-        this.progressStr = progressStr;
-    }
-
-    public String getBatteryStr() {
-        return batteryStr;
-    }
-
-    public void setBatteryStr(String batteryStr) {
-        this.batteryStr = batteryStr;
-    }
-
-    public void setProgress(float progress){
-        this.read_progress=progress;
-    }
 
     public BrowsingVIew(Context context) {
         super(context);
@@ -124,6 +74,31 @@ public class BrowsingVIew extends View {
         super(context, attrs, defStyleAttr);
         initView(context);
 
+    }
+
+    public void setBackGroundStyle(int style){
+        Canvas canvas;
+        switch (style){
+            case 1:
+                backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview).copy(Bitmap.Config.ARGB_8888, true);
+                break;
+            case 2:
+                canvas=new Canvas(backBitmap);
+                canvas.drawColor(Color.parseColor("#7B7070"));
+                break;
+            case 3:
+                canvas=new Canvas(backBitmap);
+                canvas.drawColor(Color.parseColor("#3FAA98"));
+                break;
+            case 4:
+                canvas=new Canvas(backBitmap);
+                canvas.drawColor(Color.parseColor("#B49D42"));
+                break;
+            default:
+                backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
+                break;
+        }
+        text2bitmap(FlushType.FLUSH_PAGE);
     }
 
     //初始化view
@@ -147,7 +122,6 @@ public class BrowsingVIew extends View {
 
                 textSize=(float) mViewWidth/12;
                 //计算偏移量及行数，每行字数
-                textLineSum = (int) Math.ceil(mViewWidth / (double) textSize);
                 linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight-((int)textSize>>1)) / (double)textSize);
 
                 if(contentArr!=null&&bitmapLinkedList.size()==0){
@@ -161,7 +135,6 @@ public class BrowsingVIew extends View {
         mPaint.setTextSize(textSize);
         this.textSize = textSize;
         if(mViewWidth>0&&mViewHeight>0){
-            textLineSum = (int) Math.ceil(mViewWidth / (double) textSize);
             linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight -((int)textSize>>1)) / (double)textSize);
             text2bitmap(THIS_PAGE);
         }
@@ -220,8 +193,10 @@ public class BrowsingVIew extends View {
                 break;
             case THIS_PAGE:
             case NEXT_PAGE:
-            default:
                 bitmap_flag=0;
+                break;
+            case FLUSH_PAGE:
+            default:
                 break;
         }
 
@@ -391,7 +366,6 @@ public class BrowsingVIew extends View {
 
                 break;
         }
-
         canvas.restore();
     }
 

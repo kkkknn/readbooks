@@ -97,7 +97,7 @@ public class Model_Main extends BaseModel {
                     }
                     fos.flush();
                     //下载完成
-                    getCallBack().onSuccess(3001, "下载完成");
+                    getCallBack().onSuccess(3001, file.getAbsolutePath());
                 } catch (Exception e) {
                     e.printStackTrace();
                     getCallBack().onError(-3001, e.toString());

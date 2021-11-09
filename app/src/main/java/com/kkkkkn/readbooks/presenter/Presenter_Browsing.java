@@ -40,8 +40,13 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
      * 获取阅读设置
      * @return
      */
-    public SettingConf getConfig(){
-        return model_browsing.getReadConfig(getContext());
+    public void loadConfig(){
+        //获取配置信息
+        SettingConf settingConf=model_browsing.getReadConfig(getContext());
+        if(settingConf!=null){
+            //调用页面进行设置
+            browsingActivityView.setReadConf(settingConf);
+        }
     }
 
 

@@ -35,6 +35,7 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
 import com.kkkkkn.readbooks.util.StringUtil;
+import com.kkkkkn.readbooks.view.customView.UpdateDialog;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
 
@@ -52,7 +53,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private Presenter_Main presenter_main;
     private BookShelfAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private AlertDialog updateDialog;
+    private UpdateDialog updateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,12 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                     }
                 }).show();
 
+        }
+        if (!Settings.System.canWrite(getApplication())) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 
@@ -214,33 +221,23 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             public void run() {
                 if(!StringUtil.isEmpty(version)&&!StringUtil.isEmpty(msg)&&!StringUtil.isEmpty(url)){
 
-                    View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.update_dialog,null,false);
-                    updateDialog = new AlertDialog.Builder(getApplicationContext())
-                            .setView(view)
-                            .setTitle("检测到新版本")
-                            .setMessage(msg)
-                            .setIcon(R.mipmap.ic_launcher)
-                            .setCancelable(false)
-                            .setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+                    updateDialog = new UpdateDialog(MainActivity.this);
+                    updateDialog.setInfo("检测到新版本",msg)
+                            .setOnClickListener(new UpdateDialog.OnClickBottomListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    //todo 开启下载服务，后台进行下载
-                                    final String name = version+".apk";
-                                    final String path = getApplicationContext().getFilesDir().getAbsolutePath()+"/apks/";
-                                    presenter_main.updateAPK(name,path,url);
+                                public void onOkClick() {
+                                    updateDialog.setProgressType(true);
+                                    final String name = version + ".apk";
+                                    final String path = Environment.getExternalStorageDirectory().getPath() + "/apks/";
+                                    presenter_main.updateAPK(name, path, url);
                                 }
-                            })
-                            .setNegativeButton("下次再说", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .create();
 
+                                @Override
+                                public void onCancelClick() {
+                                    updateDialog.dismiss();
+                                }
+                            });
                     updateDialog.show();
-
 
                 }
             }
@@ -260,13 +257,23 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     @Override
-    public void updateProgress(int progress) {
+    public void updateProgress(final int progress) {
         //更新进度
-
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateDialog.setProgress(progress);
+                if(progress==100){
+                    updateDialog.dismiss();
+                    updateDialog=null;
+                }
+            }
+        });
     }
 
     @Override
     public void installAPK(String filePath) {
+        Log.i(TAG, "installAPK: "+filePath);
         //apk安装跳转
         File apk=new File(filePath);
         if (!apk.exists()) {

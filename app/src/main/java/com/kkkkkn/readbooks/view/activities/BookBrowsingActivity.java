@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.view.activities;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -8,9 +9,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -26,6 +29,7 @@ import com.kkkkkn.readbooks.presenter.Presenter_Browsing;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.customView.LoadingDialog;
+import com.kkkkkn.readbooks.view.customView.SettingDialog;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
 
@@ -148,6 +152,10 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         presenterBrowsing=new Presenter_Browsing(getApplicationContext(),this);
         presenterBrowsing.init();
 
+        //读取默认配置信息
+        presenterBrowsing.loadConfig();
+
+
         //获取携带信息
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -173,15 +181,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(broadcastReceiver, filter);
 
-        //读取文字背景存储设置信息
-        SettingConf config=presenterBrowsing.getConfig();
-        if(config!=null){
-            browsingVIew.setTextColor(config.fontColor);
-            browsingVIew.setTextSize(config.fontSize);
-        }else {
-            browsingVIew.setTextColor(Color.BLACK);
-            browsingVIew.setTextSize(40F);
-        }
+
     }
 
     //刷新当前章节内容
@@ -244,7 +244,6 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     @Override
     public void toLoginActivity() {
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-
     }
 
     @Override
@@ -277,6 +276,21 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         });
     }
 
+    @Override
+    public void setReadConf(SettingConf settingConf) {
+        browsingVIew.setTextColor(settingConf.fontColor);
+        browsingVIew.setTextSize(settingConf.fontSize);
+        browsingVIew.setBackGroundStyle(settingConf.backgroundStyle);
+        Window window = ((Activity) this).getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        if (settingConf.brightness == -1) {
+            lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        } else {
+            lp.screenBrightness = (settingConf.brightness <= 0 ? 1 : settingConf.brightness) / 255f;
+        }
+        window.setAttributes(lp);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -298,69 +312,40 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
     //弹出设置dialog 动画弹出
     private void showSettingDialog() {
-        //SettingConf settingConf=presenterBrowsing.getConfig();
-
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.setting_dialog);
-        WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
-        layoutParams.gravity = Gravity.BOTTOM;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        dialog.getWindow().setAttributes(layoutParams);
-        dialog.getWindow().setBackgroundDrawable(null);
-        dialog.show();
-        //设置弹出属性动画
-        Animation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-        animation.setDuration(500);
-        animation.setFillAfter(true);
-        animation.setFillEnabled(true);
-        View view=dialog.getWindow().findViewById(R.id.liner_test1);
-        view.startAnimation(animation);
-        animation.setAnimationListener(new Animation.AnimationListener() {
+        SettingDialog dialog = new SettingDialog(this).setEventListener(new SettingDialog.EventListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-                Log.i(TAG, "onAnimationStart: ");
+            public void changeFontSize(float size) {
+                Log.i(TAG, "changeFontSize: "+"||"+size);
+                browsingVIew.setTextSize(size);
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
-                Log.i(TAG, "onAnimationEnd: ");
+            public void changeBackground(int style) {
+                Log.i(TAG, "changeBackground: "+style);
+                browsingVIew.setBackGroundStyle(style);
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-                Log.i(TAG, "onAnimationRepeat: ");
+            public void changeLight(int count) {
+                Log.i(TAG, "changeLight: "+count);
+                //设置当前系统亮度
+                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS,count);
             }
-        });
-        //获取相应的组件并添加相应的时间监听
-        TextView add_sizeTextView,subtract_sizeTextView,font_sizeTextView;
-        add_sizeTextView=dialog.getWindow().findViewById(R.id.add_fontSize);
-        font_sizeTextView=dialog.getWindow().findViewById(R.id.fontSize);
-        subtract_sizeTextView=dialog.getWindow().findViewById(R.id.subtract_fontSize);
-        add_sizeTextView.setOnClickListener(onClickListener);
-        subtract_sizeTextView.setOnClickListener(onClickListener);
-        RadioGroup radioGroup=dialog.getWindow().findViewById(R.id.setting_radioGroup);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                switch (i){
-                    case R.id.setting_radio_retro:
-
-                        break;
-                    case R.id.setting_radio_yellow:
-
-                        break;
-                    case R.id.setting_radio_gray:
-
-                        break;
-                    case R.id.setting_radio_green:
-                        
-                        break;
+            public void getSystemLight() {
+                //获取当前系统亮度
+                int light=20;
+                try {
+                    light=Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+                } catch (Settings.SettingNotFoundException e) {
+                    e.printStackTrace();
                 }
+                this.changeLight(light);
             }
         });
+        dialog.show();
+
     }
     
     private View.OnClickListener onClickListener=new View.OnClickListener() {

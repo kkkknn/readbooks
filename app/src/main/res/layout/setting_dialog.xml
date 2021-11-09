@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/liner_test1"
+    android:id="@+id/setting_dialog"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -24,7 +24,7 @@
             android:textColor="@color/colorWhite"
             android:textSize="16sp" />
 
-        <androidx.appcompat.widget.AppCompatSeekBar
+        <SeekBar
             android:id="@+id/setting_lightSeekBar"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -86,7 +86,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:colorLabel="#22917A7A" />
+                app:colorLabel="#7B7070" />
 
             <com.kkkkkn.readbooks.view.customView.BackgroundRadioButton
                 android:id="@+id/setting_radio_green"
@@ -135,7 +135,7 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/add_fontSize"
+                android:id="@+id/subtract_fontSize"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/read_setting_btn_select"
@@ -160,7 +160,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/subtract_fontSize"
+                android:id="@+id/add_fontSize"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/read_setting_btn_select"
@@ -178,42 +178,6 @@
 
     </LinearLayout>
 
-   <!-- <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#3D3636"
-        android:orientation="horizontal"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
-            android:gravity="center"
-            android:text="@string/read_setting_flag"
-            android:textAlignment="center"
-            android:textColor="@color/colorWhite"
-            android:textSize="16sp" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-            <TextView
-                android:gravity="center"
-                android:textColor="@color/colorWhite"
-                android:text="章节1：小城之春扩展卡v"
-                android:textSize="14sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <androidx.appcompat.widget.AppCompatSeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@android:style/Widget.DeviceDefault.SeekBar"
-                android:tooltipText="@string/read_setting_flag" />
-        </LinearLayout>
-
-    </LinearLayout>-->
 
 
 </LinearLayout>

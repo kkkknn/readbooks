@@ -105,7 +105,6 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
             onError(-2,"获取用户信息失败");
             return;
         }
-        //todo 开启前台服务，显示下载的进度
 
         //在线获取最新版本号
         EventBus.getDefault().post(
@@ -116,7 +115,6 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
                         url,
                         accountInfo.getAccount_id(),
                         accountInfo.getAccount_token()));
-
 
 
     }
@@ -146,10 +144,10 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
                 }
                 break;
             case 3001:
-                Log.i(TAG, "onSuccess: "+object);
+                mainActivityView.installAPK((String) object);
                 break;
             case 3002:
-                Log.i(TAG, "onSuccess: 进度 "+object);
+                mainActivityView.updateProgress((int) object);
             default:
                 break;
         }

@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.view.view;
 
+import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 
 import org.json.JSONArray;
@@ -11,4 +12,5 @@ public interface BrowsingActivityView extends BaseView {
     void toLoginActivity();
     void syncReadView(JSONArray jsonArray);
     void setLoading(boolean type);
+    void setReadConf(SettingConf settingConf);
 }
