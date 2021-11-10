@@ -22,12 +22,13 @@ import com.kkkkkn.readbooks.view.activities.BookBrowsingActivity;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import static com.kkkkkn.readbooks.view.customView.BrowsingVIew.FlushType.NEXT_PAGE;
-import static com.kkkkkn.readbooks.view.customView.BrowsingVIew.FlushType.THIS_PAGE;
 
 public class BrowsingVIew extends View {
     public enum FlushType{
-        THIS_PAGE,LAST_PAGE,NEXT_PAGE,FLUSH_PAGE;
+        THIS_PAGE,
+        LAST_PAGE,
+        NEXT_PAGE,
+        FLUSH_PAGE;
     }
     private final static String TAG="BrowsingVIew";
     //当前划屏位置
@@ -125,7 +126,7 @@ public class BrowsingVIew extends View {
                 linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight-((int)textSize>>1)) / (double)textSize);
 
                 if(contentArr!=null&&bitmapLinkedList.size()==0){
-                    text2bitmap(THIS_PAGE);
+                    text2bitmap(FlushType.THIS_PAGE);
                 }
             }
         });
@@ -136,7 +137,7 @@ public class BrowsingVIew extends View {
         this.textSize = textSize;
         if(mViewWidth>0&&mViewHeight>0){
             linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight -((int)textSize>>1)) / (double)textSize);
-            text2bitmap(THIS_PAGE);
+            text2bitmap(FlushType.THIS_PAGE);
         }
 
     }

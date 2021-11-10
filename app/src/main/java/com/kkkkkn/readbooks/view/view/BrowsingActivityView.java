@@ -12,5 +12,4 @@ public interface BrowsingActivityView extends BaseView {
     void toLoginActivity();
     void syncReadView(JSONArray jsonArray);
     void setLoading(boolean type);
-    void setReadConf(SettingConf settingConf);
 }

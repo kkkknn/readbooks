@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.view.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -20,6 +22,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
@@ -47,10 +51,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private ProgressDialog progressDialog;
     private LoadingDialog loadingDialog;
     private BookInfo bookInfo;
-    private float readProgress;
     private Presenter_Browsing presenterBrowsing;
-    private BrowsingVIew.FlushType flushType;
-
+    private BrowsingVIew.FlushType flushType= BrowsingVIew.FlushType.FLUSH_PAGE;
+    private SettingConf settingConf;
 
     //静态广播
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -80,6 +83,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             }
         }
     };
+
     private void initView(){
         browsingVIew = findViewById(R.id.browView);
         browsingVIew.setListener(new BookCallback() {
@@ -125,7 +129,6 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
             @Override
             public void showSetting() {
-                Log.i(TAG, "showSetting: 展示弹窗111");
                 showSettingDialog();
             }
 
@@ -142,19 +145,21 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         loadingDialog=new LoadingDialog(this);
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_browsing);
 
         initView();
-
         presenterBrowsing=new Presenter_Browsing(getApplicationContext(),this);
         presenterBrowsing.init();
 
         //读取默认配置信息
-        presenterBrowsing.loadConfig();
-
+        settingConf=presenterBrowsing.loadConfig();
+        if(settingConf!=null){
+            loadReadConf(settingConf);
+        }
 
         //获取携带信息
         Bundle bundle = getIntent().getExtras();
@@ -276,19 +281,11 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         });
     }
 
-    @Override
-    public void setReadConf(SettingConf settingConf) {
+    public void loadReadConf(SettingConf settingConf) {
         browsingVIew.setTextColor(settingConf.fontColor);
         browsingVIew.setTextSize(settingConf.fontSize);
         browsingVIew.setBackGroundStyle(settingConf.backgroundStyle);
-        Window window = ((Activity) this).getWindow();
-        WindowManager.LayoutParams lp = window.getAttributes();
-        if (settingConf.brightness == -1) {
-            lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
-        } else {
-            lp.screenBrightness = (settingConf.brightness <= 0 ? 1 : settingConf.brightness) / 255f;
-        }
-        window.setAttributes(lp);
+        setBrightness(settingConf.brightness);
     }
 
 
@@ -315,53 +312,45 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         SettingDialog dialog = new SettingDialog(this).setEventListener(new SettingDialog.EventListener() {
             @Override
             public void changeFontSize(float size) {
-                Log.i(TAG, "changeFontSize: "+"||"+size);
                 browsingVIew.setTextSize(size);
+                settingConf.fontSize=size;
+                presenterBrowsing.setReadConfig(settingConf);
             }
 
             @Override
             public void changeBackground(int style) {
-                Log.i(TAG, "changeBackground: "+style);
                 browsingVIew.setBackGroundStyle(style);
+                settingConf.backgroundStyle=style;
+                presenterBrowsing.setReadConfig(settingConf);
             }
 
             @Override
             public void changeLight(int count) {
-                Log.i(TAG, "changeLight: "+count);
-                //设置当前系统亮度
-                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS,count);
+                setBrightness(count);
+                settingConf.brightness=count;
+                presenterBrowsing.setReadConfig(settingConf);
             }
 
-            @Override
-            public void getSystemLight() {
-                //获取当前系统亮度
-                int light=20;
-                try {
-                    light=Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
-                } catch (Settings.SettingNotFoundException e) {
-                    e.printStackTrace();
-                }
-                this.changeLight(light);
-            }
         });
+        //获取并设置系统亮度，参数值
+        dialog.setConfData(settingConf);
         dialog.show();
 
     }
-    
-    private View.OnClickListener onClickListener=new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.add_fontSize:
-                    Log.i(TAG, "onClick: 文字增加");
-                    break;
-                case R.id.subtract_fontSize:
-                    Log.i(TAG, "onClick: 文字减小");
 
-                    break;
-            }
+
+    //设置当前系统亮度
+    public void setBrightness(int count){
+        Window window = ((Activity) this).getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        if (count == -1) {
+            lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        } else {
+            lp.screenBrightness = (count <= 0 ? 1 : count) / 255f;
         }
-    };
+        window.setAttributes(lp);
+    }
+
 
 
 

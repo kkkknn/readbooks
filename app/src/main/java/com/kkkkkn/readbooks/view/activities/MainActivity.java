@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.view.activities;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -43,6 +44,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
+
 /**
  * 程序主界面，每次进入的时候获取读取本地图书并进行加载
  */
@@ -64,7 +66,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         presenter_main.init();
 
         //申请权限
-        checkPermission();
+        //checkPermission();
 
         AccountInfo info=presenter_main.getToken();
         if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
@@ -76,7 +78,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     }
 
-    private void checkPermission(){
+    public void checkAllPermission(){
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager()) {
             Toast.makeText(this, "已获得访问所有文件权限", Toast.LENGTH_SHORT).show();
         } else {

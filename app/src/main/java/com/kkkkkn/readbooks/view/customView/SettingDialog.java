@@ -20,13 +20,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
 
+import java.util.Locale;
 import java.util.Objects;
 
 public class SettingDialog extends Dialog {
     //控件
     private TextView add_sizeTextView,subtract_sizeTextView,font_sizeTextView;
     private SeekBar light_seekBar;
+    private BackgroundRadioButton radio_retro,radio_gray,radio_green,radio_yellow;
 
     private int font_size;
     private int light_count;
@@ -45,13 +48,13 @@ public class SettingDialog extends Dialog {
                 if((font_size+10)<=max_fontSize){
                     font_size=font_size+10;
                     eventListener.changeFontSize(font_size);
-                    font_sizeTextView.setText(Integer.toString(font_size));
+                    font_sizeTextView.setText(String.format("%s",font_size));
                 }
             }else if(id==R.id.subtract_fontSize){
                 if((font_size-10)>=min_fontSize){
                     font_size=font_size-10;
                     eventListener.changeFontSize(font_size);
-                    font_sizeTextView.setText(Integer.toString(font_size));
+                    font_sizeTextView.setText(String.format("%s",font_size));
                 }
             }
         }
@@ -94,12 +97,12 @@ public class SettingDialog extends Dialog {
         void changeFontSize(float size);
         void changeBackground(int style);
         void changeLight(int count);
-        void getSystemLight();
     }
 
     public SettingDialog(@NonNull Context context) {
         super(context);
         setContentView(R.layout.setting_dialog);
+        //初始化控件
         initView();
     }
 
@@ -126,6 +129,11 @@ public class SettingDialog extends Dialog {
         subtract_sizeTextView.setOnClickListener(onClickListener);
         RadioGroup radioGroup=window.findViewById(R.id.setting_radioGroup);
         radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
+        radio_retro=window.findViewById(R.id.setting_radio_retro);
+        radio_gray=window.findViewById(R.id.setting_radio_gray);
+        radio_green=window.findViewById(R.id.setting_radio_green);
+        radio_yellow=window.findViewById(R.id.setting_radio_yellow);
+
 
 
         WindowManager.LayoutParams layoutParams = window.getAttributes();
@@ -157,6 +165,30 @@ public class SettingDialog extends Dialog {
             public void onAnimationRepeat(Animation animation) {
             }
         });
+    }
+
+    public void setConfData(SettingConf settingConf){
+        if(settingConf==null){
+            return;
+        }
+        //填充数据
+        light_seekBar.setProgress(settingConf.brightness);
+        font_sizeTextView.setText(String.format(Locale.CHINA,"%s",Math.round(settingConf.fontSize)));
+        switch (settingConf.backgroundStyle){
+            case 1:
+                radio_retro.setChecked(true);
+                break;
+            case 2:
+                radio_gray.setChecked(true);
+                break;
+            case 3:
+                radio_green.setChecked(true);
+                break;
+            case 4:
+                radio_yellow.setChecked(true);
+                break;
+        }
+
     }
 
 

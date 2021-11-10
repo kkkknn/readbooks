@@ -40,13 +40,14 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
      * 获取阅读设置
      * @return
      */
-    public void loadConfig(){
+    public SettingConf loadConfig(){
         //获取配置信息
-        SettingConf settingConf=model_browsing.getReadConfig(getContext());
-        if(settingConf!=null){
-            //调用页面进行设置
-            browsingActivityView.setReadConf(settingConf);
+        SettingConf settingConf;
+        settingConf=model_browsing.getReadConfig(getContext());
+        if(settingConf==null){
+            settingConf=new SettingConf();
         }
+        return settingConf;
     }
 
 
@@ -180,5 +181,9 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
             default:
                 break;
         }
+    }
+
+    public void setReadConfig(SettingConf settingConf) {
+        model_browsing.setReadConfig(getContext(),settingConf);
     }
 }

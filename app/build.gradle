@@ -6,8 +6,8 @@ android {
         applicationId "com.kkkkkn.readbooks"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 6
-        versionName '1.0.1.211108'
+        versionCode 7
+        versionName '1.0.1.211110'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -18,12 +18,16 @@ android {
     }
     buildToolsVersion '30.0.2'
 
-   
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.android.support:support-annotations:28.0.0'
 
     //reflush
@@ -38,5 +42,7 @@ dependencies {
     //eventbus
     implementation 'org.greenrobot:eventbus:3.2.0'
 
-
+    //PermissionsDispatcher 权限
+    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"
+    annotationProcessor "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.9.1"
 }
