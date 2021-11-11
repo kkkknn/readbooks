@@ -325,7 +325,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             }
 
             @Override
-            public void changeLight(int count) {
+            public void changeLight(float count) {
                 setBrightness(count);
                 settingConf.brightness=count;
                 presenterBrowsing.setReadConfig(settingConf);
@@ -340,13 +340,13 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
 
     //设置当前系统亮度
-    public void setBrightness(int count){
+    public void setBrightness(float count){
         Window window = ((Activity) this).getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        if (count == -1) {
+        if (count <=0) {
             lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
         } else {
-            lp.screenBrightness = (count <= 0 ? 1 : count) / 255f;
+            lp.screenBrightness = count;
         }
         window.setAttributes(lp);
     }

@@ -32,7 +32,7 @@ public class SettingDialog extends Dialog {
     private BackgroundRadioButton radio_retro,radio_gray,radio_green,radio_yellow;
 
     private int font_size;
-    private int light_count;
+    private float light_count;
     private final static int max_fontSize=80;
     private final static int min_fontSize=10;
     private EventListener eventListener;
@@ -80,7 +80,7 @@ public class SettingDialog extends Dialog {
     private SeekBar.OnSeekBarChangeListener onSeekBarChangeListener=new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-            light_count=20*i;
+            light_count= (float) ((i*1.0/10));
         }
 
         @Override
@@ -96,7 +96,7 @@ public class SettingDialog extends Dialog {
     public interface EventListener{
         void changeFontSize(float size);
         void changeBackground(int style);
-        void changeLight(int count);
+        void changeLight(float count);
     }
 
     public SettingDialog(@NonNull Context context) {
@@ -172,7 +172,7 @@ public class SettingDialog extends Dialog {
             return;
         }
         //填充数据
-        light_seekBar.setProgress(settingConf.brightness);
+        light_seekBar.setProgress(Math.round(settingConf.brightness*10));
         font_sizeTextView.setText(String.format(Locale.CHINA,"%s",Math.round(settingConf.fontSize)));
         switch (settingConf.backgroundStyle){
             case 1:
