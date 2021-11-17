@@ -150,7 +150,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_browsing);
-
+        //setStatusBarColor(this,getResources().getDrawable(R.drawable.browsingview));
         initView();
         presenterBrowsing=new Presenter_Browsing(getApplicationContext(),this);
         presenterBrowsing.init();

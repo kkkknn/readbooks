@@ -1,11 +1,14 @@
 package com.kkkkkn.readbooks.view.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,6 +64,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //setStatusBarColor(this,getDrawable(R.color.colorWhite));
+
         initView();
         presenter_main=new Presenter_Main(getApplicationContext(),this);
         presenter_main.init();

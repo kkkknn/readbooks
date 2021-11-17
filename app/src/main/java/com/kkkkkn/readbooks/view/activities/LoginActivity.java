@@ -4,6 +4,7 @@ package com.kkkkkn.readbooks.view.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,8 @@ public class LoginActivity extends BaseActivity implements LoginActivityView {
     private EditText edit_name,edit_password;
     private TextView jumpText;
     private Presenter_Login presenter_login;
+    private long lastBackClick;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,5 +103,22 @@ public class LoginActivity extends BaseActivity implements LoginActivityView {
         if(presenter_login!=null){
             presenter_login.release();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            long nowBackClick=System.currentTimeMillis();
+            if(lastBackClick!=0&&(nowBackClick-lastBackClick)<1500){
+                //程序退出
+                this.exitAll();
+            }else{
+                //500ms以上，弹窗不处理
+                lastBackClick=nowBackClick;
+                Toast.makeText(getApplicationContext(),"请再按一次以退出程序",Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

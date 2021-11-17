@@ -11,46 +11,30 @@
     tools:context=".view.activities.RegisterActivity">
 
 
-    <TableLayout
-        android:layout_margin="20dp"
+    <ImageView
+        android:layout_marginVertical="80dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TableRow>
-            <TextView
-                android:gravity="center"
-                android:text="用户名："
-                android:layout_weight="2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo" />
 
-            <EditText
-                android:hint="@string/name_tip"
-                android:id="@+id/edit_reg_name"
-                 android:maxLength="10"
-                android:layout_weight="7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+    <EditText
+        android:drawableStart="@drawable/ic_baseline_person_24"
+        android:hint="@string/name_tip"
+        android:id="@+id/edit_reg_name"
+        android:layout_marginHorizontal="30dp"
+        android:maxLength="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:gravity="center"
-                android:text="密码："
-                android:layout_weight="2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <EditText
-                android:hint="@string/password_tip"
-                android:id="@+id/edit_reg_password"
-                android:layout_weight="7"
-                android:maxLength="10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </TableRow>
-    </TableLayout>
+    <EditText
+        android:drawableStart="@drawable/ic_baseline_vpn_key_24"
+        android:hint="@string/password_tip"
+        android:id="@+id/edit_reg_password"
+        android:layout_marginHorizontal="30dp"
+        android:inputType="textPassword"
+        android:maxLength="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/text_reg_msg"
@@ -66,7 +50,8 @@
         android:id="@+id/register_btn"
         android:background="@drawable/btn"
         android:text="@string/register_btn"
-        android:layout_marginVertical="30dp"
+        android:textSize="18sp"
+        android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

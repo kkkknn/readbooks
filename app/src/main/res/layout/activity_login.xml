@@ -8,52 +8,30 @@
     android:layout_gravity="center"
     tools:context=".view.activities.LoginActivity">
 
-    
     <ImageView
-        android:layout_marginVertical="120dp"
+        android:layout_marginVertical="80dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/logo"    />
 
-    <TableLayout
-        android:layout_marginHorizontal="20dp"
+    <EditText
+        android:drawableStart="@drawable/ic_baseline_person_24"
+        android:hint="@string/name_tip"
+        android:id="@+id/edit_account_name"
+        android:layout_marginHorizontal="30dp"
+        android:maxLength="10"
+        android:inputType="text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TableRow>
-            <TextView
-                android:gravity="center"
-                android:text="用户名："
-                android:layout_weight="2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <EditText
-                android:hint="@string/name_tip"
-                android:id="@+id/edit_account_name"
-                android:layout_weight="7"
-                android:maxLength="10"
-               android:inputType="text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:gravity="center"
-                android:text="密码："
-                android:layout_weight="2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <EditText
-                android:hint="@string/password_tip"
-                android:id="@+id/edit_account_password"
-                android:layout_weight="7"
-                android:inputType="textPassword"
-                android:maxLength="10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </TableRow>
-
-
-    </TableLayout>
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:drawableStart="@drawable/ic_baseline_vpn_key_24"
+        android:hint="@string/password_tip"
+        android:layout_marginHorizontal="30dp"
+        android:id="@+id/edit_account_password"
+        android:inputType="textPassword"
+        android:maxLength="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <!--<CheckBox
         android:id="@+id/checkbox_rememberPassword"
@@ -76,9 +54,9 @@
         android:background="@drawable/btn"
         android:id="@+id/login_btn"
         android:text="@string/login_btn"
-        android:textSize="20sp"
-        android:layout_marginVertical="20dp"
-        android:layout_marginHorizontal="80dp"
+        android:textSize="18sp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
