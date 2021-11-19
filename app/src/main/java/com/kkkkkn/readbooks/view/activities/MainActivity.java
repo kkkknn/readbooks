@@ -83,7 +83,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     }
 
-    public void checkAllPermission(){
+/*    public void checkAllPermission(){
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager()) {
             Toast.makeText(this, "已获得访问所有文件权限", Toast.LENGTH_SHORT).show();
         } else {
@@ -104,7 +104,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
-    }
+    }*/
 
     private void initView(){
         Toolbar toolbar=findViewById(R.id.toolbar);
@@ -176,10 +176,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.navigation_notifications:
-                Toast.makeText(this,"点击了1",Toast.LENGTH_SHORT).show();
-
-                break;
             case R.id.navigation_dashboard:
                 toSearchActivity();
                 break;

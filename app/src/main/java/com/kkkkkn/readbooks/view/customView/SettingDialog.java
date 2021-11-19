@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -30,7 +31,7 @@ public class SettingDialog extends Dialog {
     private TextView add_sizeTextView,subtract_sizeTextView,font_sizeTextView;
     private SeekBar light_seekBar;
     private BackgroundRadioButton radio_retro,radio_gray,radio_green,radio_yellow;
-
+    private TextView tv_system_light;
     private int font_size;
     private float light_count;
     private final static int max_fontSize=80;
@@ -56,6 +57,9 @@ public class SettingDialog extends Dialog {
                     eventListener.changeFontSize(font_size);
                     font_sizeTextView.setText(String.format("%s",font_size));
                 }
+            }else if(id==R.id.setting_lightSystem_textView){
+                int count=eventListener.resetSystemLight();
+                light_seekBar.setProgress(count);
             }
         }
     };
@@ -97,6 +101,7 @@ public class SettingDialog extends Dialog {
         void changeFontSize(float size);
         void changeBackground(int style);
         void changeLight(float count);
+        int resetSystemLight();
     }
 
     public SettingDialog(@NonNull Context context) {
@@ -133,8 +138,8 @@ public class SettingDialog extends Dialog {
         radio_gray=window.findViewById(R.id.setting_radio_gray);
         radio_green=window.findViewById(R.id.setting_radio_green);
         radio_yellow=window.findViewById(R.id.setting_radio_yellow);
-
-
+        tv_system_light=window.findViewById(R.id.setting_lightSystem_textView);
+        tv_system_light.setOnClickListener(onClickListener);
 
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         layoutParams.gravity = Gravity.BOTTOM;

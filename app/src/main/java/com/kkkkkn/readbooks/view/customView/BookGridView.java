@@ -12,7 +12,7 @@ import android.widget.GridView;
 import com.kkkkkn.readbooks.R;
 
 public class BookGridView extends GridView {
-    Drawable mInterlayer = this.getResources().getDrawable(R.drawable.bookshelf);//书架图片
+    Drawable mInterlayer = this.getResources().getDrawable(R.drawable.browsingview);//书架图片
     Rect mMyDrawRect = new Rect();//书架的矩形位置
     public BookGridView(Context context) {
         super(context);

@@ -331,6 +331,14 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
                 presenterBrowsing.setReadConfig(settingConf);
             }
 
+            @Override
+            public int resetSystemLight() {
+                float count=getSystemBrightness();
+                settingConf.brightness=count;
+                presenterBrowsing.setReadConfig(settingConf);
+                return (int) count/10;
+            }
+
         });
         //获取并设置系统亮度，参数值
         dialog.setConfData(settingConf);
@@ -340,7 +348,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
 
     //设置当前系统亮度
-    public void setBrightness(float count){
+    private void setBrightness(float count){
         Window window = ((Activity) this).getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         if (count <=0) {
@@ -349,6 +357,17 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             lp.screenBrightness = count;
         }
         window.setAttributes(lp);
+    }
+
+    //获取当前系统亮度
+    private float getSystemBrightness(){
+        int systemBrightness = 0;
+        try {
+            systemBrightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        return systemBrightness;
     }
 
 

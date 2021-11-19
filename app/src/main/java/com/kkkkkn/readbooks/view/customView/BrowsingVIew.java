@@ -24,6 +24,8 @@ import java.util.LinkedList;
 
 
 public class BrowsingVIew extends View {
+    //行距
+    private float rowSpace=1.5f;
     public enum FlushType{
         THIS_PAGE,
         LAST_PAGE,
@@ -109,9 +111,9 @@ public class BrowsingVIew extends View {
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setShadowLayer(10f, 0, 0, Color.GRAY);
-        mPaint.setTextSize(textSize);
         mPaint.setColor(textColor);
         mPaint.setAntiAlias(true);
+        mPaint.setTextSize(textSize);
 
         this.post(new Runnable() {
             @Override
@@ -121,9 +123,10 @@ public class BrowsingVIew extends View {
                 mViewHeight = getMeasuredHeight();
                 statusBarHeight = getStatusBarHeight(context);
 
-                textSize=(float) mViewWidth/12;
+                //textSize=(float) mViewWidth/12;
+
                 //计算偏移量及行数，每行字数
-                linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight-((int)textSize>>1)) / (double)textSize);
+                linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight-((int)textSize>>1)) / (double)textSize/rowSpace);
 
                 if(contentArr!=null&&bitmapLinkedList.size()==0){
                     text2bitmap(FlushType.THIS_PAGE);
@@ -136,7 +139,7 @@ public class BrowsingVIew extends View {
         mPaint.setTextSize(textSize);
         this.textSize = textSize;
         if(mViewWidth>0&&mViewHeight>0){
-            linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight -((int)textSize>>1)) / (double)textSize);
+            linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight -((int)textSize>>1)) / (double)textSize/rowSpace);
             text2bitmap(FlushType.THIS_PAGE);
         }
 
@@ -175,7 +178,7 @@ public class BrowsingVIew extends View {
         canvas.setBitmap(bitmap);
         for (int i = 0; i < line_list.size(); i++) {
             String str=line_list.get(i);
-            canvas.drawText(str,0,str.length(),0,line_count*textSize,mPaint);
+            canvas.drawText(str,0,str.length(),0,line_count*textSize*rowSpace,mPaint);
             line_count++;
             if(line_count==linePageSum){
                 line_count=0;

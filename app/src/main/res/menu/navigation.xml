@@ -7,10 +7,4 @@
         app:showAsAction="always"
         android:title="@string/menu_search" />
 
-    <item
-        android:icon="@drawable/ic_book_setting_24"
-        android:id="@+id/navigation_notifications"
-        app:showAsAction="always"
-        android:title="@string/menu_set" />
-    <!--android:icon="@drawable/iv4_p"-->
 </menu>

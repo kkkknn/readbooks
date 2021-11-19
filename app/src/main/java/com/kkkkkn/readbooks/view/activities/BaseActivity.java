@@ -38,7 +38,6 @@ public class BaseActivity extends AppCompatActivity {
 
         Window window = getWindow();
         //添加Flag把状态栏设为可绘制模式
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -51,6 +50,11 @@ public class BaseActivity extends AppCompatActivity {
             ViewCompat.requestApplyInsets(mChildView);
         }
 
+        //修改状态栏文字颜色
+        View decor = window.getDecorView();
+        decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        // decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
         //将当前activity加入栈
         StackManager stackManager=StackManager.getInstance();
         stackManager.addActivity(this);
@@ -61,35 +65,6 @@ public class BaseActivity extends AppCompatActivity {
         StackManager stackManager=StackManager.getInstance();
         stackManager.exitAllActivity();
     }
-
-    public static void setStatusBarColor(Activity activity, Drawable drawable) {
-        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-        ViewGroup decorViewGroup = (ViewGroup)activity.getWindow().getDecorView();
-        //获取自己布局的根视图
-        View rootView = ((ViewGroup) (decorViewGroup.findViewById(android.R.id.content))).getChildAt(0);
-        //预留状态栏位置
-        rootView.setFitsSystemWindows(true);
-
-        //添加状态栏高度的视图布局，并填充颜色
-        View statusBarTintView = new View(activity);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                getInternalDimensionSize(activity.getResources(), "status_bar_height"));
-        params.gravity = Gravity.TOP;
-        statusBarTintView.setLayoutParams(params);
-        statusBarTintView.setBackground(drawable);
-        decorViewGroup.addView(statusBarTintView);
-    }
-
-    private static int getInternalDimensionSize(Resources res, String key) {
-        int result = 0;
-        int resourceId = res.getIdentifier(key, "dimen", "android");
-        if (resourceId > 0) {
-            result = res.getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
-
 
     @Override
     protected void onDestroy() {
