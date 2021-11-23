@@ -68,7 +68,8 @@ public class LoginActivity extends BaseActivity implements LoginActivityView {
             @Override
             public void run() {
                 if(type>0){
-                    CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
+                    //不显示成功toast，
+                    //CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
                 }else {
                     CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
                 }

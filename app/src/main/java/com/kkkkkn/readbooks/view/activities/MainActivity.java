@@ -27,6 +27,7 @@ import android.widget.HeaderViewListAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -107,8 +108,13 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }*/
 
     private void initView(){
-        Toolbar toolbar=findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        SearchView main_search=findViewById(R.id.main_search);
+        main_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toSearchActivity();
+            }
+        });
 
         GridView mGridView;
         mGridView=findViewById(R.id.main_booksGridView);

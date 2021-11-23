@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
     android:orientation="horizontal"
     android:id="@+id/book_item">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/fragment_search_item_book_img"
         android:scaleType="matrix"
         android:layout_width="80dp"
         android:layout_height="100dp"/>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:orientation="vertical"
         android:paddingHorizontal="10dp"
         android:paddingVertical="20dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/fragment_search_item_book_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,18 +26,18 @@
             android:textSize="16sp"
             android:textColor="@color/colorBlack"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:textAlignment="textStart"
             android:id="@+id/fragment_search_item_book_author_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"/>
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 
 
 
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
 

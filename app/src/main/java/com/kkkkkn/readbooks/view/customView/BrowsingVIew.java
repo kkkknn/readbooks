@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -58,7 +59,7 @@ public class BrowsingVIew extends View {
     private BookBrowsingActivity.BookCallback bookCallback;
 
     private Paint mPaint;
-    private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview).copy(Bitmap.Config.ARGB_8888, true);
+    private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.transtion).copy(Bitmap.Config.ARGB_8888, true);
     private LinkedList<Bitmap> bitmapLinkedList=new LinkedList<>();
     private int bitmap_flag=0;
 
@@ -79,30 +80,6 @@ public class BrowsingVIew extends View {
 
     }
 
-    public void setBackGroundStyle(int style){
-        Canvas canvas;
-        switch (style){
-            case 1:
-                backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview).copy(Bitmap.Config.ARGB_8888, true);
-                break;
-            case 2:
-                canvas=new Canvas(backBitmap);
-                canvas.drawColor(Color.parseColor("#7B7070"));
-                break;
-            case 3:
-                canvas=new Canvas(backBitmap);
-                canvas.drawColor(Color.parseColor("#3FAA98"));
-                break;
-            case 4:
-                canvas=new Canvas(backBitmap);
-                canvas.drawColor(Color.parseColor("#B49D42"));
-                break;
-            default:
-                backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview);
-                break;
-        }
-        text2bitmap(FlushType.FLUSH_PAGE);
-    }
 
     //初始化view
     private void initView(final Context context) {
@@ -122,7 +99,6 @@ public class BrowsingVIew extends View {
                 mViewWidth = getMeasuredWidth();
                 mViewHeight = getMeasuredHeight();
                 statusBarHeight = getStatusBarHeight(context);
-
                 //textSize=(float) mViewWidth/12;
 
                 //计算偏移量及行数，每行字数
@@ -335,7 +311,7 @@ public class BrowsingVIew extends View {
         }
         canvas.save();
         canvas.translate(draw_offsetX, draw_offsetY);
-        //根据drawstyle 决定绘制左边还是右边
+        //根据drawstyle 决定绘制左边还是右边 1左滑  2右滑
         switch (drawStyle) {
             case 1:
                 //判断是否需要绘制下一页面
@@ -343,8 +319,10 @@ public class BrowsingVIew extends View {
                     //绘制当前页面
                     canvas.drawBitmap(bitmapLinkedList.get(bitmap_flag), 0, 0, mPaint);
                 }else {
+                    //定义绘制区间 offsetX此处是负数，所以直接相加即可
+                    Rect rect=new Rect((int) (mViewWidth+offsetX),0,mViewWidth,mViewHeight);
                     //绘制下一页面
-                    canvas.drawBitmap(bitmapLinkedList.get(bitmap_flag+1), 0, 0, mPaint);
+                    canvas.drawBitmap(bitmapLinkedList.get(bitmap_flag+1), rect, rect, mPaint);
                     //绘制当前页面
                     canvas.drawBitmap(bitmapLinkedList.get(bitmap_flag), offsetX, 0, mPaint);
                 }
@@ -353,8 +331,11 @@ public class BrowsingVIew extends View {
             case 2:
                 //判断是否绘制上一页面
                 if(bitmap_flag>0){
+                    //定义绘制区间
+                    Rect rect=new Rect((int) offsetX,0,mViewWidth,mViewHeight);
                     //绘制当前页面
-                    canvas.drawBitmap(bitmapLinkedList.get(bitmap_flag), 0, 0, mPaint);
+                    canvas.drawBitmap(bitmapLinkedList.get(bitmap_flag), rect, rect, mPaint);
+
                     //绘制上一页面
                     canvas.drawBitmap(bitmapLinkedList.get(bitmap_flag-1), offsetX-mViewWidth, 0, mPaint);
                 }else{

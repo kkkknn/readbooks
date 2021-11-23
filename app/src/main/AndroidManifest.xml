@@ -24,10 +24,6 @@
         android:usesCleartextTraffic="true" >
 
         <activity
-            android:name=".view.activities.SettingActivity"
-            android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoTitle_FullScreen" />
-        <activity
             android:name=".view.activities.RegisterActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="fullSensor" />

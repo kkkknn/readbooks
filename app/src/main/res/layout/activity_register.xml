@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -11,13 +11,13 @@
     tools:context=".view.activities.RegisterActivity">
 
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_marginVertical="80dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/logo" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:drawableStart="@drawable/ic_baseline_person_24"
         android:hint="@string/name_tip"
         android:id="@+id/edit_reg_name"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:drawableStart="@drawable/ic_baseline_vpn_key_24"
         android:hint="@string/password_tip"
         android:id="@+id/edit_reg_password"
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_reg_msg"
         android:textColor="@color/colorRed"
         android:layout_marginHorizontal="100dp"
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         tools:ignore="SmallSp" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/register_btn"
         android:background="@drawable/btn"
         android:text="@string/register_btn"
@@ -56,4 +56,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -8,6 +8,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
@@ -54,6 +58,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private Presenter_Browsing presenterBrowsing;
     private BrowsingVIew.FlushType flushType= BrowsingVIew.FlushType.FLUSH_PAGE;
     private SettingConf settingConf;
+    private LinearLayoutCompat linearLayoutCompat;
 
     //静态广播
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -85,6 +90,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     };
 
     private void initView(){
+        linearLayoutCompat=findViewById(R.id.book_brow_background);
         browsingVIew = findViewById(R.id.browView);
         browsingVIew.setListener(new BookCallback() {
             @Override
@@ -284,7 +290,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     public void loadReadConf(SettingConf settingConf) {
         browsingVIew.setTextColor(settingConf.fontColor);
         browsingVIew.setTextSize(settingConf.fontSize);
-        browsingVIew.setBackGroundStyle(settingConf.backgroundStyle);
+        setBackgroundStyle(settingConf.backgroundStyle);
         setBrightness(settingConf.brightness);
     }
 
@@ -319,7 +325,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
             @Override
             public void changeBackground(int style) {
-                browsingVIew.setBackGroundStyle(style);
+                setBackgroundStyle(style);
                 settingConf.backgroundStyle=style;
                 presenterBrowsing.setReadConfig(settingConf);
             }
@@ -344,6 +350,27 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         dialog.setConfData(settingConf);
         dialog.show();
 
+    }
+
+    //设置阅读背景颜色
+    private void setBackgroundStyle(int style){
+        switch (style){
+            case 1:
+                linearLayoutCompat.setBackgroundResource(R.drawable.browsingview);
+                break;
+            case 2:
+                linearLayoutCompat.setBackgroundColor(Color.parseColor("#7B7070"));
+                break;
+            case 3:
+                linearLayoutCompat.setBackgroundColor(Color.parseColor("#3FAA98"));
+                break;
+            case 4:
+                linearLayoutCompat.setBackgroundColor(Color.parseColor("#B49D42"));
+                break;
+            default:
+                linearLayoutCompat.setBackgroundResource(R.drawable.browsingview);
+                break;
+        }
     }
 
 
