@@ -2,6 +2,7 @@ package com.kkkkkn.readbooks.view.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -16,6 +17,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +31,10 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.view.ViewCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kkkkkn.readbooks.R;
@@ -60,6 +65,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private BookShelfAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UpdateDialog updateDialog;
+    private SearchView main_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +114,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }*/
 
     private void initView(){
-        SearchView main_search=findViewById(R.id.main_search);
+        main_search=findViewById(R.id.main_search);
         main_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -171,22 +177,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.navigation,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.navigation_dashboard:
-                toSearchActivity();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -256,7 +246,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     @Override
     public void toSearchActivity() {
-        startActivity(new Intent(getApplicationContext(),SearchActivity.class));
+        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
     }
 
 

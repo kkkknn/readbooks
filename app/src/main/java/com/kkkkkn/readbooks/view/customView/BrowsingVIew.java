@@ -349,7 +349,9 @@ public class BrowsingVIew extends View {
 
                 }
 
-                break;
+                break
+
+                        ;
         }
         canvas.restore();
     }
@@ -381,4 +383,13 @@ public class BrowsingVIew extends View {
         bookCallback=callback;
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        //销毁view视图时，销毁所有bitmap
+        bitmapLinkedList.clear();
+        bitmapLinkedList=null;
+
+    }
 }

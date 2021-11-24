@@ -10,7 +10,9 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/main_search"
+        android:background="@drawable/read_setting_background_check"
         android:layout_width="match_parent"
+        android:layout_marginHorizontal="100dp"
         android:layout_height="wrap_content"/>
 
 

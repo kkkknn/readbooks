@@ -1,7 +1,12 @@
 package com.kkkkkn.readbooks.view.activities;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -121,7 +126,6 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
         });
         searchView.setIconifiedByDefault(false);
     }
-
 
     @Override
     protected void onDestroy() {
