@@ -3,6 +3,7 @@ package com.kkkkkn.readbooks.view.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -23,12 +24,21 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.HeaderViewListAdapter;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -65,7 +75,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private BookShelfAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UpdateDialog updateDialog;
-    private SearchView main_search;
+    private ImageButton btn_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +124,11 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }*/
 
     private void initView(){
-        main_search=findViewById(R.id.main_search);
-        main_search.setOnClickListener(new View.OnClickListener() {
+        btn_search=findViewById(R.id.btn_search);
+        btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toSearchActivity();
+                toSearchActivity(view);
             }
         });
 
@@ -141,10 +151,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
                 if(bookInfo!=null){
-                    //跳转到阅读页面
-                    jump2ReadView(bookInfo);
-                    //Toast.makeText(getApplicationContext(),bookInfo.getBookName(),Toast.LENGTH_SHORT).show();
-
+                    jump2ReadView(view,bookInfo);
                 }
             }
         });
@@ -152,6 +159,11 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     }
 
+    public void toSearchActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this, view, "share").toBundle();
+        startActivity(intent, bundle);
+    }
 
     //监听返回键，连续按2次直接退出程序
     @Override
@@ -171,12 +183,37 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void jump2ReadView(BookInfo bookInfo){
-        Bundle bundle=new Bundle();
-        bundle.putSerializable("bookInfo",bookInfo);
-        Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    private void jump2ReadView(View view,BookInfo bookInfo){
+        //创建动画容器 true 为补间动画
+        AnimationSet animationSet=new AnimationSet(true);
+        //创建缩放动画
+        TranslateAnimation translateAnimation = new TranslateAnimation(0,600,0,-300);
+        // 创建平移动画的对象：
+        translateAnimation.setDuration(1000);
+        animationSet.addAnimation(translateAnimation);
+        //如：
+        view.startAnimation(animationSet);
+        translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                Log.i(TAG, "onAnimationStart: ");
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                //动画显示完成后 ，跳转到浏览界面
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("bookInfo",bookInfo);
+                Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                Log.i(TAG, "onAnimationRepeat: ");
+            }
+        });
     }
 
 
@@ -244,10 +281,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     }
 
-    @Override
-    public void toSearchActivity() {
-        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-    }
 
 
     @Override

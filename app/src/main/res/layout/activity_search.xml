@@ -9,6 +9,9 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
+        android:transitionName="share"
+        android:layout_marginHorizontal="5dp"
+        android:background="@drawable/searchview_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:queryHint="请输入图书名字"/>

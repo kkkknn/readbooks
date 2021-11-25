@@ -6,22 +6,30 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context=".view.activities.MainActivity">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/main_search"
-        android:background="@drawable/read_setting_background_check"
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="100dp"
-        android:layout_height="wrap_content"/>
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btn_search"
+        android:scaleType="fitCenter"
+        android:transitionName="share"
+        android:background="@drawable/searchview_style"
+        android:src="@drawable/ic_search_launcher_foreground"
+        android:layout_width="50dp"
+        android:layout_height="50dp"/>
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/main_SwipeRefreshLayout"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <GridView
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:id="@+id/main_booksGridView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

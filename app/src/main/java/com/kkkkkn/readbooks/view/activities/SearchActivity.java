@@ -51,7 +51,7 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
         presenter_search=new Presenter_Search(getApplicationContext(),this);
         presenter_search.init();
         initView();
-
+        Log.i(TAG, "onCreate: 启动11");
 
     }
 
@@ -124,7 +124,7 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
                 return false;
             }
         });
-        searchView.setIconifiedByDefault(false);
+        //searchView.setIconifiedByDefault(false);
     }
 
     @Override

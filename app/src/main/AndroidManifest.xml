@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kkkkkn.readbooks" >
-
-    <uses-permission android:name="android.permission.REPLACE_EXISTING_PACKAGE" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission
-        android:name="android.permission.INTERNET"
-        tools:ignore="ManifestOrder" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
+    package="com.kkkkkn.readbooks">
 
     <application
         android:allowBackup="false"
@@ -21,43 +10,49 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-        android:usesCleartextTraffic="true" >
-
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".view.activities.RegisterActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor" />
+
         <activity
             android:name=".view.activities.LoginActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".view.activities.SearchActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoTitle_FullScreen" />
         <activity
             android:name=".view.activities.BookBrowsingActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoTitle_FullScreen" />
         <activity
             android:name=".view.activities.BookInfoActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoTitle_FullScreen" />
         <activity
             android:name=".view.activities.MainActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="fullSensor"
-            android:theme="@style/AppTheme.NoTitle_FullScreen" >
+            android:theme="@style/AppTheme.NoTitle_FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:ignore="ManifestOrder" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+    <uses-permission android:name="android.permission.REPLACE_EXISTING_PACKAGE" />
 
 </manifest>
