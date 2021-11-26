@@ -10,6 +10,7 @@ import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -19,11 +20,13 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
@@ -81,7 +84,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //setStatusBarColor(this,getDrawable(R.color.colorWhite));
 
         initView();
         presenter_main=new Presenter_Main(getApplicationContext(),this);
@@ -184,16 +186,34 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     private void jump2ReadView(View view,BookInfo bookInfo){
+        //获取屏幕大小
+        WindowManager windowManager=getWindowManager();
+        Display display=windowManager.getDefaultDisplay();
+        Point screenPoint=new Point();
+        display.getSize(screenPoint);
+        Log.i(TAG, "jump2ReadView: 屏幕宽度："+screenPoint.x+" 屏幕高度："+screenPoint.y);
+        int view_width=view.getWidth();
+        int view_height=view.getHeight();
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int move_x = (screenPoint.x-view_width)/2-location[0]; // view距离 屏幕左边的距离（即x轴方向）
+        int move_y = (screenPoint.y-view_height)/2-location[1]; // view距离 屏幕顶边的距离（即y轴方向）
+        Log.i(TAG, "jump2ReadView: "+view_width+"}}"+view_height);
+        //缩放比例
+        float width_scale=(float) screenPoint.x/view_width;
+        float height_scale=(float) screenPoint.y/view_height;
         //创建动画容器 true 为补间动画
         AnimationSet animationSet=new AnimationSet(true);
         //创建缩放动画
-        TranslateAnimation translateAnimation = new TranslateAnimation(0,600,0,-300);
-        // 创建平移动画的对象：
-        translateAnimation.setDuration(1000);
+        TranslateAnimation translateAnimation = new TranslateAnimation(move_x/width_scale,0,move_y/height_scale,0);
+        //创建缩放动画
+        ScaleAnimation scaleAnimation=new ScaleAnimation(width_scale,1.0f,height_scale,1.0f,view_width/2f,view_height/2f);
+
         animationSet.addAnimation(translateAnimation);
-        //如：
-        view.startAnimation(animationSet);
-        translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+        animationSet.addAnimation(scaleAnimation);
+        animationSet.setDuration(1000);
+        animationSet.setFillAfter(true);
+        animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
                 Log.i(TAG, "onAnimationStart: ");
@@ -207,6 +227,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                Log.i(TAG, "jump2ReadView: "+view.getWidth()+"}}"+view.getHeight());
             }
 
             @Override
@@ -214,6 +235,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 Log.i(TAG, "onAnimationRepeat: ");
             }
         });
+
+        view.startAnimation(animationSet);
     }
 
 

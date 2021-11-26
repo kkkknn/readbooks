@@ -14,7 +14,6 @@
         android:id="@+id/btn_search"
         android:scaleType="fitCenter"
         android:transitionName="share"
-        android:background="@drawable/searchview_style"
         android:src="@drawable/ic_search_launcher_foreground"
         android:layout_width="50dp"
         android:layout_height="50dp"/>

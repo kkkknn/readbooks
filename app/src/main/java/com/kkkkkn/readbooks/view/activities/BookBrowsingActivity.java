@@ -15,6 +15,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -155,6 +157,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_book_browsing);
         //setStatusBarColor(this,getResources().getDrawable(R.drawable.browsingview));
         initView();
