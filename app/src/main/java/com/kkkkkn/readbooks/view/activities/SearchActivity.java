@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.HeaderViewListAdapter;
@@ -101,6 +102,8 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
 
         } );
         searchView=findViewById(R.id.searchView);
+
+        setFocused(searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -124,7 +127,7 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
                 return false;
             }
         });
-        //searchView.setIconifiedByDefault(false);
+
     }
 
     @Override
@@ -177,5 +180,16 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
                 }
             }
         });
+    }
+
+    private void setFocused( SearchView searchView) {
+        searchView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                searchView.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchView.findFocus(), InputMethodManager.SHOW_IMPLICIT);
+            }
+        }, 500);
     }
 }

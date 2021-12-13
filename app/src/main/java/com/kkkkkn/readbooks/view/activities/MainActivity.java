@@ -205,12 +205,12 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         //创建动画容器 true 为补间动画
         AnimationSet animationSet=new AnimationSet(true);
         //创建缩放动画
-        TranslateAnimation translateAnimation = new TranslateAnimation(move_x/width_scale,0,move_y/height_scale,0);
+        TranslateAnimation translateAnimation = new TranslateAnimation(0,move_x,0,move_y);
         //创建缩放动画
-        ScaleAnimation scaleAnimation=new ScaleAnimation(width_scale,1.0f,height_scale,1.0f,view_width/2f,view_height/2f);
+        ScaleAnimation scaleAnimation=new ScaleAnimation(1.0f,width_scale,1.0f,height_scale,0,0);
 
-        animationSet.addAnimation(translateAnimation);
         animationSet.addAnimation(scaleAnimation);
+        animationSet.addAnimation(translateAnimation);
         animationSet.setDuration(1000);
         animationSet.setFillAfter(true);
         animationSet.setAnimationListener(new Animation.AnimationListener() {

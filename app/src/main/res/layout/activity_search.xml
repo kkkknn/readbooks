@@ -13,7 +13,10 @@
         android:layout_marginHorizontal="5dp"
         android:background="@drawable/searchview_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        app:showAsAction ="always"
+        app:iconifiedByDefault="false"
+        app:searchIcon="@drawable/ic_search_book_24"
         app:queryHint="请输入图书名字"/>
 
     <view class="androidx.appcompat.app.AlertController$RecycleListView"
