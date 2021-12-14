@@ -3,13 +3,13 @@ package com.kkkkkn.readbooks.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
@@ -19,9 +19,9 @@ import com.kkkkkn.readbooks.view.view.LoginActivityView;
 
 
 public class LoginActivity extends BaseActivity implements LoginActivityView {
-    private Button btn_login;
-    private EditText edit_name,edit_password;
-    private TextView jumpText;
+    private AppCompatButton btn_login;
+    private AppCompatEditText edit_name,edit_password;
+    private AppCompatTextView jumpText;
     private Presenter_Login presenter_login;
     private long lastBackClick;
 

@@ -20,20 +20,17 @@
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".view.activities.SearchActivity"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/AppTheme.NoTitle_FullScreen" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".view.activities.BookBrowsingActivity"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/AppTheme.NoTitle_FullScreen" />
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".view.activities.BookInfoActivity"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/AppTheme.NoTitle_FullScreen" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".view.activities.MainActivity"
             android:screenOrientation="fullSensor"
-            android:theme="@style/AppTheme.NoTitle_FullScreen">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +38,8 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:ignore="ManifestOrder" />
     <uses-permission
         android:name="android.permission.INTERNET"
         tools:ignore="ManifestOrder" />

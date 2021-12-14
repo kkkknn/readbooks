@@ -39,7 +39,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.SearchView;
@@ -54,6 +58,7 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.BookShelfAdapter;
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
+import com.kkkkkn.readbooks.model.entity.AnimationConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
@@ -78,7 +83,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private BookShelfAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UpdateDialog updateDialog;
-    private ImageButton btn_search;
+    private AppCompatImageButton btn_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,32 +191,20 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     private void jump2ReadView(View view,BookInfo bookInfo){
-        //获取屏幕大小
-        WindowManager windowManager=getWindowManager();
-        Display display=windowManager.getDefaultDisplay();
-        Point screenPoint=new Point();
-        display.getSize(screenPoint);
-        Log.i(TAG, "jump2ReadView: 屏幕宽度："+screenPoint.x+" 屏幕高度："+screenPoint.y);
-        int view_width=view.getWidth();
-        int view_height=view.getHeight();
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        int move_x = (screenPoint.x-view_width)/2-location[0]; // view距离 屏幕左边的距离（即x轴方向）
-        int move_y = (screenPoint.y-view_height)/2-location[1]; // view距离 屏幕顶边的距离（即y轴方向）
-        Log.i(TAG, "jump2ReadView: "+view_width+"}}"+view_height);
-        //缩放比例
-        float width_scale=(float) screenPoint.x/view_width;
-        float height_scale=(float) screenPoint.y/view_height;
+        AnimationConfig animationConfig=getScreenSize(view);
+        if(animationConfig.isEmpty()){
+            return;
+        }
         //创建动画容器 true 为补间动画
         AnimationSet animationSet=new AnimationSet(true);
+        //创建平移动画
+        TranslateAnimation translateAnimation = new TranslateAnimation(animationConfig.moveX,0,animationConfig.moveY,0);
         //创建缩放动画
-        TranslateAnimation translateAnimation = new TranslateAnimation(0,move_x,0,move_y);
-        //创建缩放动画
-        ScaleAnimation scaleAnimation=new ScaleAnimation(1.0f,width_scale,1.0f,height_scale,0,0);
-
-        animationSet.addAnimation(scaleAnimation);
+        ScaleAnimation scaleAnimation=new ScaleAnimation(animationConfig.scaleX,1.0f,animationConfig.scaleY,1.0f,animationConfig.view.getWidth()/2f,animationConfig.view.getHeight()/2f);
         animationSet.addAnimation(translateAnimation);
+        animationSet.addAnimation(scaleAnimation);
         animationSet.setDuration(1000);
+        //播放完不恢复位置
         animationSet.setFillAfter(true);
         animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -227,7 +220,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
-                Log.i(TAG, "jump2ReadView: "+view.getWidth()+"}}"+view.getHeight());
             }
 
             @Override
@@ -236,7 +228,34 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             }
         });
 
+        //播放动画
         view.startAnimation(animationSet);
+    }
+
+
+    private AnimationConfig getScreenSize(View view){
+        AnimationConfig animationConfig=new AnimationConfig();
+        //获取屏幕大小
+        WindowManager windowManager=getWindowManager();
+        Display display=windowManager.getDefaultDisplay();
+        Point screenPoint=new Point();
+        display.getSize(screenPoint);
+        int view_width=view.getWidth();
+        int view_height=view.getHeight();
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int move_x = (screenPoint.x-view_width)/2-location[0]; // view距离 屏幕左边的距离（即x轴方向）
+        int move_y = (screenPoint.y-view_height)/2-location[1]; // view距离 屏幕顶边的距离（即y轴方向）
+        //缩放比例
+        float width_scale=(float) screenPoint.x/view_width;
+        float height_scale=(float) screenPoint.y/view_height;
+
+        animationConfig.view=view;
+        animationConfig.moveX=move_x/width_scale;
+        animationConfig.moveY=move_y/height_scale;
+        animationConfig.scaleX=width_scale;
+        animationConfig.scaleY=height_scale;
+        return animationConfig;
     }
 
 

@@ -46,6 +46,7 @@ import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -294,7 +295,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         browsingVIew.setTextColor(settingConf.fontColor);
         browsingVIew.setTextSize(settingConf.fontSize);
         setBackgroundStyle(settingConf.backgroundStyle);
-        setBrightness(settingConf.brightness);
+        setBrightness(settingConf.brightness/10f);
     }
 
 
@@ -334,8 +335,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             }
 
             @Override
-            public void changeLight(float count) {
-                setBrightness(count);
+            public void changeLight(int count) {
+                setBrightness(count/10f);
+                Log.d(TAG, "changeLight: "+count);
                 settingConf.brightness=count;
                 presenterBrowsing.setReadConfig(settingConf);
             }
@@ -343,9 +345,10 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             @Override
             public int resetSystemLight() {
                 float count=getSystemBrightness();
-                settingConf.brightness=count;
+                int value= (int) count/25;
+                settingConf.brightness=value;
                 presenterBrowsing.setReadConfig(settingConf);
-                return (int) count/10;
+                return value;
             }
 
         });

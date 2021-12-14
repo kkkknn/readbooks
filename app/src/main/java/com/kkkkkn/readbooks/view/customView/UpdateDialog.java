@@ -9,13 +9,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.widget.ContentLoadingProgressBar;
 
 import com.kkkkkn.readbooks.R;
 
 public class UpdateDialog extends Dialog {
-    private TextView tv_title,tv_info;
-    private ProgressBar pb_download;
-    private Button btn_ok ,btn_cancel;
+    private AppCompatTextView tv_title,tv_info;
+    private ContentLoadingProgressBar pb_download;
+    private AppCompatButton btn_ok ,btn_cancel;
     private OnClickBottomListener onClickBottomListener;
 
     public UpdateDialog(@NonNull Context context) {

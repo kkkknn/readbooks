@@ -11,7 +11,6 @@
         android:id="@+id/searchView"
         android:transitionName="share"
         android:layout_marginHorizontal="5dp"
-        android:background="@drawable/searchview_style"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:showAsAction ="always"
@@ -21,6 +20,7 @@
 
     <view class="androidx.appcompat.app.AlertController$RecycleListView"
         android:id="@+id/search_listView"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

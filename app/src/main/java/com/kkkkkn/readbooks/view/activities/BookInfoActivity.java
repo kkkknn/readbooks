@@ -19,6 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.widget.ContentLoadingProgressBar;
+
 import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.BookChaptersAdapter;
@@ -36,18 +41,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+
 public class BookInfoActivity extends BaseActivity implements BookInfoActivityView {
     private final static String TAG="BookInfoActivity";
-    private TextView book_name,author_name,book_about;
-    private ImageView book_img;
+    private AppCompatTextView book_name,author_name,book_about;
+    private AppCompatImageView book_img;
     private BookInfo bookInfo;
     private ArrayList<ChapterInfo> chapterList=new ArrayList<>();
     private ListView chapter_listView;
     private BookChaptersAdapter chaptersAdapter;
-    private Button btnStartRead,btnAddEnjoy;
+    private AppCompatButton btnStartRead,btnAddEnjoy;
     private boolean isEnd=false;
-    private ProgressBar loading;
-    private TextView nothing_tv;
+    private ContentLoadingProgressBar loading;
+    private AppCompatTextView nothing_tv;
 
 
     private Presenter_Info presenter_info;

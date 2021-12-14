@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -20,27 +19,23 @@ import androidx.annotation.Nullable;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.view.activities.BookBrowsingActivity;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 
 public class BrowsingVIew extends View {
     //行距
-    private float rowSpace=1.5f;
+    private final float rowSpace=1.5f;
     public enum FlushType{
         THIS_PAGE,
         LAST_PAGE,
         NEXT_PAGE,
-        FLUSH_PAGE;
+        FLUSH_PAGE
     }
     private final static String TAG="BrowsingVIew";
     //当前划屏位置
     private float mClipX = 0;
     //左右滑动偏移量 变量
     private float offsetX=0;
-    //绘制偏移量 X Y坐标
-    private float draw_offsetX=0;
-    private float draw_offsetY=0;
     //控件宽高
     private int mViewHeight = 0, mViewWidth = 0;
     //当前章节字符串
@@ -59,7 +54,7 @@ public class BrowsingVIew extends View {
     private BookBrowsingActivity.BookCallback bookCallback;
 
     private Paint mPaint;
-    private Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.transtion).copy(Bitmap.Config.ARGB_8888, true);
+    private final Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.transtion).copy(Bitmap.Config.ARGB_8888, true);
     private LinkedList<Bitmap> bitmapLinkedList=new LinkedList<>();
     private int bitmap_flag=0;
 
@@ -92,21 +87,18 @@ public class BrowsingVIew extends View {
         mPaint.setAntiAlias(true);
         mPaint.setTextSize(textSize);
 
-        this.post(new Runnable() {
-            @Override
-            public void run() {
-                //获取view宽高，然后绘制
-                mViewWidth = getMeasuredWidth();
-                mViewHeight = getMeasuredHeight();
-                statusBarHeight = getStatusBarHeight(context);
-                //textSize=(float) mViewWidth/12;
+        this.post(() -> {
+            //获取view宽高，然后绘制
+            mViewWidth = getMeasuredWidth();
+            mViewHeight = getMeasuredHeight();
+            statusBarHeight = getStatusBarHeight(context);
+            //textSize=(float) mViewWidth/12;
 
-                //计算偏移量及行数，每行字数
-                linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight-((int)textSize>>1)) / (double)textSize/rowSpace);
+            //计算偏移量及行数，每行字数
+            linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight-((int)textSize>>1)) / (double)textSize/rowSpace);
 
-                if(contentArr!=null&&bitmapLinkedList.size()==0){
-                    text2bitmap(FlushType.THIS_PAGE);
-                }
+            if(contentArr!=null&&bitmapLinkedList.size()==0){
+                text2bitmap(FlushType.THIS_PAGE);
             }
         });
     }
@@ -128,21 +120,21 @@ public class BrowsingVIew extends View {
         Canvas canvas=new Canvas();
         //根据行数创建字符串数组 每页
         LinkedList<String> line_list=new LinkedList<>();
-        for (int i = 0; i < contentArr.length; i++) {
-            float[] ss=new float[contentArr[i].length()];
-            mPaint.getTextWidths(contentArr[i],ss);
-            float line_width=0;
-            int start=0;
+        for (String s : contentArr) {
+            float[] ss = new float[s.length()];
+            mPaint.getTextWidths(s, ss);
+            float line_width = 0;
+            int start = 0;
             for (int l = 0; l < ss.length; l++) {
-                line_width+=ss[l];
-                if(line_width>=mViewWidth){
-                    line_list.add(contentArr[i].substring(start,l));
-                    start=l;
-                    line_width=ss[l];
+                line_width += ss[l];
+                if (line_width >= mViewWidth) {
+                    line_list.add(s.substring(start, l));
+                    start = l;
+                    line_width = ss[l];
                 }
                 //每行结尾拆分
-                if((l==(ss.length-1))&&line_width>0){
-                    line_list.add(contentArr[i].substring(start,ss.length));
+                if ((l == (ss.length - 1)) && line_width > 0) {
+                    line_list.add(s.substring(start, ss.length));
                 }
             }
 
@@ -180,12 +172,7 @@ public class BrowsingVIew extends View {
                 break;
         }
 
-        this.post(new Runnable() {
-            @Override
-            public void run() {
-                invalidate();
-            }
-        });
+        this.post(this::invalidate);
     }
 
     public void setTextColor(int textColor) {
@@ -225,7 +212,7 @@ public class BrowsingVIew extends View {
             case MotionEvent.ACTION_UP:
                 //判断是否需要变化当前页
                 //首先判断滑动距离是否超出宽度1/6
-                if(Math.abs(offsetX) > mViewWidth / 6){
+                if(Math.abs(offsetX) > mViewWidth / 6f){
                     if(drawStyle==1){
                         //锚点赋值
                         if((bitmap_flag+1)<bitmapLinkedList.size()){
@@ -243,10 +230,10 @@ public class BrowsingVIew extends View {
                         }
                     }
                 }else {
-                    if(event.getX()>=mViewWidth/3*2){
+                    if(event.getX()>=mViewWidth/3f*2){
                         showSlide(false,(int) event.getX());
                         Toast.makeText(getContext(),"下一页面",Toast.LENGTH_SHORT).show();
-                    }else if(event.getX()<=mViewWidth/3){
+                    }else if(event.getX()<=mViewWidth/3f){
                         showSlide(true,(int)event.getX());
                         Toast.makeText(getContext(),"上一页面",Toast.LENGTH_SHORT).show();
                     }else {
@@ -272,8 +259,6 @@ public class BrowsingVIew extends View {
                         drawStyle = 1;
                     }else if(offsetX > 0){
                         drawStyle = 2;
-                        //计算初始锚点
-                        //offsetX=-(mViewWidth-x);
                     }
                 }
                 //offsetX = x;
@@ -306,12 +291,15 @@ public class BrowsingVIew extends View {
     private void drawBitmap(Canvas canvas) {
         //判断是否需要绘制
         if(contentArr==null||bitmapLinkedList.size()==0){
-            Log.i(TAG, "drawBitmap: 超出长度或没有文字内容，忽略绘制"+Boolean.toString(contentArr==null)+"||"+bitmapLinkedList.size());
+            Log.i(TAG, "drawBitmap: 超出长度或没有文字内容，忽略绘制"+ (contentArr == null) +"||"+bitmapLinkedList.size());
             return;
         }
         canvas.save();
+        //绘制偏移量 X Y坐标
+        float draw_offsetX = 0;
+        float draw_offsetY = 0;
         canvas.translate(draw_offsetX, draw_offsetY);
-        //根据drawstyle 决定绘制左边还是右边 1左滑  2右滑
+        //drawStyle 决定绘制左边还是右边 1左滑  2右滑
         switch (drawStyle) {
             case 1:
                 //判断是否需要绘制下一页面
@@ -360,10 +348,10 @@ public class BrowsingVIew extends View {
 
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         mViewHeight = h;
         mViewWidth = w;
-        super.onSizeChanged(w, h, oldw, oldh);
+        super.onSizeChanged(w, h, oldW, oldH);
     }
 
     @Override

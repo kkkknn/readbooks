@@ -11,16 +11,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
+
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.presenter.Presenter_Register;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.RegisterActivityView;
 
 public class RegisterActivity extends BaseActivity implements RegisterActivityView {
-    private EditText edit_name,edit_password;
-    private Button btn_reg;
+    private AppCompatEditText edit_name,edit_password;
+    private AppCompatButton btn_reg;
     private Presenter_Register presenter_register;
-    private TextView tv_tip;
+    private AppCompatTextView tv_tip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

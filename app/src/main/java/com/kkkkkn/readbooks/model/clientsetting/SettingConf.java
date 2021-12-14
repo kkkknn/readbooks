@@ -16,7 +16,7 @@ public class SettingConf implements Serializable {
     //背景图样式,示例
     public int backgroundStyle=1;
     //当前亮度 为0 情况则使用系统亮度
-    public float brightness=0;
+    public int brightness=0;
     //是否使用系统亮度
     public boolean useSystem=true;
 

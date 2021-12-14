@@ -15,23 +15,26 @@
         android:src="@drawable/logo"    />
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_account_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
         android:drawableStart="@drawable/ic_baseline_person_24"
         android:hint="@string/name_tip"
-        android:id="@+id/edit_account_name"
-        android:layout_marginHorizontal="30dp"
-        android:maxLength="10"
         android:inputType="text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:maxLength="10"
+        android:minHeight="48dp" />
+
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_account_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
         android:drawableStart="@drawable/ic_baseline_vpn_key_24"
         android:hint="@string/password_tip"
-        android:layout_marginHorizontal="30dp"
-        android:id="@+id/edit_account_password"
         android:inputType="textPassword"
         android:maxLength="10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:minHeight="48dp" />
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -45,14 +48,14 @@
         android:layout_height="wrap_content"/>
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:layout_marginRight="20dp"
-        android:textColor="@color/colorBlue"
         android:id="@+id/jumpToRsg"
-        android:gravity="right"
-        android:text="@string/register"
-        android:autoLink="all"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:autoLink="all"
+        android:gravity="right"
+        android:text="@string/register"
+        android:textColor="#8C9EFF"
         tools:ignore="RtlHardcoded" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+
 import com.kkkkkn.readbooks.R;
 
 public class CustomToast extends Toast {
@@ -50,8 +53,8 @@ public class CustomToast extends Toast {
         View view =inflater.inflate(R.layout.view_toast_custom,null);
 
         //不一定需要，找到xml里面的组件，设置组件里面的具体内容
-        ImageView imageView=view.findViewById(R.id.ivToast);
-        TextView textView=view.findViewById(R.id.tvToast);
+        AppCompatImageView imageView=view.findViewById(R.id.ivToast);
+        AppCompatTextView textView=view.findViewById(R.id.tvToast);
         textView.setText(text);
         imageView.setVisibility(View.GONE);
         customToast.setDuration(time);

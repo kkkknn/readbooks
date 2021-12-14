@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatSeekBar;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
@@ -28,12 +30,12 @@ import java.util.Objects;
 
 public class SettingDialog extends Dialog {
     //控件
-    private TextView add_sizeTextView,subtract_sizeTextView,font_sizeTextView;
-    private SeekBar light_seekBar;
+    private AppCompatTextView add_sizeTextView,subtract_sizeTextView,font_sizeTextView;
+    private AppCompatSeekBar light_seekBar;
     private BackgroundRadioButton radio_retro,radio_gray,radio_green,radio_yellow;
-    private TextView tv_system_light;
+    private AppCompatTextView tv_system_light;
     private int font_size;
-    private float light_count;
+    private int light_count;
     private final static int max_fontSize=80;
     private final static int min_fontSize=10;
     private EventListener eventListener;
@@ -84,7 +86,7 @@ public class SettingDialog extends Dialog {
     private SeekBar.OnSeekBarChangeListener onSeekBarChangeListener=new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-            light_count= (float) ((i*1.0/10));
+            light_count= i;
         }
 
         @Override
@@ -100,7 +102,7 @@ public class SettingDialog extends Dialog {
     public interface EventListener{
         void changeFontSize(float size);
         void changeBackground(int style);
-        void changeLight(float count);
+        void changeLight(int count);
         int resetSystemLight();
     }
 
@@ -177,7 +179,7 @@ public class SettingDialog extends Dialog {
             return;
         }
         //填充数据
-        light_seekBar.setProgress(Math.round(settingConf.brightness*10));
+        light_seekBar.setProgress((int) settingConf.brightness);
         font_sizeTextView.setText(String.format(Locale.CHINA,"%s",Math.round(settingConf.fontSize)));
         switch (settingConf.backgroundStyle){
             case 1:

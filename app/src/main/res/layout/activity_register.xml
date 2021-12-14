@@ -18,23 +18,25 @@
         android:src="@drawable/logo" />
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_reg_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
         android:drawableStart="@drawable/ic_baseline_person_24"
         android:hint="@string/name_tip"
-        android:id="@+id/edit_reg_name"
-        android:layout_marginHorizontal="30dp"
         android:maxLength="10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:minHeight="48dp" />
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_reg_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
         android:drawableStart="@drawable/ic_baseline_vpn_key_24"
         android:hint="@string/password_tip"
-        android:id="@+id/edit_reg_password"
-        android:layout_marginHorizontal="30dp"
         android:inputType="textPassword"
         android:maxLength="10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:minHeight="48dp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_reg_msg"

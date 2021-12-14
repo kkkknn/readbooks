@@ -1,10 +1,5 @@
 package com.kkkkkn.readbooks.view.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +16,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.widget.ContentLoadingProgressBar;
+
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
@@ -28,8 +27,6 @@ import com.kkkkkn.readbooks.presenter.Presenter_Search;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.SearchActivityView;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -40,9 +37,9 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
     private Presenter_Search presenter_search;
     private String searchStr;
     private boolean isEnd=false;
-    private ProgressBar loading;
+    private ContentLoadingProgressBar loading;
     private ListView listView;
-    private TextView nothing_tv;
+    private AppCompatTextView nothing_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +149,9 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
                 if (arrayList != null) {
                     if(list.size()<presenter_search.getPageSize()){
                         isEnd=true;
+                    }
+                    if(listView.getVisibility()==View.INVISIBLE||listView.getVisibility()==View.GONE){
+                        listView.setVisibility(View.VISIBLE);
                     }
                     loading.setVisibility(View.GONE);
                     arrayList.addAll(list);
