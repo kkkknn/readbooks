@@ -140,10 +140,10 @@ public class BrowsingVIew extends View {
 
         }
         bitmapLinkedList.clear();
-        canvas.translate(0,statusBarHeight+ ((int) textSize >> 1));
         int line_count=0;
         Bitmap bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
         canvas.setBitmap(bitmap);
+        canvas.translate(0,statusBarHeight+ ((int) textSize >> 1));
         for (int i = 0; i < line_list.size(); i++) {
             String str=line_list.get(i);
             canvas.drawText(str,0,str.length(),0,line_count*textSize*rowSpace,mPaint);
@@ -154,6 +154,7 @@ public class BrowsingVIew extends View {
                 bitmapLinkedList.add(bitmap);
                 bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
                 canvas.setBitmap(bitmap);
+                canvas.translate(0,statusBarHeight+ ((int) textSize >> 1));
             }
         }
         if(line_count>0){
