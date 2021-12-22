@@ -9,7 +9,6 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
-        android:transitionName="share"
         android:layout_marginHorizontal="5dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"

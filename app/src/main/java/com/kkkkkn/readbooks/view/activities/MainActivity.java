@@ -107,28 +107,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     }
 
-/*    public void checkAllPermission(){
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager()) {
-            Toast.makeText(this, "已获得访问所有文件权限", Toast.LENGTH_SHORT).show();
-        } else {
-            new AlertDialog.Builder(this)
-                .setMessage("本程序需要您同意允许访问所有文件权限")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                        startActivity(intent);
-                    }
-                }).show();
-
-        }
-        if (!Settings.System.canWrite(getApplication())) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-    }*/
 
     private void initView(){
         btn_search=findViewById(R.id.btn_search);
@@ -168,8 +146,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     public void toSearchActivity(View view) {
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this, view, "share").toBundle();
-        startActivity(intent, bundle);
+        startActivity(intent);
     }
 
     //监听返回键，连续按2次直接退出程序
@@ -198,9 +175,9 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         //创建动画容器 true 为补间动画
         AnimationSet animationSet=new AnimationSet(true);
         //创建平移动画
-        TranslateAnimation translateAnimation = new TranslateAnimation(animationConfig.moveX,0,animationConfig.moveY,0);
+        TranslateAnimation translateAnimation = new TranslateAnimation(0,animationConfig.moveX,0,animationConfig.moveY);
         //创建缩放动画
-        ScaleAnimation scaleAnimation=new ScaleAnimation(animationConfig.scaleX,1.0f,animationConfig.scaleY,1.0f,animationConfig.view.getWidth()/2f,animationConfig.view.getHeight()/2f);
+        ScaleAnimation scaleAnimation=new ScaleAnimation(1.0f,animationConfig.scaleX,1.0f,animationConfig.scaleY,animationConfig.view.getWidth()/2f,animationConfig.view.getHeight()/2f);
         animationSet.addAnimation(translateAnimation);
         animationSet.addAnimation(scaleAnimation);
         animationSet.setDuration(1000);
@@ -215,6 +192,9 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             @Override
             public void onAnimationEnd(Animation animation) {
                 //动画显示完成后 ，跳转到浏览界面
+
+
+
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("bookInfo",bookInfo);
                 Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.kkkkkn.readbooks.R;
+import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.view.activities.BookBrowsingActivity;
 
 import java.util.LinkedList;
@@ -121,6 +122,8 @@ public class BrowsingVIew extends View {
         //根据行数创建字符串数组 每页
         LinkedList<String> line_list=new LinkedList<>();
         for (String s : contentArr) {
+            //压缩行首空格 4个为2个
+            s= StringUtil.Text2Indent(s);
             float[] ss = new float[s.length()];
             mPaint.getTextWidths(s, ss);
             float line_width = 0;

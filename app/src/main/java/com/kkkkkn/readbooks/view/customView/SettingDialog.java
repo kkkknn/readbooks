@@ -36,7 +36,7 @@ public class SettingDialog extends Dialog {
     private AppCompatTextView tv_system_light;
     private int font_size;
     private int light_count;
-    private final static int max_fontSize=80;
+    private final static int max_fontSize=90;
     private final static int min_fontSize=10;
     private EventListener eventListener;
     private final static String TAG="SettingDialog";
@@ -61,6 +61,7 @@ public class SettingDialog extends Dialog {
                 }
             }else if(id==R.id.setting_lightSystem_textView){
                 int count=eventListener.resetSystemLight();
+                eventListener.changeLight(count);
                 light_seekBar.setProgress(count);
             }
         }

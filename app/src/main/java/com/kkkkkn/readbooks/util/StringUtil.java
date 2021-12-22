@@ -62,4 +62,12 @@ public class StringUtil {
         String[] path_arr=chapterUrl.split("/");
         return path_arr[4]+path_arr[5]+path_arr[7];
     }
+
+    public static String Text2Indent(String s) {
+        if(s==null){
+            return "";
+        }else {
+            return s.substring(2);
+        }
+    }
 }

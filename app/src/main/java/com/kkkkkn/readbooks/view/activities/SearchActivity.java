@@ -47,7 +47,6 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
         presenter_search=new Presenter_Search(getApplicationContext(),this);
         presenter_search.init();
         initView();
-        Log.i(TAG, "onCreate: 启动11");
 
     }
 
@@ -97,8 +96,10 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
 
         } );
         searchView=findViewById(R.id.searchView);
-
         setFocused(searchView);
+        if(searchView.getVisibility()!=View.VISIBLE){
+            searchView.setVisibility(View.VISIBLE);
+        }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -128,6 +129,7 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        searchView.setVisibility(View.VISIBLE);
         arrayList.clear();
         presenter_search.release();
     }

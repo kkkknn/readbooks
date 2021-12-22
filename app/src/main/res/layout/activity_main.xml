@@ -12,7 +12,6 @@
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btn_search"
-        android:transitionName="share"
         android:src="@drawable/ic_search_book_24"
         android:layout_width="50dp"
         android:layout_height="50dp"/>
