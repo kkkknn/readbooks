@@ -35,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -140,8 +141,31 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 }
             }
         });
+        SearchView searchView=findViewById(R.id.main_searchView);
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "onClick: setOnSearchClickListener 点击了");
 
+            }
+        });
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "onClick: setOnClickListener 点击了");
+            }
+        });
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
 
+                Log.i(TAG, "onClick: setOnFocusChangeListener 点击了");
+            }
+        });
+        searchView.setIconifiedByDefault(false);
+        searchView.setEnabled(false);
+        searchView.setFocusable(false);
+        searchView.setFocusableInTouchMode(false);
     }
 
     public void toSearchActivity(View view) {
