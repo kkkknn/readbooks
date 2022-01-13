@@ -10,6 +10,7 @@
     <string name="nothing_tip">没有更多了~</string>
     <string name="name_tip">请输入用户名</string>
     <string name="password_tip">请输入密码</string>
+    <string name="password_check_tip">请再次输入密码</string>
     <string name="login_btn">登录</string>
     <string name="register_btn">注册</string>
     <string name="ok_btn">确定</string>

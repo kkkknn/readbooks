@@ -15,12 +15,6 @@
         android:src="@drawable/ic_search_book_24"
         android:layout_width="50dp"
         android:layout_height="50dp"/>
-    <androidx.appcompat.widget.SearchView
-        android:filterTouchesWhenObscured="false"
-        android:id="@+id/main_searchView"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"/>
-
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/main_SwipeRefreshLayout"

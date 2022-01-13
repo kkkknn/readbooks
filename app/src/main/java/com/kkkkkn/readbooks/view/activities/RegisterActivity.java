@@ -1,6 +1,7 @@
 package com.kkkkkn.readbooks.view.activities;
 
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
@@ -21,10 +22,28 @@ import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.RegisterActivityView;
 
 public class RegisterActivity extends BaseActivity implements RegisterActivityView {
-    private AppCompatEditText edit_name,edit_password;
-    private AppCompatButton btn_reg;
+    private AppCompatEditText edit_name,edit_password,edit_password_check;
     private Presenter_Register presenter_register;
-    private AppCompatTextView tv_tip;
+    private AppCompatTextView tv_account_tip,tv_password_tip,tv_password_check_tip;
+    private final View.OnFocusChangeListener onFocusChangeListener=new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View view, boolean b) {
+            if(!b){
+                return;
+            }
+            int id=view.getId();
+            if(id==R.id.edit_reg_name){
+                tv_account_tip.setText("");
+                tv_account_tip.setVisibility(View.GONE);
+            }else if(id==R.id.edit_reg_password){
+                tv_password_tip.setText("");
+                tv_password_tip.setVisibility(View.GONE);
+            }else if(id==R.id.edit_reg_password_check){
+                tv_password_check_tip.setText("");
+                tv_password_check_tip.setVisibility(View.GONE);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +55,28 @@ public class RegisterActivity extends BaseActivity implements RegisterActivityVi
     }
 
     private void initView(){
-        tv_tip=findViewById(R.id.text_reg_msg);
+        tv_account_tip=findViewById(R.id.text_reg_name_tip);
+        tv_password_tip=findViewById(R.id.text_reg_password_tip);
+        tv_password_check_tip=findViewById(R.id.text_reg_password_check_tip);
         edit_name=findViewById(R.id.edit_reg_name);
         edit_password=findViewById(R.id.edit_reg_password);
-        btn_reg=findViewById(R.id.register_btn);
+        edit_password_check=findViewById(R.id.edit_reg_password_check);
+        AppCompatButton btn_reg = findViewById(R.id.register_btn);
         btn_reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tv_tip.setText("");
+                tv_account_tip.setText("");
+                tv_password_tip.setText("");
+                tv_password_check_tip.setText("");
                 final String name=edit_name.getText().toString();
                 final String password=edit_password.getText().toString();
-                presenter_register.register(name,password);
+                final String passwordCheck=edit_password_check.getText().toString();
+                presenter_register.register(name,password,passwordCheck);
             }
         });
+        edit_name.setOnFocusChangeListener(onFocusChangeListener);
+        edit_password.setOnFocusChangeListener(onFocusChangeListener);
+        edit_password_check.setOnFocusChangeListener(onFocusChangeListener);
     }
 
 
@@ -76,14 +104,20 @@ public class RegisterActivity extends BaseActivity implements RegisterActivityVi
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(value>0){
-                    tv_tip.setTextColor(Color.GREEN);
-                }else if(value==0){
-                    tv_tip.setTextColor(Color.YELLOW);
-                }else {
-                    tv_tip.setTextColor(Color.RED);
+                switch (value){
+                    case -1:
+                        tv_password_check_tip.setVisibility(View.VISIBLE);
+                        tv_password_check_tip.setText(val_str);
+                        break;
+                    case -2:
+                        tv_account_tip.setVisibility(View.VISIBLE);
+                        tv_account_tip.setText(val_str);
+                        break;
+                    case -3:
+                        edit_password.setVisibility(View.VISIBLE);
+                        edit_password.setText(val_str);
+                        break;
                 }
-                tv_tip.setText(val_str);
             }
         });
 

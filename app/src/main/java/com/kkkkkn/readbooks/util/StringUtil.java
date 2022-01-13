@@ -17,6 +17,13 @@ public class StringUtil {
         return m.matches();
     }
 
+    public static boolean equals(String str1,String str2){
+        if(str1==null||str1.isEmpty()||str2==null||str2.isEmpty()){
+            return false;
+        }
+        return str1.equals(str2);
+    }
+
     public static boolean checkAccountPassword(String str){
         if(str==null||str.isEmpty()){
             return false;
