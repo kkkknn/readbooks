@@ -64,6 +64,7 @@ import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
 import com.kkkkkn.readbooks.util.StringUtil;
+import com.kkkkkn.readbooks.view.customView.CustomSearchView;
 import com.kkkkkn.readbooks.view.customView.UpdateDialog;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
@@ -141,6 +142,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 }
             }
         });
+        CustomSearchView searchView=findViewById(R.id.searchView);
     }
 
     public void toSearchActivity(View view) {

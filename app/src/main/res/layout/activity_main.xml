@@ -16,6 +16,11 @@
         android:layout_width="50dp"
         android:layout_height="50dp"/>
 
+    <com.kkkkkn.readbooks.view.customView.CustomSearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/main_SwipeRefreshLayout"
         android:clipChildren="false"

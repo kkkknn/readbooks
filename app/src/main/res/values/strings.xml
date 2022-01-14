@@ -2,6 +2,7 @@
     <string name="app_name">趣读读</string>
     <string name="menu_main">书架</string>
     <string name="menu_search">搜索</string>
+    <string name="search_hint">请输入要搜索的书名/作者名</string>
     <string name="menu_set">设置</string>
     <string name="set_about">软件详情</string>
     <string name="set_version">当前版本</string>
