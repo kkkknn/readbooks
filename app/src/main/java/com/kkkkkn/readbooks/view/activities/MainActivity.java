@@ -65,6 +65,7 @@ import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.view.customView.CustomSearchView;
+import com.kkkkkn.readbooks.view.customView.SoftKeyBoardListener;
 import com.kkkkkn.readbooks.view.customView.UpdateDialog;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
@@ -85,7 +86,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private BookShelfAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UpdateDialog updateDialog;
-    private AppCompatImageButton btn_search;
+    private SoftKeyBoardListener softKeyBoardListener;
+    private CustomSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         setContentView(R.layout.activity_main);
 
         initView();
+        setSoftKeyBoardListener();
+
         presenter_main=new Presenter_Main(getApplicationContext(),this);
         presenter_main.init();
 
@@ -111,13 +115,15 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
 
     private void initView(){
-        btn_search=findViewById(R.id.btn_search);
-        btn_search.setOnClickListener(new View.OnClickListener() {
+        searchView=findViewById(R.id.searchView);
+        searchView.setEnable(false);
+        /*searchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.i(TAG, "onClick: 11111111111");
                 toSearchActivity(view);
             }
-        });
+        });*/
 
         GridView mGridView;
         mGridView=findViewById(R.id.main_booksGridView);
@@ -142,7 +148,24 @@ public class MainActivity extends BaseActivity implements MainActivityView {
                 }
             }
         });
-        CustomSearchView searchView=findViewById(R.id.searchView);
+    }
+
+    private void setSoftKeyBoardListener() {
+        softKeyBoardListener = new SoftKeyBoardListener(MainActivity.this);
+        //软键盘状态监听
+        softKeyBoardListener.setListener(new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                //软键盘已经显示，做逻辑
+                searchView.onKeyBoardState(true);
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+                //软键盘已经隐藏,做逻辑
+                searchView.onKeyBoardState(false);
+            }
+        });
     }
 
     public void toSearchActivity(View view) {
@@ -161,7 +184,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             }else{
                 //500ms以上，弹窗不处理
                 lastBackClick=nowBackClick;
-                Toast.makeText(getApplicationContext(),"请再按一次以退出程序",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"请再按一次以退出程序",Toast.LENGTH_SHORT).show();
             }
             return false;
         }
@@ -193,8 +216,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             @Override
             public void onAnimationEnd(Animation animation) {
                 //动画显示完成后 ，跳转到浏览界面
-
-
 
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("bookInfo",bookInfo);

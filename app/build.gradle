@@ -4,7 +4,7 @@ android {
     compileSdkVersion 31
     defaultConfig {
         applicationId "com.kkkkkn.readbooks"
-        minSdkVersion 25
+        minSdkVersion 23
         targetSdkVersion 31
         versionCode 7
         versionName '1.0.1.211110'

@@ -13,9 +13,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_marginBottom="40dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="end"
         android:layout_width="383dp"
-        android:layout_height="300dp"
+        android:layout_height="310dp"
         android:src="@drawable/banner"    />
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -45,7 +45,7 @@
                 android:textSize="12sp"
                 android:inputType="text"
                 android:maxLength="10"
-                android:minHeight="48dp" />
+                android:minHeight="55dp" />
             <androidx.appcompat.widget.AppCompatTextView
                 android:visibility="gone"
                 android:id="@+id/text_reg_name_tip"
@@ -87,7 +87,7 @@
                 android:textSize="12sp"
                 android:inputType="textPassword"
                 android:maxLength="10"
-                android:minHeight="48dp" />
+                android:minHeight="55dp" />
             <androidx.appcompat.widget.AppCompatTextView
                 android:visibility="gone"
                 android:id="@+id/text_reg_password_tip"
@@ -127,7 +127,7 @@
                 android:textSize="12sp"
                 android:inputType="textPassword"
                 android:maxLength="10"
-                android:minHeight="48dp" />
+                android:minHeight="55dp" />
             <androidx.appcompat.widget.AppCompatTextView
                 android:visibility="gone"
                 android:id="@+id/text_reg_password_check_tip"

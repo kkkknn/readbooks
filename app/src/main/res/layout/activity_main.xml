@@ -10,16 +10,10 @@
     android:clipToPadding="false"
     tools:context=".view.activities.MainActivity">
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/btn_search"
-        android:src="@drawable/ic_search_book_24"
-        android:layout_width="50dp"
-        android:layout_height="50dp"/>
-
     <com.kkkkkn.readbooks.view.customView.CustomSearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="wrap_content" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/main_SwipeRefreshLayout"

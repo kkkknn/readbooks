@@ -10,9 +10,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:baselineAligned="false">
-        <androidx.fragment.app.FragmentContainerView
+        <FrameLayout
             android:layout_weight="1"
             android:layout_width="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatEditText
@@ -26,6 +28,7 @@
                 android:background="@drawable/bg_edittext"
                 android:textSize="12sp"
                 android:imeOptions="actionSearch"
+                android:maxLength="20"
                 android:inputType="text"
                 android:hint="@string/search_hint"
                 android:autofillHints="" />
@@ -33,13 +36,13 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_marginEnd="20dp"
                 android:src="@drawable/ic_scanning"
-                android:id="@+id/search_iv_close"
+                android:id="@+id/search_iv_menu"
                 android:layout_gravity="right|center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:ignore="RtlHardcoded" />
 
-        </androidx.fragment.app.FragmentContainerView>
+        </FrameLayout>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
