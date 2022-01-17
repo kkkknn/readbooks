@@ -6,20 +6,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-
-    <androidx.appcompat.widget.SearchView
+    <com.kkkkkn.readbooks.view.customView.CustomSearchView
         android:id="@+id/searchView"
         android:layout_marginHorizontal="5dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:showAsAction ="always"
-        app:iconifiedByDefault="false"
-        app:searchIcon="@drawable/ic_search_book_24"
         app:queryHint="请输入图书名字"/>
 
     <view class="androidx.appcompat.app.AlertController$RecycleListView"
         android:id="@+id/search_listView"
         android:visibility="invisible"
+        android:divider="@null"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

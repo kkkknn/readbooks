@@ -10,13 +10,15 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:background="@drawable/bg_card"
         android:layout_gravity="center"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/img_background"
-            android:paddingVertical="40dp"
             android:orientation="horizontal"
+            android:padding="10dp"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -33,7 +35,7 @@
                 android:minHeight="150dp" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:orientation="vertical"
                 android:layout_height="wrap_content">
                 <androidx.appcompat.widget.AppCompatTextView
@@ -45,47 +47,27 @@
                     android:text="图书名字"
                     android:textAlignment="textStart"
                     android:textColor="@color/colorBlack"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/bookInfo_authorName"
                     android:layout_margin="10dp"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:padding="10dp"
                     android:textAlignment="textStart"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="作者名字"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_AddEnjoy"
-                android:layout_width="0dp"
-                android:layout_weight="5"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_addenjoy"
-                android:textAlignment="center"
-                android:text="加入书架"/>
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_StartRead"
-                android:layout_width="0dp"
-                android:layout_weight="5"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_startread"
-                android:textAlignment="center"
-                android:text="开始阅读"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:padding="10dp"
             android:id="@+id/bookInfo_bookAbout"
             android:layout_marginVertical="20dp"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textAlignment="textStart"
             android:textColor="@color/colorBlack"
             android:layout_width="match_parent"
@@ -94,12 +76,41 @@
             android:ellipsize="end"
             android:text="图书详情"/>
 
-        <view class="androidx.appcompat.app.AlertController$RecycleListView"
-            android:id="@+id/bookInfo_chapters_listView"
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"/>
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_AddEnjoy"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_addenjoy"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:text="加入书架"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_StartRead"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:background="@drawable/btn_startread"
+                android:textAlignment="center"
+                android:text="开始阅读"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <view class="androidx.appcompat.app.AlertController$RecycleListView"
+        android:id="@+id/bookInfo_chapters_listView"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"/>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

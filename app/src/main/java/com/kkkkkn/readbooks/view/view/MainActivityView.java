@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public interface MainActivityView extends BaseView {
     void syncBookShelf(ArrayList<BookInfo> list);
     void showUpdateDialog( String msg, String url, String version);
-    void toSearchActivity(View view);
+    void toSearchActivity();
     void toLoginActivity();
     void updateProgress(int progress);
     void installAPK(String filePath);

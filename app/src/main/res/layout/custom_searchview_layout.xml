@@ -33,14 +33,32 @@
                 android:hint="@string/search_hint"
                 android:autofillHints="" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/ic_scanning"
-                android:id="@+id/search_iv_menu"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_marginEnd="12dp"
+                android:orientation="horizontal"
                 android:layout_gravity="right|center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="RtlHardcoded" />
+                android:layout_height="match_parent"
+                tools:ignore="RtlHardcoded">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_marginHorizontal="5dp"
+                    android:src="@drawable/ic_close"
+                    android:id="@+id/search_iv_close"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_height="wrap_content" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:src="@drawable/ic_scanning"
+                    android:layout_marginHorizontal="5dp"
+                    android:visibility="gone"
+                    android:id="@+id/search_iv_scan"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_height="wrap_content"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
 
         </FrameLayout>
 

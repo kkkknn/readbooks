@@ -9,8 +9,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
@@ -30,7 +33,9 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
     //输入框
     private AppCompatEditText etInput;
     //删除键
-    private AppCompatImageView ivMenu;
+    private AppCompatImageView ivDelete;
+    //扫码框
+    private AppCompatImageView ivScan;
     private Context mContext;
     private final static int BAN_STATE=-2,FOCUS_STATE=1,NO_FOCUS_STATE=-1;
     //搜索回调接口
@@ -50,16 +55,26 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
     public void setEnable(boolean flag){
         isEnable=flag;
         if(!isEnable&&etInput!=null){
-            etInput.setEnabled(false);
-            /*etInput.setFocusable(false);
-            etInput.setFocusableInTouchMode(false);*/
+            etInput.setFocusable(false);
+            etInput.setFocusableInTouchMode(false);
+            etInput.setLongClickable(false);
+
         }
+    }
+
+    //设置焦点，打开键盘输入
+    public void requestEdit(){
+        etInput.requestFocus();
+        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(etInput.findFocus(), InputMethodManager.SHOW_IMPLICIT);
     }
 
     private void initViews() {
         etInput =  findViewById(R.id.search_et_input);
-        ivMenu = findViewById(R.id.search_iv_menu);
-        ivMenu.setOnClickListener(this);
+        ivDelete = findViewById(R.id.search_iv_close);
+        ivDelete.setOnClickListener(this);
+        ivScan = findViewById(R.id.search_iv_scan);
+        ivScan.setOnClickListener(this);
         etInput.addTextChangedListener((TextWatcher) new EditChangedListener());
         etInput.setOnClickListener(this);
         etInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -76,15 +91,11 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
     }
 
     public void onKeyBoardState(boolean isShow){
-        Drawable drawable;
-        if(isShow){
-            drawable=AppCompatResources.getDrawable(mContext,R.drawable.ic_close);
-        }else {
+        if(!isShow){
             etInput.clearFocus();
-            drawable=AppCompatResources.getDrawable(mContext,R.drawable.ic_scanning);
+        }else {
+            ivDelete.setVisibility(VISIBLE);
         }
-        ivMenu.setImageDrawable(drawable);
-        ivMenu.setVisibility(VISIBLE);
         Log.i(TAG, "onKeyBoardState: "+isShow);
     }
 
@@ -111,13 +122,13 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             if (!"".equals(charSequence.toString())) {
-                ivMenu.setVisibility(VISIBLE);
+                ivDelete.setVisibility(VISIBLE);
                 //更新autoComplete数据
                 if (mListener != null) {
                     mListener.onRefreshAutoComplete(charSequence + "");
                 }
             } else {
-                ivMenu.setVisibility(GONE);
+                ivDelete.setVisibility(GONE);
             }
 
         }
@@ -130,40 +141,21 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        int state = getEditViewState();
-        if(state==BAN_STATE){
-            return;
-        }
         int id=view.getId();
-
         if(id==R.id.search_et_input){
-            Log.i("TAG", "onClick: search_et_input");
-        }else if(id==R.id.search_iv_menu){
-            if(state==NO_FOCUS_STATE){
-                if(!(mListener==null)){
-                    mListener.onScancode();
-                    Log.i(TAG, "onClick: onScancode");
-                }
-            }else if(state==FOCUS_STATE){
-                etInput.setText("");
-
-                ivMenu.setVisibility(GONE);
+            if(!(mListener==null)){
+                mListener.onEditViewClick();
+            }
+        }else if(id==R.id.search_iv_close){
+            etInput.setText("");
+            ivDelete.setVisibility(GONE);
+        }else if(id == R.id.search_iv_scan){
+            if(!(mListener==null)){
+                mListener.onScancode();
             }
         }
     }
 
-
-    private int getEditViewState(){
-        if(!isEnable){
-            return BAN_STATE;
-        }
-        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(imm.isActive()){
-            return FOCUS_STATE;
-        }else {
-            return NO_FOCUS_STATE;
-        }
-    }
 
     //search view回调方法
     public interface SearchViewListener {
@@ -175,6 +167,9 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
 
         //打开扫码
         void onScancode();
+
+        //输入框点击事件
+        void onEditViewClick();
     }
 
 

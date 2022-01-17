@@ -22,7 +22,9 @@ import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Search;
+import com.kkkkkn.readbooks.view.customView.CustomSearchView;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
+import com.kkkkkn.readbooks.view.customView.SoftKeyBoardListener;
 import com.kkkkkn.readbooks.view.view.SearchActivityView;
 
 
@@ -30,7 +32,7 @@ import java.util.ArrayList;
 
 public class SearchActivity extends BaseActivity implements SearchActivityView {
     private final static String TAG="SearchActivity";
-    private SearchView searchView;
+    private CustomSearchView searchView;
     private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
     private Presenter_Search presenter_search;
     private String searchStr;
@@ -38,16 +40,37 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
     private ContentLoadingProgressBar loading;
     private ListView listView;
     private AppCompatTextView nothing_tv;
+    private SoftKeyBoardListener softKeyBoardListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        initView();
+        setSoftKeyBoardListener();
+
         presenter_search=new Presenter_Search(getApplicationContext(),this);
         presenter_search.init();
-        initView();
 
+    }
+
+    private void setSoftKeyBoardListener() {
+        softKeyBoardListener = new SoftKeyBoardListener(SearchActivity.this);
+        //软键盘状态监听
+        softKeyBoardListener.setListener(new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                //软键盘已经显示，做逻辑
+                searchView.onKeyBoardState(true);
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+                //软键盘已经隐藏,做逻辑
+                searchView.onKeyBoardState(false);
+            }
+        });
     }
 
     private void initView(){
@@ -64,7 +87,9 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                toBrowsingActivity(arrayList.get(position));
+                if(position<arrayList.size()){
+                    toBrowsingActivity(arrayList.get(position));
+                }
             }
         });
         //滑动到底部监听
@@ -96,33 +121,40 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
 
         } );
         searchView=findViewById(R.id.searchView);
-        setFocused(searchView);
-        if(searchView.getVisibility()!=View.VISIBLE){
-            searchView.setVisibility(View.VISIBLE);
-        }
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.requestEdit();
+        searchView.setSearchViewListener(new CustomSearchView.SearchViewListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public void onRefreshAutoComplete(String text) {
+
+            }
+
+            @Override
+            public void onSearch(String text) {
                 //请求字符串不为空，开始进行网络请求
-                if(!query.isEmpty()){
+                if(!text.isEmpty()){
                     isEnd=false;
                     //清空当前列表
                     arrayList.clear();
                     ((SearchBookResultAdapter)((HeaderViewListAdapter)listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
                     //请求搜索
-                    searchStr=query;
+                    searchStr=text;
                     presenter_search.searchBook(arrayList.size(),searchStr);
-                    //防止抬起落下都触发此事件
-                    searchView.setIconified(true);
+                    /*//防止抬起落下都触发此事件
+                    searchView.setIconified(true);*/
                 }
-                return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
+            public void onScancode() {
+
+            }
+
+            @Override
+            public void onEditViewClick() {
+
             }
         });
+
 
     }
 
@@ -149,6 +181,8 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
                 if (arrayList != null) {
                     if(list.size()<presenter_search.getPageSize()){
                         isEnd=true;
+                        //显示无更多提示框
+                        nothing_tv.setVisibility(View.VISIBLE);
                     }
                     if(listView.getVisibility()==View.INVISIBLE||listView.getVisibility()==View.GONE){
                         listView.setVisibility(View.VISIBLE);
@@ -182,14 +216,4 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
         });
     }
 
-    private void setFocused( SearchView searchView) {
-        searchView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                searchView.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(searchView.findFocus(), InputMethodManager.SHOW_IMPLICIT);
-            }
-        }, 500);
-    }
 }

@@ -86,7 +86,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private BookShelfAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UpdateDialog updateDialog;
-    private SoftKeyBoardListener softKeyBoardListener;
     private CustomSearchView searchView;
 
     @Override
@@ -95,7 +94,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         setContentView(R.layout.activity_main);
 
         initView();
-        setSoftKeyBoardListener();
+
 
         presenter_main=new Presenter_Main(getApplicationContext(),this);
         presenter_main.init();
@@ -117,13 +116,28 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private void initView(){
         searchView=findViewById(R.id.searchView);
         searchView.setEnable(false);
-        /*searchView.setOnClickListener(new View.OnClickListener() {
+        searchView.setSearchViewListener(new CustomSearchView.SearchViewListener() {
             @Override
-            public void onClick(View view) {
-                Log.i(TAG, "onClick: 11111111111");
-                toSearchActivity(view);
+            public void onRefreshAutoComplete(String text) {
+                Log.i(TAG, "onRefreshAutoComplete: "+text);
             }
-        });*/
+
+            @Override
+            public void onSearch(String text) {
+                Log.i(TAG, "onSearch: "+text);
+            }
+
+            @Override
+            public void onScancode() {
+                Log.i(TAG, "onScancode: ");
+            }
+
+            @Override
+            public void onEditViewClick() {
+                Log.i(TAG, "onEditViewClick: ");
+                toSearchActivity();
+            }
+        });
 
         GridView mGridView;
         mGridView=findViewById(R.id.main_booksGridView);
@@ -150,25 +164,8 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         });
     }
 
-    private void setSoftKeyBoardListener() {
-        softKeyBoardListener = new SoftKeyBoardListener(MainActivity.this);
-        //软键盘状态监听
-        softKeyBoardListener.setListener(new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
-            @Override
-            public void keyBoardShow(int height) {
-                //软键盘已经显示，做逻辑
-                searchView.onKeyBoardState(true);
-            }
 
-            @Override
-            public void keyBoardHide(int height) {
-                //软键盘已经隐藏,做逻辑
-                searchView.onKeyBoardState(false);
-            }
-        });
-    }
-
-    public void toSearchActivity(View view) {
+    public void toSearchActivity() {
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         startActivity(intent);
     }
