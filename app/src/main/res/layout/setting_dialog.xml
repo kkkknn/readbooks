@@ -21,7 +21,7 @@
             android:gravity="center"
             android:text="@string/read_setting_led"
             android:textAlignment="center"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/text_setting_info"
             android:textSize="16sp" />
 
         <androidx.appcompat.widget.AppCompatSeekBar
@@ -39,7 +39,7 @@
             android:focusable="true"
             android:padding="10dp"
             android:text="@string/read_system_led"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/text_setting_info"
             android:textSize="16sp" />
 
 
@@ -61,7 +61,7 @@
             android:gravity="center"
             android:text="@string/read_setting_background"
             android:textAlignment="center"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/text_setting_info"
             android:textSize="16sp" />
 
         <RadioGroup
@@ -124,7 +124,7 @@
             android:gravity="center"
             android:text="@string/read_setting_font"
             android:textAlignment="center"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/text_setting_info"
             android:textSize="16sp" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -144,7 +144,7 @@
                 android:focusable="true"
                 android:clickable="true"
                 android:textAlignment="center"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/text_setting_info"
                 android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -155,7 +155,7 @@
                 android:paddingHorizontal="10dp"
                 android:text="22"
                 android:textAlignment="center"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/text_setting_info"
                 android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -168,7 +168,7 @@
                 android:paddingHorizontal="10dp"
                 android:text="+"
                 android:textAlignment="center"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/text_setting_info"
                 android:textSize="16sp"
                 android:focusable="true" />
 

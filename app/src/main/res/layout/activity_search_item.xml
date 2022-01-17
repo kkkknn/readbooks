@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="textStart"
             android:textSize="16sp"
-            android:textColor="@color/colorBlack"/>
+            android:textColor="@color/text_content"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:textAlignment="textStart"

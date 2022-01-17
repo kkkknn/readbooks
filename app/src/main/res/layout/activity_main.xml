@@ -34,5 +34,11 @@
             android:scrollbars="none" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/view_search"
+        android:layout_width="match_parent"
+        android:focusable="false"
+        android:layout_height="50dp"/>
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>

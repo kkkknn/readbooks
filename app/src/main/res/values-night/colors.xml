@@ -5,17 +5,17 @@
     <color name="colorPrimary">#1C5287</color>
 
     <color name="book_update">#E80606</color>
-    <color name="text_content">#101010</color>
-    <color name="text_tips">#444444</color>
+    <color name="text_content">#ffffff</color>
+    <color name="text_tips">#C1C1C1</color>
     <color name="text_error">#B2FF0000</color>
     <color name="text_setting_info">#B2FCFCFC</color>
-    <color name="bg_edit_view">#CCFFFFFF</color>
-    <color name="bg_card_view">#CCFFFFFF</color>
+    <color name="bg_edit_view">#CC1C1C1C</color>
+    <color name="bg_card_view">#CC1C1C1C</color>
+
+
 
     <color name="edit_tips">#E4E4E4</color>
-
     <color name="loading_color">#E4E4E4</color>
-
     <color name="tab_checked">#D3673C</color>
     <color name="tab_unchecked">#757575</color>
 

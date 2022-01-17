@@ -65,8 +65,14 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
     //设置焦点，打开键盘输入
     public void requestEdit(){
         etInput.requestFocus();
-        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(etInput.findFocus(), InputMethodManager.SHOW_IMPLICIT);
+        etInput.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(etInput.findFocus(), InputMethodManager.SHOW_IMPLICIT);
+
+            }
+        },200);
     }
 
     private void initViews() {

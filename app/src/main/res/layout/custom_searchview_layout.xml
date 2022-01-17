@@ -30,6 +30,8 @@
                 android:imeOptions="actionSearch"
                 android:maxLength="20"
                 android:inputType="text"
+                android:textColorHint="@color/text_tips"
+                android:textColor="@color/text_content"
                 android:hint="@string/search_hint"
                 android:autofillHints="" />
 

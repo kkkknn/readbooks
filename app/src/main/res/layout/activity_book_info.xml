@@ -10,7 +10,9 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/bg_card"
         android:layout_gravity="center"
         android:orientation="vertical">
@@ -46,7 +48,7 @@
                     android:padding="10dp"
                     android:text="图书名字"
                     android:textAlignment="textStart"
-                    android:textColor="@color/colorBlack"
+                    android:textColor="@color/text_content"
                     android:textSize="16sp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -69,7 +71,7 @@
             android:layout_marginVertical="20dp"
             android:textSize="12sp"
             android:textAlignment="textStart"
-            android:textColor="@color/colorBlack"
+            android:textColor="@color/text_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxEms="200"
@@ -88,6 +90,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:layout_height="wrap_content"
+                android:textColor="@color/text_content"
                 android:background="@drawable/btn_addenjoy"
                 android:textAlignment="center"
                 android:textSize="12sp"
@@ -100,6 +103,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:background="@drawable/btn_startread"
+                android:textColor="@color/text_content"
                 android:textAlignment="center"
                 android:text="开始阅读"/>
 
