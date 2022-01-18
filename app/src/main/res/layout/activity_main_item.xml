@@ -4,44 +4,60 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bookshelf_item"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:padding="5dp"
     android:gravity="center"
     android:textAlignment="center"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_marginVertical="5dp"
-        android:id="@+id/bookshelf_item_book_img"
-        android:scaleType="matrix"
-        android:layout_width="80dp"
-        android:layout_height="100dp"/>
-
-    <RelativeLayout
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/bookshelf_item_book_name"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_gravity="center_horizontal"
+            android:background="@color/gray_400"
+            android:scaleType="matrix"
+            android:layout_width="80dp"
+            android:layout_height="100dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/bookshelf_item_book_img"
+            android:scaleType="matrix"
+            android:layout_width="80dp"
+            android:layout_height="100dp"/>
+
+
+        <!--<RelativeLayout
+            android:layout_gravity="bottom"
             android:gravity="center"
-            android:textAlignment="center"
-            android:textColor="@color/text_content"
-            android:textSize="10sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:ignore="SmallSp" />
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <View
-            android:id="@+id/bookshelf_item_is_update"
-            android:layout_width="6dp"
-            android:layout_height="6dp"
-            android:layout_alignEnd="@id/bookshelf_item_book_name"
-            android:background="@drawable/bookshelf_message_update"
-            android:visibility="gone"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/bookshelf_item_book_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/text_content"
+                android:textSize="10sp"
+                tools:ignore="SmallSp" />
 
-    </RelativeLayout>
+            <View
+                android:id="@+id/bookshelf_item_is_update"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:layout_alignEnd="@id/bookshelf_item_book_name"
+                android:background="@drawable/bookshelf_message_update"
+                android:visibility="gone"/>
+
+        </RelativeLayout>-->
+    </FrameLayout>
+
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -158,6 +158,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 BookInfo bookInfo=(BookInfo) adapterView.getAdapter().getItem(i);
                 if(bookInfo!=null){
+                    /*View imgView=view.findViewById(R.id.bookshelf_item_book_img);*/
                     jump2ReadView(view,bookInfo);
                 }
             }

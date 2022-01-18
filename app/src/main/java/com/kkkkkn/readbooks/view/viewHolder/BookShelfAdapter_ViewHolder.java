@@ -16,8 +16,8 @@ public class BookShelfAdapter_ViewHolder {
     public View updateView;
 
     public BookShelfAdapter_ViewHolder(View viewRoot) {
-        bookName = viewRoot.findViewById(R.id.bookshelf_item_book_name);
+        /*bookName = viewRoot.findViewById(R.id.bookshelf_item_book_name);*/
         bookImg = viewRoot.findViewById(R.id.bookshelf_item_book_img);
-        updateView = viewRoot.findViewById(R.id.bookshelf_item_is_update);
+        /*updateView = viewRoot.findViewById(R.id.bookshelf_item_is_update);*/
     }
 }

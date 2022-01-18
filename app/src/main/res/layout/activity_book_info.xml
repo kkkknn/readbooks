@@ -113,6 +113,7 @@
 
     <view class="androidx.appcompat.app.AlertController$RecycleListView"
         android:id="@+id/bookInfo_chapters_listView"
+        android:divider="@null"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"/>
 

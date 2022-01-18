@@ -63,7 +63,7 @@ public class BookShelfAdapter extends BaseAdapter {
             String url=bookInfo.getBookImgUrl();
             String name=bookInfo.getBookName();
             if(name!=null&&!name.isEmpty()){
-                bookShelfAdapter_viewHolder.bookName.setText(bookInfo.getBookName());
+                //bookShelfAdapter_viewHolder.bookName.setText(bookInfo.getBookName());
             }
             if(url!=null&&!url.isEmpty()){
                 ImageUtil.loadImage(url,mContext,bookShelfAdapter_viewHolder.bookImg);
