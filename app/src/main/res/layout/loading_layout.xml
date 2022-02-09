@@ -18,7 +18,7 @@
         android:textSize="12sp"
         android:paddingVertical="10dp"
         android:textColor="@color/text_content"
-        android:background="@color/loading_color"
+        android:background="@color/bg_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

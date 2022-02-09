@@ -38,7 +38,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Model_Browsing extends BaseModel{
-    private static final String cachePath="cache";
     private static final String TAG="Model_Browsing";
     @Subscribe
     public void syncProgress(BrowsingEvent event) {
@@ -159,7 +158,7 @@ public class Model_Browsing extends BaseModel{
     }
 
     public int getReadProgress(int book_id,Context context) {
-        String path=context.getFilesDir().getAbsolutePath()+cachePath;
+        String path=getCachePath(context);
         String str=getProgressString(path);
         //未找到进度就返回0
         if(StringUtil.isEmpty(str)) {
@@ -177,7 +176,7 @@ public class Model_Browsing extends BaseModel{
     }
 
     public boolean setReadProgress(int book_id,int progress,Context context){
-        String path=context.getFilesDir().getAbsolutePath()+cachePath;
+        String path=getCachePath(context);
         String str=getProgressString(path);
         JSONObject jsonObject= null;
         try {

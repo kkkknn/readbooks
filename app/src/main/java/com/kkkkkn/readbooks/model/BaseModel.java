@@ -1,11 +1,14 @@
 package com.kkkkkn.readbooks.model;
 
 
+import android.content.Context;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public abstract class BaseModel {
+    private static final String cachePath="cache";
     private boolean is_register=false;
     private CallBack callBack;
 
@@ -34,6 +37,9 @@ public abstract class BaseModel {
             EventBus.getDefault().unregister(this);
             is_register=false;
         }
+    }
+    public String getCachePath(Context context){
+        return context.getFilesDir().getAbsolutePath()+cachePath;
     }
 
 

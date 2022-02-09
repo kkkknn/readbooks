@@ -53,9 +53,16 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
         //请求图书列表
         EventBus.getDefault().post(
                 new MainEvent(
-                        EventMessage.SYNC_BOOKSHELF,
+                        EventMessage.GET_BOOKSHELF,
                         accountInfo.getAccount_id(),
                         accountInfo.getAccount_token()));
+    }
+
+    public boolean updateBookShelf(ArrayList<BookInfo> arrayList){
+        if(arrayList==null||arrayList.isEmpty()){
+            return false;
+        }
+        return model_main.updateBookShelf(arrayList,getContext());
     }
 
     /**
@@ -124,8 +131,9 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
     public void onSuccess(int type, Object object) {
         switch (type){
             case 1001:
+                //获取成功后，同时更新缓存书架
                 mainActivityView.syncBookShelf((ArrayList<BookInfo>) object);
-                break;
+                 break;
             case 2001:
                 if(checkVersion((String)object)){
                     JSONObject jsonObject= null;

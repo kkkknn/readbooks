@@ -12,8 +12,8 @@ public enum EventMessage {
     //注册相关
     REGISTER,
 
-    //更新书架
-    SYNC_BOOKSHELF,
+    //获取书架
+    GET_BOOKSHELF,
     //更新窗口
     SYNC_DIALOG,
     //获取最新版本信息

@@ -1,5 +1,6 @@
 package com.kkkkkn.readbooks.model;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -31,14 +32,9 @@ import okhttp3.Response;
 public class Model_Main extends BaseModel {
     private final static String TAG="Model_Main";
 
-
     @Subscribe
     public void syncProgress(MainEvent event) {
         switch (event.message){
-            case SYNC_BOOKSHELF:
-                //获取书架
-                getBookShelf(event.accountId,event.token);
-                break;
             case GET_VERSION:
                 //获取版本号
                 getVersion(event.accountId,event.token);
@@ -46,8 +42,18 @@ public class Model_Main extends BaseModel {
             case DOWNLOAD_APK:
                 downloadAPK(event.name,event.path,event.url,event.accountId,event.token);
                 break;
+            case GET_BOOKSHELF:
+                //获取书架
+                getBookShelf(event.accountId,event.token);
+                break;
         }
     }
+
+    public boolean updateBookShelf(ArrayList<BookInfo> bookShelf,Context context) {
+        //todo gengxin
+        return false;
+    }
+
 
     private void downloadAPK(final String name,final String path,String url,int id,String token) {
         if(StringUtil.isEmpty(name)||StringUtil.isEmpty(path)||StringUtil.isEmpty(url)){

@@ -190,11 +190,11 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         flushChapterContent(chapterInfo);
 
 
-        //注册静态广播
+        /*//注册静态广播
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-        registerReceiver(broadcastReceiver, filter);
+        registerReceiver(broadcastReceiver, filter);*/
 
 
     }
@@ -203,8 +203,11 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private void flushChapterContent(ChapterInfo chapterInfo){
         //请求并获取章节内容
         if(chapterInfo!=null){
-            Log.i(TAG, "onCreate: 请求获取章节内容");
-            presenterBrowsing.getChapterContent(chapterInfo.getChapter_path());
+            if(chapterList.size()>0){
+                presenterBrowsing.getChapterContent(chapterInfo.getChapter_path());
+            }else {
+                presenterBrowsing.getChapterList(bookInfo.getBookId(), chapterInfo.getChapter_num());
+            }
         }else{
             //获取缓存内是否有浏览章节进度
             int count=presenterBrowsing.getBookProgress(bookInfo.getBookId());
@@ -302,12 +305,15 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //写入当前浏览记录到数据库
-        ChapterInfo info=chapterList.get(chapterCount);
-        presenterBrowsing.setBookProgress(bookInfo.getBookId(),info.getChapter_num());
+        //获取是否是收藏列表内的图书
+        if(chapterList.size()>0){
+            //写入当前浏览记录到数据库
+            ChapterInfo info=chapterList.get(chapterCount);
+            presenterBrowsing.setBookProgress(bookInfo.getBookId(),info.getChapter_num());
+        }
         presenterBrowsing.release();
         //取消注册静态广播
-        unregisterReceiver(broadcastReceiver);
+        //unregisterReceiver(broadcastReceiver);
     }
 
     public interface BookCallback {

@@ -64,7 +64,7 @@ public class SoftKeyBoardListener {
         void keyBoardHide(int height);
     }
 
-        public void setListener(OnSoftKeyBoardChangeListener onSoftKeyBoardChangeListener) {
-            setOnSoftKeyBoardChangeListener(onSoftKeyBoardChangeListener);
-        }
+    public void setListener(OnSoftKeyBoardChangeListener onSoftKeyBoardChangeListener) {
+        setOnSoftKeyBoardChangeListener(onSoftKeyBoardChangeListener);
+    }
 }

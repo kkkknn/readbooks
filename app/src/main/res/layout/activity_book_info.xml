@@ -79,7 +79,6 @@
             android:text="图书详情"/>
 
 
-
         <androidx.appcompat.widget.LinearLayoutCompat
             android:orientation="horizontal"
             android:layout_width="match_parent"

@@ -190,7 +190,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     }
 
     private void jump2ReadView(View view,BookInfo bookInfo){
-        AnimationConfig animationConfig=getScreenSize(view);
+        /*AnimationConfig animationConfig=getScreenSize(view);
         if(animationConfig.isEmpty()){
             return;
         }
@@ -215,11 +215,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             public void onAnimationEnd(Animation animation) {
                 //动画显示完成后 ，跳转到浏览界面
 
-                Bundle bundle=new Bundle();
-                bundle.putSerializable("bookInfo",bookInfo);
-                Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
+
             }
 
             @Override
@@ -229,7 +225,13 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         });
 
         //播放动画
-        view.startAnimation(animationSet);
+        view.startAnimation(animationSet);*/
+
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("bookInfo",bookInfo);
+        Intent intent=new Intent(getApplicationContext(),BookBrowsingActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
 
@@ -279,6 +281,10 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     @Override
     public void syncBookShelf(final ArrayList<BookInfo> list) {
+        //同步更新书架
+        if(presenter_main!=null){
+            presenter_main.updateBookShelf(list);
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
