@@ -50,8 +50,46 @@ public class Model_Main extends BaseModel {
     }
 
     public boolean updateBookShelf(ArrayList<BookInfo> bookShelf,Context context) {
-        //todo gengxin
-        return false;
+        String path=getCachePath(context);
+        JSONObject jsonObject= null;
+        try {
+            jsonObject = new JSONObject();
+            for (BookInfo info:bookShelf) {
+                jsonObject.put(Integer.toString(info.getBookId()),info.getBookName());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return setBookShelfFString(jsonObject.toString(),path);
+    }
+
+    private boolean setBookShelfFString(String str, String path) {
+        boolean flag=false;
+        FileOutputStream fileOutputStream=null;
+        try {
+            File file=new File(path);
+            if(!file.exists())
+            {
+                file.mkdirs();
+            }
+            fileOutputStream=new FileOutputStream(path+"/book_shelf");
+            fileOutputStream.write(str.getBytes("UTF-8"));
+            fileOutputStream.flush();
+            flag=true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            flag=false;
+        }finally {
+            if(fileOutputStream!=null){
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return flag;
     }
 
 

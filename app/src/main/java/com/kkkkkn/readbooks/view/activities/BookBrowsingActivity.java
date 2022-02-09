@@ -187,6 +187,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             finish();
             return;
         }
+        //TODO 图书是否是书架内图书
         flushChapterContent(chapterInfo);
 
 
@@ -390,7 +391,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private void setBrightness(float count){
         Window window = ((Activity) this).getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        if (count <=0) {
+        if (count <0) {
             lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
         } else {
             lp.screenBrightness = count;
