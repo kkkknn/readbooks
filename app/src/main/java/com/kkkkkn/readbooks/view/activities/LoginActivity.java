@@ -7,6 +7,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -17,6 +22,8 @@ import com.kkkkkn.readbooks.presenter.Presenter_Login;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.LoginActivityView;
 
+import java.util.Objects;
+
 
 public class LoginActivity extends BaseActivity implements LoginActivityView {
     private AppCompatButton btn_login;
@@ -24,6 +31,7 @@ public class LoginActivity extends BaseActivity implements LoginActivityView {
     private AppCompatTextView jumpText;
     private Presenter_Login presenter_login;
     private long lastBackClick;
+    private ActivityResultLauncher<Intent> regActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +39,20 @@ public class LoginActivity extends BaseActivity implements LoginActivityView {
         setContentView(R.layout.activity_login);
 
         initView();
+        regActivityResultLauncher=registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                Intent intent=result.getData();
+                int resultCode = result.getResultCode();
+                //判断注册是否成功
+                if(resultCode==RESULT_OK && intent!=null){
+                    String name=intent.getStringExtra("accountName");
+                    String password=intent.getStringExtra("accountPassword");
+                    edit_name.setText(name);
+                    edit_password.setText(password);
+                }
+            }
+        });
         presenter_login=new Presenter_Login(getApplicationContext(),this);
         presenter_login.init();
 
@@ -43,8 +65,8 @@ public class LoginActivity extends BaseActivity implements LoginActivityView {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name=edit_name.getText().toString();
-                String password= edit_password.getText().toString();
+                String name= Objects.requireNonNull(edit_name.getText()).toString();
+                String password= Objects.requireNonNull(edit_password.getText()).toString();
                 presenter_login.login(name,password);
             }
         });
@@ -80,12 +102,14 @@ public class LoginActivity extends BaseActivity implements LoginActivityView {
 
     @Override
     public void toRegisterActivity() {
-        startActivityForResult(new Intent(getApplicationContext(), RegisterActivity.class),1);
+        regActivityResultLauncher.launch(new Intent(this, RegisterActivity.class));
     }
 
     @Override
     public void toMainActivity() {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        Intent intent=getIntent();
+        setResult(RESULT_OK,intent);
+        finish();
     }
 
     @Override

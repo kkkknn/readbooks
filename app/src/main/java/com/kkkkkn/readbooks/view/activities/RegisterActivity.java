@@ -2,6 +2,7 @@ package com.kkkkkn.readbooks.view.activities;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
@@ -21,10 +22,13 @@ import com.kkkkkn.readbooks.presenter.Presenter_Register;
 import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.RegisterActivityView;
 
+import java.util.Objects;
+
 public class RegisterActivity extends BaseActivity implements RegisterActivityView {
     private AppCompatEditText edit_name,edit_password,edit_password_check;
     private Presenter_Register presenter_register;
     private AppCompatTextView tv_account_tip,tv_password_tip,tv_password_check_tip;
+    private String cacheAccount,cachePassword;
     private final View.OnFocusChangeListener onFocusChangeListener=new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View view, boolean b) {
@@ -68,9 +72,11 @@ public class RegisterActivity extends BaseActivity implements RegisterActivityVi
                 tv_account_tip.setText("");
                 tv_password_tip.setText("");
                 tv_password_check_tip.setText("");
-                final String name=edit_name.getText().toString();
-                final String password=edit_password.getText().toString();
-                final String passwordCheck=edit_password_check.getText().toString();
+                final String name= Objects.requireNonNull(edit_name.getText()).toString();
+                final String password= Objects.requireNonNull(edit_password.getText()).toString();
+                final String passwordCheck= Objects.requireNonNull(edit_password_check.getText()).toString();
+                cacheAccount=name;
+                cachePassword=password;
                 presenter_register.register(name,password,passwordCheck);
             }
         });
@@ -125,7 +131,17 @@ public class RegisterActivity extends BaseActivity implements RegisterActivityVi
 
     @Override
     public void back2Login() {
-        this.finish();
+        Intent intent=getIntent();
+        intent.putExtra("accountName", cacheAccount);
+        intent.putExtra("accountPassword", cachePassword);
+        setResult(RESULT_OK,intent);
+        finish();
+    }
+
+    @Override
+    public void clearAccountCache() {
+        cacheAccount=null;
+        cachePassword=null;
     }
 
 

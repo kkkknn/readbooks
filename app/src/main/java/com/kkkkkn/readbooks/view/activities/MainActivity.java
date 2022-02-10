@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -87,6 +88,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private SwipeRefreshLayout swipeRefreshLayout;
     private UpdateDialog updateDialog;
     private CustomSearchView searchView;
+    private ActivityResultLauncher<Intent> loginActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,16 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
         initView();
 
+        loginActivityResultLauncher=registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                int resultCode = result.getResultCode();
+                if(resultCode==RESULT_OK){
+                    presenter_main.getBookShelfList();
+                    presenter_main.checkUpdate();
+                }
+            }
+        });
 
         presenter_main=new Presenter_Main(getApplicationContext(),this);
         presenter_main.init();
@@ -274,9 +286,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     @Override
     protected void onStart() {
         super.onStart();
-        if(presenter_main!=null){
-            presenter_main.getBookShelfList();
-        }
+
     }
 
     @Override
@@ -333,7 +343,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
     @Override
     public void toLoginActivity() {
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        loginActivityResultLauncher.launch(new Intent(this, LoginActivity.class));
     }
 
     @Override

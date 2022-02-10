@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".view.activities.BookBrowsingActivity"
     android:id="@+id/book_brow_background"
-    android:fitsSystemWindows="true"
-    android:orientation="horizontal">
+    android:orientation="horizontal"><!--android:fitsSystemWindows="true"-->
 
     <com.kkkkkn.readbooks.view.customView.BrowsingVIew
         android:id="@+id/browView"

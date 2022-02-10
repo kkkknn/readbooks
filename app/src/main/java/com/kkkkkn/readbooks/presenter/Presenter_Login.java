@@ -51,9 +51,8 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
                 AccountInfo info=(AccountInfo)object;
                 setTokenCache(info.getAccount_id(),info.getAccount_token());
                 setAccountCache(this.name,this.password);
-
-                loginActivityView.toMainActivity();
                 loginActivityView.showMsgDialog(1,"登录成功");
+                loginActivityView.toMainActivity();
                 break;
             case -1:
                 this.name=this.password=null;

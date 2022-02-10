@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.transition.Transition;
@@ -152,8 +153,25 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         progressDialog.setMessage("正在加载，请稍后……");
 
         loadingDialog=new LoadingDialog(this);
+
+
     }
 
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if(hasFocus){
+            View decorView = this.getWindow().getDecorView();
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,9 +185,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
 
         //读取默认配置信息
         settingConf=presenterBrowsing.loadConfig();
-        if(settingConf!=null){
-            loadReadConf(settingConf);
-        }
+        loadReadConf(settingConf);
 
         //获取携带信息
         Bundle bundle = getIntent().getExtras();
@@ -296,6 +312,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     }
 
     public void loadReadConf(SettingConf settingConf) {
+        if(settingConf==null){
+            return;
+        }
         browsingVIew.setTextColor(settingConf.fontColor);
         browsingVIew.setTextSize(settingConf.fontSize);
         setBackgroundStyle(settingConf.backgroundStyle);

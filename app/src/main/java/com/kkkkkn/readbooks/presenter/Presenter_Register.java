@@ -14,7 +14,6 @@ import org.greenrobot.eventbus.EventBus;
 public class Presenter_Register extends BasePresenter implements BaseModel.CallBack {
     private RegisterActivityView registerActivityView;
     private Model_Register model_register;
-    private String name,password;
 
     public Presenter_Register(Context context, RegisterActivityView view) {
         super(context,new Model_Register());
@@ -32,35 +31,34 @@ public class Presenter_Register extends BasePresenter implements BaseModel.CallB
     public void register(final String name, final String password,final String passwordCheck){
         if(!StringUtil.equals(password,passwordCheck)){
             registerActivityView.showTip(-1,"两次输入密码不一致");
+            registerActivityView.clearAccountCache();
+            return;
         }else if(!StringUtil.checkAccountName(name)){
             registerActivityView.showTip(-2,"用户名仅支持英文、数字、下划线,长度3-10之间");
+            registerActivityView.clearAccountCache();
             return;
         }else if (!StringUtil.checkAccountPassword(password)){
             registerActivityView.showTip(-3,"密码必须包含大小写字母和数字的组合，可以使用特殊字符，长度在8-10之间");
+            registerActivityView.clearAccountCache();
             return;
         }
-        //赋值暂存 请求注册
-        this.name=name;
-        this.password=password;
         EventBus.getDefault().post(new RegisterEvent(EventMessage.REGISTER,name,password));
-
     }
 
     @Override
     public void onSuccess(int type, Object object) {
         if (type == 1) {
-            setAccountCache(this.name,this.password);
             registerActivityView.back2Login();
             registerActivityView.showMsgDialog(1, (String) object);
         } else {
-            this.name=this.password=null;
             registerActivityView.showMsgDialog(-1, "注册失败");
+            registerActivityView.clearAccountCache();
         }
     }
 
     @Override
     public void onError(int type, Object object) {
-        this.name=this.password=null;
         registerActivityView.showTip(-2,"用户名重复");
+        registerActivityView.clearAccountCache();
     }
 }

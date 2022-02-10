@@ -39,6 +39,8 @@ public class BrowsingVIew extends View {
     private float offsetX=0;
     //控件宽高
     private int mViewHeight = 0, mViewWidth = 0;
+    //控件距离
+    private int marginVertical=0,marginHorizontal=20;
     //当前章节字符串
     private String[] contentArr;
     //文字大小
@@ -49,13 +51,11 @@ public class BrowsingVIew extends View {
     private int linePageSum;
     //展示模式相关 true 左滑动绘制下一页  false 右滑动绘制上一页
     private int drawStyle = 0;
-    //状态栏高度
-    private int statusBarHeight;
     //绘图相关变量
     private BookBrowsingActivity.BookCallback bookCallback;
 
     private Paint mPaint;
-    private final Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.transtion).copy(Bitmap.Config.ARGB_8888, true);
+    private final Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview).copy(Bitmap.Config.ARGB_8888, true);
     private LinkedList<Bitmap> bitmapLinkedList=new LinkedList<>();
     private int bitmap_flag=0;
 
@@ -92,11 +92,11 @@ public class BrowsingVIew extends View {
             //获取view宽高，然后绘制
             mViewWidth = getMeasuredWidth();
             mViewHeight = getMeasuredHeight();
-            statusBarHeight = getStatusBarHeight(context);
+            marginVertical = getStatusBarHeight(context);
             //textSize=(float) mViewWidth/12;
 
             //计算偏移量及行数，每行字数
-            linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight-((int)textSize>>1)) / (double)textSize/rowSpace);
+            linePageSum = (int) Math.ceil((mViewHeight - marginVertical*2) / (double)textSize/rowSpace);
 
             if(contentArr!=null&&bitmapLinkedList.size()==0){
                 text2bitmap(FlushType.THIS_PAGE);
@@ -108,7 +108,7 @@ public class BrowsingVIew extends View {
         mPaint.setTextSize(textSize);
         this.textSize = textSize;
         if(mViewWidth>0&&mViewHeight>0){
-            linePageSum = (int) Math.ceil((mViewHeight - statusBarHeight -((int)textSize>>1)) / (double)textSize/rowSpace);
+            linePageSum = (int) Math.ceil((mViewHeight - marginVertical*2) / (double)textSize/rowSpace);
             text2bitmap(FlushType.THIS_PAGE);
         }
 
@@ -123,14 +123,14 @@ public class BrowsingVIew extends View {
         LinkedList<String> line_list=new LinkedList<>();
         for (String s : contentArr) {
             //压缩行首空格 4个为2个
-            s= StringUtil.Text2Indent(s);
+            //s= StringUtil.Text2Indent(s);
             float[] ss = new float[s.length()];
             mPaint.getTextWidths(s, ss);
             float line_width = 0;
             int start = 0;
             for (int l = 0; l < ss.length; l++) {
                 line_width += ss[l];
-                if (line_width >= mViewWidth) {
+                if (line_width >= mViewWidth-marginHorizontal*2) {
                     line_list.add(s.substring(start, l));
                     start = l;
                     line_width = ss[l];
@@ -146,10 +146,10 @@ public class BrowsingVIew extends View {
         int line_count=0;
         Bitmap bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
         canvas.setBitmap(bitmap);
-        float height=statusBarHeight+ ((int) textSize >> 1);
+        float height=marginVertical + ((int)textSize>>1);
         for (int i = 0; i < line_list.size(); i++) {
             String str=line_list.get(i);
-            canvas.drawText(str,0,str.length(),0,height+line_count*textSize*rowSpace,mPaint);
+            canvas.drawText(str,0,str.length(),marginHorizontal,height+line_count*textSize*rowSpace,mPaint);
             line_count++;
             if(line_count==linePageSum){
                 line_count=0;
@@ -234,11 +234,13 @@ public class BrowsingVIew extends View {
                     }
                 }else {
                     if(event.getX()>=mViewWidth/3f*2){
-                        showSlide(false,(int) event.getX());
-                        Toast.makeText(getContext(),"下一页面",Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "onTouchEvent: 点击1");
+                        /*showSlide(false,(int) event.getX());
+                        return true;*/
                     }else if(event.getX()<=mViewWidth/3f){
-                        showSlide(true,(int)event.getX());
-                        Toast.makeText(getContext(),"上一页面",Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "onTouchEvent: 点击2");
+                        /*showSlide(true,(int)event.getX());
+                        return true;*/
                     }else {
                         //落点在中央，显示阅读设置view
                         bookCallback.showSetting();
@@ -276,6 +278,7 @@ public class BrowsingVIew extends View {
     private void showSlide(boolean type,int x){
         if(type){
             //左滑动
+            drawStyle=1;
             while (offsetX>-mViewWidth){
                 offsetX--;
                 //重新绘制界面
@@ -283,13 +286,16 @@ public class BrowsingVIew extends View {
             }
         }else{
             //右滑动
+            drawStyle=2;
             while (offsetX<mViewWidth){
                 offsetX++;
                 //重新绘制界面
                 invalidate();
             }
         }
+        drawStyle=0;
     }
+
     //绘制阅读界面 2个页面  1，当前页面  2，根据当前手势判断绘制上一页/下一页
     private void drawBitmap(Canvas canvas) {
         //判断是否需要绘制
@@ -348,8 +354,6 @@ public class BrowsingVIew extends View {
     }
 
 
-
-
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         mViewHeight = h;
@@ -361,7 +365,6 @@ public class BrowsingVIew extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawBitmap(canvas);
-
     }
 
     private int getStatusBarHeight(Context context) {
