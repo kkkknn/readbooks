@@ -89,6 +89,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
     private UpdateDialog updateDialog;
     private CustomSearchView searchView;
     private ActivityResultLauncher<Intent> loginActivityResultLauncher;
+    private AppCompatImageButton settingButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +149,13 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             public void onEditViewClick() {
                 Log.i(TAG, "onEditViewClick: ");
                 toSearchActivity();
+            }
+        });
+        settingButton=findViewById(R.id.main_setting_button);
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "onClick: 点击跳转到设置界面");
             }
         });
 
