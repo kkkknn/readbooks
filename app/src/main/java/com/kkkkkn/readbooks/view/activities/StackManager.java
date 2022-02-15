@@ -31,4 +31,8 @@ public class StackManager {
         }
         activityList.clear();
     }
+
+    public void removeActivity(Activity activity){
+        activityList.remove(activity);
+    }
 }

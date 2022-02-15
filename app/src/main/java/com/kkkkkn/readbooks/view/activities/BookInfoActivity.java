@@ -205,7 +205,9 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
     protected void onDestroy() {
         super.onDestroy();
         chapterList.clear();
-        presenter_info.release();
+        if(presenter_info!=null){
+            presenter_info.release();
+        }
     }
 
 }

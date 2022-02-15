@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -26,6 +27,12 @@ import java.util.LinkedList;
 public class BrowsingVIew extends View {
     //行距
     private final float rowSpace=1.5f;
+
+    public void setBackgroundStyle(int style) {
+        this.backgroundStyle=style;
+        text2bitmap(FlushType.FLUSH_PAGE);
+    }
+
     public enum FlushType{
         THIS_PAGE,
         LAST_PAGE,
@@ -47,6 +54,7 @@ public class BrowsingVIew extends View {
     private float textSize = 40f;
     //文字颜色
     private int textColor = Color.BLACK;
+    private int backgroundStyle=0;
     //每页最大显示行数
     private int linePageSum;
     //展示模式相关 true 左滑动绘制下一页  false 右滑动绘制上一页
@@ -55,7 +63,7 @@ public class BrowsingVIew extends View {
     private BookBrowsingActivity.BookCallback bookCallback;
 
     private Paint mPaint;
-    private final Bitmap backBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview).copy(Bitmap.Config.ARGB_8888, true);
+    private final Bitmap parchmentBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.browsingview).copy(Bitmap.Config.ARGB_8888, true);
     private LinkedList<Bitmap> bitmapLinkedList=new LinkedList<>();
     private int bitmap_flag=0;
 
@@ -109,7 +117,7 @@ public class BrowsingVIew extends View {
         this.textSize = textSize;
         if(mViewWidth>0&&mViewHeight>0){
             linePageSum = (int) Math.ceil((mViewHeight - marginVertical*2) / (double)textSize/rowSpace);
-            text2bitmap(FlushType.THIS_PAGE);
+            text2bitmap(FlushType.FLUSH_PAGE);
         }
 
     }
@@ -142,10 +150,9 @@ public class BrowsingVIew extends View {
             }
 
         }
-        bitmapLinkedList.clear();
+        bitmapClear(bitmapLinkedList);
         int line_count=0;
-        Bitmap bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-        canvas.setBitmap(bitmap);
+        Bitmap bitmap = drawBackground(canvas,backgroundStyle);
         float height=marginVertical + ((int)textSize>>1);
         for (int i = 0; i < line_list.size(); i++) {
             String str=line_list.get(i);
@@ -155,8 +162,7 @@ public class BrowsingVIew extends View {
                 line_count=0;
                 //绘制当前页所有文字，并添加到list中
                 bitmapLinkedList.add(bitmap);
-                bitmap=Bitmap.createScaledBitmap(backBitmap, mViewWidth, mViewHeight, false);
-                canvas.setBitmap(bitmap);
+                bitmap=drawBackground(canvas,backgroundStyle);
             }
         }
         if(line_count>0){
@@ -174,8 +180,45 @@ public class BrowsingVIew extends View {
             default:
                 break;
         }
-
         this.post(this::invalidate);
+    }
+
+    private void bitmapClear(LinkedList<Bitmap> bitmapLinkedList) {
+        for (Bitmap bitmap:bitmapLinkedList){
+            if(!bitmap.isRecycled()){
+                bitmap.recycle();
+            }else {
+                Log.i(TAG, "bitmapClear: 销毁失败");
+            }
+        }
+        bitmapLinkedList.clear();
+        bitmapLinkedList=null;
+    }
+
+    private Bitmap drawBackground(Canvas canvas, int backgroundStyle) {
+        Bitmap bitmap=null;
+        switch (backgroundStyle){
+            case 2:
+                bitmap=Bitmap.createBitmap(mViewWidth,mViewHeight, Bitmap.Config.ARGB_8888);
+                canvas.setBitmap(bitmap);
+                canvas.drawColor(Color.parseColor("#7B7070"));
+                break;
+            case 3:
+                bitmap=Bitmap.createBitmap(mViewWidth,mViewHeight, Bitmap.Config.ARGB_8888);
+                canvas.setBitmap(bitmap);
+                canvas.drawColor(Color.parseColor("#3FAA98"));
+                break;
+            case 4:
+                bitmap=Bitmap.createBitmap(mViewWidth,mViewHeight, Bitmap.Config.ARGB_8888);
+                canvas.setBitmap(bitmap);
+                canvas.drawColor(Color.parseColor("#B49D42"));
+                break;
+            default:
+                bitmap = Bitmap.createScaledBitmap(parchmentBitmap, mViewWidth, mViewHeight, false);
+                canvas.setBitmap(bitmap);
+                break;
+        }
+        return bitmap;
     }
 
     public void setTextColor(int textColor) {
@@ -346,9 +389,7 @@ public class BrowsingVIew extends View {
 
                 }
 
-                break
-
-                        ;
+                break;
         }
         canvas.restore();
     }
@@ -382,8 +423,6 @@ public class BrowsingVIew extends View {
         super.onDetachedFromWindow();
 
         //销毁view视图时，销毁所有bitmap
-        bitmapLinkedList.clear();
-        bitmapLinkedList=null;
-
+        bitmapClear(bitmapLinkedList);
     }
 }

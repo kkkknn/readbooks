@@ -21,8 +21,8 @@ public class LoadingDialog extends Dialog {
     }
 
     public void showLoading(String content) {
-        tv_msg.setText(content);
         super.show();
+        tv_msg.setText(content);
     }
     public void hideLoading(){
         super.dismiss();

@@ -69,6 +69,8 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        StackManager stackManager=StackManager.getInstance();
+        stackManager.removeActivity(this);
         if(logRun){
             logRun=false;
         }

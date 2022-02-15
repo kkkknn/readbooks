@@ -1,35 +1,19 @@
 package com.kkkkkn.readbooks.view.activities;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.kkkkkn.readbooks.R;
@@ -47,7 +31,6 @@ import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -55,14 +38,13 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     private final static String TAG = "BookBrowsingActivity";
     private ArrayList<ChapterInfo> chapterList = new ArrayList<>();
     private int chapterCount = 0;
-    private BrowsingVIew browsingVIew;
+    private BrowsingVIew browsingView;
     private ProgressDialog progressDialog;
     private LoadingDialog loadingDialog;
     private BookInfo bookInfo;
     private Presenter_Browsing presenterBrowsing;
     private BrowsingVIew.FlushType flushType= BrowsingVIew.FlushType.FLUSH_PAGE;
     private SettingConf settingConf;
-    private LinearLayoutCompat linearLayoutCompat;
 
     //静态广播
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -82,21 +64,20 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
                 long currentHour = totalHour % 24;
                 //开始设置浏览界面时间
                 String timeStr = currentHour + ":" + currentMinute;
-                //browsingVIew.setTimeStr(timeStr);
+                //browsingView.setTimeStr(timeStr);
             } else if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
                 //获取当前电量
                 int level = intent.getIntExtra("level", 0);
                 //Log.i(TAG, "onReceive: 电量变化广播接收"+level);
                 //开始设置浏览界面电量
-                //browsingVIew.setBatteryStr(level+"%");
+                //browsingView.setBatteryStr(level+"%");
             }
         }
     };
 
     private void initView(){
-        linearLayoutCompat=findViewById(R.id.book_brow_background);
-        browsingVIew = findViewById(R.id.browView);
-        browsingVIew.setListener(new BookCallback() {
+        browsingView = findViewById(R.id.browView);
+        browsingView.setListener(new BookCallback() {
             @Override
             public void jump2nextChapter() {
                 Log.i(TAG, "jump2nextChapter: 跳转到下一章节");
@@ -203,7 +184,6 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             finish();
             return;
         }
-        //TODO 图书是否是书架内图书
         flushChapterContent(chapterInfo);
 
 
@@ -294,7 +274,7 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
                 e.printStackTrace();
             }
         }
-        browsingVIew.setTextContent(arrs, flushType);
+        browsingView.setTextContent(arrs, flushType);
     }
 
     @Override
@@ -315,9 +295,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         if(settingConf==null){
             return;
         }
-        browsingVIew.setTextColor(settingConf.fontColor);
-        browsingVIew.setTextSize(settingConf.fontSize);
-        setBackgroundStyle(settingConf.backgroundStyle);
+        browsingView.setTextColor(settingConf.fontColor);
+        browsingView.setTextSize(settingConf.fontSize);
+        browsingView.setBackgroundStyle(settingConf.backgroundStyle);
         setBrightness(settingConf.brightness/10f);
     }
 
@@ -331,7 +311,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             ChapterInfo info=chapterList.get(chapterCount);
             presenterBrowsing.setBookProgress(bookInfo.getBookId(),info.getChapter_num());
         }
-        presenterBrowsing.release();
+        if(presenterBrowsing!=null){
+            presenterBrowsing.release();
+        }
         //取消注册静态广播
         //unregisterReceiver(broadcastReceiver);
     }
@@ -348,14 +330,14 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         SettingDialog dialog = new SettingDialog(this).setEventListener(new SettingDialog.EventListener() {
             @Override
             public void changeFontSize(float size) {
-                browsingVIew.setTextSize(size);
+                browsingView.setTextSize(size);
                 settingConf.fontSize=size;
                 presenterBrowsing.setReadConfig(settingConf);
             }
 
             @Override
             public void changeBackground(int style) {
-                setBackgroundStyle(style);
+                browsingView.setBackgroundStyle(style);
                 settingConf.backgroundStyle=style;
                 presenterBrowsing.setReadConfig(settingConf);
             }
@@ -383,28 +365,6 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
         dialog.show();
 
     }
-
-    //设置阅读背景颜色
-    private void setBackgroundStyle(int style){
-        switch (style){
-            case 1:
-                linearLayoutCompat.setBackgroundResource(R.drawable.browsingview);
-                break;
-            case 2:
-                linearLayoutCompat.setBackgroundColor(Color.parseColor("#7B7070"));
-                break;
-            case 3:
-                linearLayoutCompat.setBackgroundColor(Color.parseColor("#3FAA98"));
-                break;
-            case 4:
-                linearLayoutCompat.setBackgroundColor(Color.parseColor("#B49D42"));
-                break;
-            default:
-                linearLayoutCompat.setBackgroundResource(R.drawable.browsingview);
-                break;
-        }
-    }
-
 
     //设置当前系统亮度
     private void setBrightness(float count){
