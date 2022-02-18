@@ -202,7 +202,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             }else{
                 //500ms以上，弹窗不处理
                 lastBackClick=nowBackClick;
-                Toast.makeText(this,"请再按一次以退出程序",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"请再按一次以退出程序",Toast.LENGTH_SHORT).show();
             }
             return false;
         }

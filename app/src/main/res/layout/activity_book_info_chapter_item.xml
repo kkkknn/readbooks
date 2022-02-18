@@ -7,7 +7,7 @@
         android:id="@+id/book_info_chapter_item_chapterName"
         android:padding="10dp"
         android:textColor="@color/text_content"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </androidx.appcompat.widget.LinearLayoutCompat>
