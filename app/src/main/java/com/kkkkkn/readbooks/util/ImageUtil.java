@@ -2,6 +2,7 @@ package com.kkkkkn.readbooks.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +24,10 @@ public class ImageUtil {
                         .addHeader("token", Objects.requireNonNull(sharedPreferences.getString("account_token", "")))
                         .build());
          Glide.with(context).load(glideUrl).into(imageView);
+    }
+
+    public static Bitmap[] chapter2Bitmap(String[] contentArr,Bitmap backgroundBitmap){
+        return null;
     }
 
 }
