@@ -28,7 +28,6 @@ public class Model_Search extends BaseModel  {
     public void syncProgress(SearchEvent event) {
         switch (event.message){
             case SEARCH_BOOK:
-
                 //搜索图书
                 searchBook(event.keyWord,
                         event.pageCount,
