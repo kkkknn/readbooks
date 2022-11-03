@@ -11,24 +11,18 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".view.activities.RegisterActivity"
-            android:screenOrientation="fullSensor" />
+            android:name=".view.activities.RegisterActivity" />
 
         <activity
-            android:name=".view.activities.LoginActivity"
-            android:screenOrientation="fullSensor" />
+            android:name=".view.activities.LoginActivity"/>
         <activity
-            android:name=".view.activities.SearchActivity"
-            android:screenOrientation="fullSensor" />
+            android:name=".view.activities.SearchActivity"/>
         <activity
-            android:name=".view.activities.BookBrowsingActivity"
-            android:screenOrientation="fullSensor"/>
+            android:name=".view.activities.BookBrowsingActivity"/>
         <activity
-            android:name=".view.activities.BookInfoActivity"
-            android:screenOrientation="fullSensor" />
+            android:name=".view.activities.BookInfoActivity" />
         <activity
             android:name=".view.activities.MainActivity"
-            android:screenOrientation="fullSensor"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

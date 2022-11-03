@@ -33,7 +33,7 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
      */
     public void login(String name,String password){
         if(!StringUtil.checkAccountName(name)||!StringUtil.checkAccountPassword(password)){
-            loginActivityView.showMsgDialog(-1,"登陆失败");
+            loginActivityView.showMsgDialog(-1,"用户名或密码错误，请重新输入");
             return;
         }
         this.name=name;

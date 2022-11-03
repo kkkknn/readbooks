@@ -1,43 +1,21 @@
 package com.kkkkkn.readbooks.view.activities;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ActivityOptions;
-import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.Settings;
+import android.text.Layout;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.HeaderViewListAdapter;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -46,27 +24,20 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.view.ViewCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.BookShelfAdapter;
-import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.model.entity.AnimationConfig;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.presenter.Presenter_Main;
 import com.kkkkkn.readbooks.util.StringUtil;
-import com.kkkkkn.readbooks.view.customView.CustomSearchView;
-import com.kkkkkn.readbooks.view.customView.SoftKeyBoardListener;
 import com.kkkkkn.readbooks.view.customView.UpdateDialog;
 import com.kkkkkn.readbooks.view.view.MainActivityView;
 
@@ -82,19 +53,22 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity implements MainActivityView {
     private final static String TAG="主界面";
     private long lastBackClick;
-    private ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
+    private final ArrayList<BookInfo> arrayList=new ArrayList<BookInfo>();
     private Presenter_Main presenter_main;
     private BookShelfAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UpdateDialog updateDialog;
-    private CustomSearchView searchView;
     private ActivityResultLauncher<Intent> loginActivityResultLauncher;
-    private AppCompatImageButton settingButton;
+    private AppCompatImageButton searchButton;
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private AppCompatTextView tv_userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         initView();
 
@@ -119,6 +93,7 @@ public class MainActivity extends BaseActivity implements MainActivityView {
         if(info.getAccount_token().isEmpty()||info.getAccount_id()==0){
             toLoginActivity();
         }else{
+            tv_userName.setText(info.getAccount_name());
             presenter_main.getBookShelfList();
             presenter_main.checkUpdate();
         }
@@ -127,35 +102,25 @@ public class MainActivity extends BaseActivity implements MainActivityView {
 
 
     private void initView(){
-        searchView=findViewById(R.id.searchView);
-        searchView.setEnable(false);
-        searchView.setSearchViewListener(new CustomSearchView.SearchViewListener() {
-            @Override
-            public void onRefreshAutoComplete(String text) {
-                Log.i(TAG, "onRefreshAutoComplete: "+text);
-            }
+        LinearLayoutCompat layout=(LinearLayoutCompat) LayoutInflater.from(MainActivity.this).inflate(R.layout.option_nav_header, null);
+        tv_userName=layout.findViewById(R.id.nav_user_name);
 
-            @Override
-            public void onSearch(String text) {
-                Log.i(TAG, "onSearch: "+text);
-            }
-
-            @Override
-            public void onScancode() {
-                Log.i(TAG, "onScancode: ");
-            }
-
-            @Override
-            public void onEditViewClick() {
-                Log.i(TAG, "onEditViewClick: ");
-                toSearchActivity();
-            }
-        });
-        settingButton=findViewById(R.id.main_setting_button);
-        settingButton.setOnClickListener(new View.OnClickListener() {
+        drawerLayout=findViewById(R.id.drawer_main);
+        toolbar=findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG, "onClick: 点击跳转到设置界面");
+                if(!drawerLayout.isOpen()){
+                    drawerLayout.open();
+                }
+            }
+        });
+        
+        searchButton =findViewById(R.id.main_search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toSearchActivity();
             }
         });
 
@@ -234,8 +199,6 @@ public class MainActivity extends BaseActivity implements MainActivityView {
             @Override
             public void onAnimationEnd(Animation animation) {
                 //动画显示完成后 ，跳转到浏览界面
-
-
             }
 
             @Override

@@ -10,54 +10,73 @@
     android:clipToPadding="false"
     tools:context=".view.activities.MainActivity">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <com.kkkkkn.readbooks.view.customView.CustomSearchView
-            android:layout_alignParentStart="true"
-            android:id="@+id/searchView"
-            android:layout_weight="7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/main_setting_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="5dp"
-            android:background="@drawable/ic_setting"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/main_SwipeRefreshLayout"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <GridView
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:id="@+id/main_booksGridView"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:numColumns="4"
-            android:scrollbars="none" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            android:orientation="vertical">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/view_search"
-        android:layout_width="match_parent"
-        android:focusable="false"
-        android:layout_height="50dp"/>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_list_36"
+                android:background="@color/toolbar">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:text="@string/main_bookshelf"
+                    android:textSize="22sp"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/main_search_button"
+                    android:layout_width="wrap_content"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:padding="5dp"
+                    android:contentDescription="@string/menu_search"
+                    android:src="@drawable/ic_search"
+                    android:background="@null"/>
+            </androidx.appcompat.widget.Toolbar>
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/main_SwipeRefreshLayout"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <GridView
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:id="@+id/main_booksGridView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:numColumns="4"
+                    android:scrollbars="none" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigation_ebook"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:headerLayout="@layout/option_nav_header"
+            app:menu="@menu/option_nav"/>
+    </androidx.drawerlayout.widget.DrawerLayout>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

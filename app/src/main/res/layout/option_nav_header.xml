@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/toolbar"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_margin="20dp"
+        android:src="@drawable/person"
+        android:layout_gravity="center_vertical"
+        android:layout_width="50dp"
+        android:layout_height="50dp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/nav_user_name"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:text="用户名"
+        android:layout_height="wrap_content"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

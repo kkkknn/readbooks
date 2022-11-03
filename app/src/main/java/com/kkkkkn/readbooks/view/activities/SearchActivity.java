@@ -23,12 +23,13 @@ import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Search;
 import com.kkkkkn.readbooks.view.customView.CustomSearchView;
-import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.customView.SoftKeyBoardListener;
 import com.kkkkkn.readbooks.view.view.SearchActivityView;
 
 
 import java.util.ArrayList;
+
+import es.dmoral.toasty.Toasty;
 
 public class SearchActivity extends BaseActivity implements SearchActivityView {
     private final static String TAG="SearchActivity";
@@ -46,6 +47,7 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
 
         initView();
         setSoftKeyBoardListener();
@@ -208,9 +210,9 @@ public class SearchActivity extends BaseActivity implements SearchActivityView {
             @Override
             public void run() {
                 if(type>0){
-                    CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
+                    Toasty.success(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }else {
-                    CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
+                    Toasty.error(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }
             }
         });

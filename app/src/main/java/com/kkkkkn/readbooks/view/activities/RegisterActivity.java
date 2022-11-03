@@ -19,10 +19,11 @@ import androidx.appcompat.widget.AppCompatTextView;
 
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.presenter.Presenter_Register;
-import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.RegisterActivityView;
 
 import java.util.Objects;
+
+import es.dmoral.toasty.Toasty;
 
 public class RegisterActivity extends BaseActivity implements RegisterActivityView {
     private AppCompatEditText edit_name,edit_password,edit_password_check;
@@ -92,10 +93,9 @@ public class RegisterActivity extends BaseActivity implements RegisterActivityVi
             @Override
             public void run() {
                 if(type>0){
-                    CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
-
+                    Toasty.success(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }else {
-                    CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
+                    Toasty.error(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }
             }
         });

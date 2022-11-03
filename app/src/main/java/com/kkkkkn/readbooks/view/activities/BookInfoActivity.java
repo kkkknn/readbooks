@@ -25,6 +25,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.ContentLoadingProgressBar;
 
 import com.bumptech.glide.Glide;
+import com.gyf.immersionbar.ImmersionBar;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.adapter.BookChaptersAdapter;
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter;
@@ -33,13 +34,14 @@ import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Info;
 import com.kkkkkn.readbooks.presenter.Presenter_Login;
 import com.kkkkkn.readbooks.util.ImageUtil;
-import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
 
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+
+import es.dmoral.toasty.Toasty;
 
 
 public class BookInfoActivity extends BaseActivity implements BookInfoActivityView {
@@ -193,9 +195,9 @@ public class BookInfoActivity extends BaseActivity implements BookInfoActivityVi
             @Override
             public void run() {
                 if(type>0){
-                    CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
+                    Toasty.success(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }else {
-                    CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
+                    Toasty.error(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }
             }
         });

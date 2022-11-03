@@ -16,13 +16,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.LinearLayoutCompat;
 
+import com.gyf.immersionbar.ImmersionBar;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Browsing;
 import com.kkkkkn.readbooks.view.customView.BrowsingVIew;
-import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.customView.LoadingDialog;
 import com.kkkkkn.readbooks.view.customView.SettingDialog;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
@@ -33,6 +33,8 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import es.dmoral.toasty.Toasty;
 
 public class BookBrowsingActivity extends BaseActivity implements BrowsingActivityView {
     private final static String TAG = "BookBrowsingActivity";
@@ -157,8 +159,8 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_book_browsing);
+
         //setStatusBarColor(this,getResources().getDrawable(R.drawable.browsingview));
         initView();
         presenterBrowsing=new Presenter_Browsing(getApplicationContext(),this);
@@ -220,9 +222,9 @@ public class BookBrowsingActivity extends BaseActivity implements BrowsingActivi
             @Override
             public void run() {
                 if(type>0){
-                    CustomToast.showToast(getApplicationContext(),msg, Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
+                    Toasty.success(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }else {
-                    CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
+                    Toasty.error(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }
             }
         });

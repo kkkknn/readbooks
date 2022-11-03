@@ -1,5 +1,7 @@
 package com.kkkkkn.readbooks.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.util.ServerConfig;
@@ -63,7 +65,7 @@ public class Model_Login extends BaseModel  {
                             getCallBack().onSuccess(1,info);
                             break;
                         case "error":
-                            getCallBack().onError(-1,"登陆失败");
+                            getCallBack().onError(-1,(String)value);
                             break;
 
                     }

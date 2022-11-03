@@ -3,6 +3,7 @@ package com.kkkkkn.readbooks.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -19,10 +20,11 @@ import androidx.appcompat.widget.AppCompatTextView;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
 import com.kkkkkn.readbooks.presenter.Presenter_Login;
-import com.kkkkkn.readbooks.view.customView.CustomToast;
 import com.kkkkkn.readbooks.view.view.LoginActivityView;
 
 import java.util.Objects;
+
+import es.dmoral.toasty.Toasty;
 
 
 public class LoginActivity extends BaseActivity implements LoginActivityView {
@@ -37,6 +39,7 @@ public class LoginActivity extends BaseActivity implements LoginActivityView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         initView();
         regActivityResultLauncher=registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -91,9 +94,9 @@ public class LoginActivity extends BaseActivity implements LoginActivityView {
             public void run() {
                 if(type>0){
                     //不显示成功toast，
-                    //CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_succese);
+                    Toasty.success(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }else {
-                    CustomToast.showToast(getApplicationContext(),msg,Toast.LENGTH_SHORT,R.drawable.icon_msg_error);
+                    Toasty.error(getApplicationContext(), msg, Toast.LENGTH_SHORT, true).show();
                 }
             }
         });

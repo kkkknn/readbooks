@@ -36,7 +36,7 @@ public class BasePresenter {
         AccountInfo accountInfo=new AccountInfo();
         accountInfo.setAccount_id(sharedPreferences.getInt("account_id",-1));
         accountInfo.setAccount_token(sharedPreferences.getString("account_token",""));
-        accountInfo.setAccount_name(sharedPreferences.getString("account_name",""));
+        accountInfo.setAccount_name(sharedPreferences.getString("account_name","用户名"));
         accountInfo.setAccount_password(sharedPreferences.getString("account_password",""));
         return accountInfo;
     }

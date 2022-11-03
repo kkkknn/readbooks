@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StackManager {
-    private static StackManager stackManager;
-    private List<Activity> activityList=new ArrayList<>();
+    private static volatile StackManager stackManager;
+    private final List<Activity> activityList=new ArrayList<>();
 
     public static StackManager getInstance(){
         if(stackManager==null){
