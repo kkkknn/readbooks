@@ -11,10 +11,14 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.ViewCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.kkkkkn.readbooks.R;
@@ -69,7 +73,7 @@ public class BaseActivity extends AppCompatActivity  {
                 .navigationBarDarkIcon(true)
                 .barColor(R.color.toolbar)
                 .init();
-        Log.i(TAG, "onCreate:这是父类 "+this);
 
     }
+
 }

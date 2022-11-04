@@ -61,5 +61,6 @@ dependencies {
 
     //jetpack 相关
     implementation "androidx.lifecycle:lifecycle-livedata:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
 
 }
