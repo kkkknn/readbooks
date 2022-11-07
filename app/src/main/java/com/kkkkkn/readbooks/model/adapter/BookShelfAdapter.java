@@ -1,21 +1,16 @@
 package com.kkkkkn.readbooks.model.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 
 
-import com.bumptech.glide.Glide;
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
-import com.kkkkkn.readbooks.model.entity.BookShelfItem;
 import com.kkkkkn.readbooks.util.ImageUtil;
-import com.kkkkkn.readbooks.view.viewHolder.BookChaptersAdapter_ViewHolder;
-import com.kkkkkn.readbooks.view.viewHolder.BookShelfAdapter_ViewHolder;
+import com.kkkkkn.readbooks.view.viewHolder.BookShelfAdapterViewHolder;
 
 import java.util.ArrayList;
 
@@ -49,14 +44,14 @@ public class BookShelfAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        BookShelfAdapter_ViewHolder bookShelfAdapter_viewHolder=null;
+        BookShelfAdapterViewHolder bookShelfAdapter_viewHolder=null;
 
         if(convertView==null){
             convertView=mInflater.inflate(R.layout.activity_main_item,parent,false);
-            bookShelfAdapter_viewHolder=new BookShelfAdapter_ViewHolder(convertView);
+            bookShelfAdapter_viewHolder=new BookShelfAdapterViewHolder(convertView);
             convertView.setTag(bookShelfAdapter_viewHolder);
         }else {
-            bookShelfAdapter_viewHolder=(BookShelfAdapter_ViewHolder) convertView.getTag();
+            bookShelfAdapter_viewHolder=(BookShelfAdapterViewHolder) convertView.getTag();
         }
         BookInfo bookInfo=mArrayList.get(position);
         if(bookInfo!=null){

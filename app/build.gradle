@@ -1,7 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 32
+    buildFeatures{
+        viewBinding = true
+    }
     defaultConfig {
         applicationId "com.kkkkkn.readbooks"
         minSdkVersion 25
@@ -16,7 +21,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -44,7 +48,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
 
     //内存泄漏检测工具
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
     //PermissionsDispatcher 权限
     implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"
@@ -60,7 +64,7 @@ dependencies {
     implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
 
     //jetpack 相关
-    implementation "androidx.lifecycle:lifecycle-livedata:2.5.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
 
 }

@@ -6,32 +6,74 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.kkkkkn.readbooks.R;
 import com.kkkkkn.readbooks.model.entity.BookInfo;
+import com.kkkkkn.readbooks.model.entity.ChapterInfo;
 import com.kkkkkn.readbooks.util.ImageUtil;
-import com.kkkkkn.readbooks.view.viewHolder.SearchBookResultAdapter_ViewHolder;
+import com.kkkkkn.readbooks.view.viewHolder.BookChaptersAdapterViewHolder;
+import com.kkkkkn.readbooks.view.viewHolder.SearchBookResultAdapterViewHolder;
 
 import java.util.ArrayList;
 
-public class SearchBookResultAdapter extends BaseAdapter {
+public class SearchBookResultAdapter  extends RecyclerView.Adapter<SearchBookResultAdapterViewHolder> {
     private ArrayList<BookInfo> resultList;
     private Context mContext;
-    private LayoutInflater mInflater;
+    public static final int FOOT_VIEW=1;
+    private ItemOnClickListener itemOnClickListener;
 
     public SearchBookResultAdapter(ArrayList<BookInfo> resultList, Context mContext) {
         this.resultList = resultList;
-        this.mInflater=LayoutInflater.from(mContext);
         this.mContext = mContext;
     }
 
+    @NonNull
     @Override
-    public int getCount() {
-        return resultList.size();
+    public SearchBookResultAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if(viewType==FOOT_VIEW){
+            View view = LayoutInflater.from(mContext).inflate(R.layout.activity_search_footview, parent, false);
+            return new SearchBookResultAdapterViewHolder(view,viewType);
+        }else{
+            View view = LayoutInflater.from(mContext).inflate(R.layout.activity_search_item, parent, false);
+            return new SearchBookResultAdapterViewHolder(view,viewType);
+        }
     }
 
     @Override
-    public Object getItem(int position) {
-        return resultList.get(position);
+    public void onBindViewHolder(@NonNull com.kkkkkn.readbooks.view.viewHolder.SearchBookResultAdapterViewHolder holder, int position) {
+        if(getItemViewType(holder.getAdapterPosition())!=FOOT_VIEW){
+            BookInfo book=resultList.get(holder.getAdapterPosition());
+            if(book!=null){
+                holder.authorName.setText(book.getAuthorName());
+                holder.bookName.setText(book.getBookName());
+                ImageUtil.loadImage(book.getBookImgUrl(),mContext,holder.bookImg);
+
+                if(itemOnClickListener!=null){
+                    holder.bookName.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            itemOnClickListener.onItemClick(holder.getAdapterPosition());
+                        }
+                    });
+                    holder.bookName.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            itemOnClickListener.onItemClick(holder.getAdapterPosition());
+                        }
+                    });
+                    holder.bookImg.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            itemOnClickListener.onItemClick(holder.getAdapterPosition());
+                        }
+                    });
+                }
+            }
+
+        }
+
     }
 
     @Override
@@ -40,24 +82,23 @@ public class SearchBookResultAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        SearchBookResultAdapter_ViewHolder viewHolder=null;
-        if(convertView==null){
-            convertView=mInflater.inflate(R.layout.activity_search_item,parent,false);
-            viewHolder=new SearchBookResultAdapter_ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        }else {
-            viewHolder=(SearchBookResultAdapter_ViewHolder) convertView.getTag();
-
-        }
-        BookInfo book=resultList.get(position);
-        if(book!=null){
-            viewHolder.authorName.setText(book.getAuthorName());
-            viewHolder.bookName.setText(book.getBookName());
-            ImageUtil.loadImage(book.getBookImgUrl(),mContext,viewHolder.bookImg);
-
-        }
-        return convertView;
+    public int getItemCount() {
+        return resultList.size()+1;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if(position+1==resultList.size()+1){
+            return FOOT_VIEW;
+        }
+        return super.getItemViewType(position);
+    }
+
+    public interface ItemOnClickListener{
+        public void onItemClick(int position);
+    }
+
+    public void setItemOnClickListener(SearchBookResultAdapter.ItemOnClickListener listener) {
+        this.itemOnClickListener = listener;
+    }
 }

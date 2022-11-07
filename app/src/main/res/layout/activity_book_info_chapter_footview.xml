@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent">
-
     <androidx.appcompat.widget.AppCompatTextView
-        android:visibility="gone"
-        android:text="@string/nothing_tip"
-        android:id="@+id/nothing_view"
         android:gravity="center"
-        android:textSize="12sp"
-        android:paddingVertical="10dp"
+        android:text="@string/nothing_tip"
+        android:padding="10dp"
         android:textColor="@color/text_content"
-        android:background="@color/bg_card_view"
+        android:textSize="12sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

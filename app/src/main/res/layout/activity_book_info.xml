@@ -82,16 +82,25 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <view
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bookInfo_chapters_listView"
-        class="androidx.appcompat.app.AlertController$RecycleListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:divider="@null"
-        app:layout_constraintBottom_toTopOf="@id/linearLayoutOption"
+        app:layout_constraintBottom_toTopOf="@id/loading_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linearLayoutInfo" />
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/loading_view"
+        style="@style/Widget.AppCompat.ProgressBar"
+        app:layout_constraintBottom_toTopOf="@id/linearLayoutOption"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bookInfo_chapters_listView"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/linearLayoutOption"
