@@ -8,6 +8,7 @@ import android.widget.AbsListView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.HeaderViewListAdapter
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.databinding.ActivitySearchBinding
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter
@@ -54,6 +55,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
         //listview相关初始化
         val searchBookResultAdapter = SearchBookResultAdapter(arrayList, this)
 
+        mViewBinding.searchListView.layoutManager=LinearLayoutManager(this)
         mViewBinding.searchListView.adapter=(searchBookResultAdapter)
         searchBookResultAdapter.setItemOnClickListener(SearchBookResultAdapter.ItemOnClickListener {
             if (it < arrayList.size) {

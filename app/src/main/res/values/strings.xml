@@ -9,7 +9,7 @@
     <string name="set_version">当前版本</string>
     <string name="set_check">检查更新</string>
     <string name="app_about">关于</string>
-    <string name="nothing_tip">没有更多了~</string>
+    <string name="nothing_tip">已到底</string>
     <string name="name_tip">请输入用户名</string>
     <string name="password_tip">请输入密码</string>
     <string name="password_check_tip">请再次输入密码</string>

@@ -19,8 +19,8 @@ import com.kkkkkn.readbooks.view.viewHolder.SearchBookResultAdapterViewHolder;
 import java.util.ArrayList;
 
 public class SearchBookResultAdapter  extends RecyclerView.Adapter<SearchBookResultAdapterViewHolder> {
-    private ArrayList<BookInfo> resultList;
-    private Context mContext;
+    private final ArrayList<BookInfo> resultList;
+    private final Context mContext;
     public static final int FOOT_VIEW=1;
     private ItemOnClickListener itemOnClickListener;
 
@@ -32,13 +32,13 @@ public class SearchBookResultAdapter  extends RecyclerView.Adapter<SearchBookRes
     @NonNull
     @Override
     public SearchBookResultAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
         if(viewType==FOOT_VIEW){
-            View view = LayoutInflater.from(mContext).inflate(R.layout.activity_search_footview, parent, false);
-            return new SearchBookResultAdapterViewHolder(view,viewType);
+            view = LayoutInflater.from(mContext).inflate(R.layout.activity_search_footview, parent, false);
         }else{
-            View view = LayoutInflater.from(mContext).inflate(R.layout.activity_search_item, parent, false);
-            return new SearchBookResultAdapterViewHolder(view,viewType);
+            view = LayoutInflater.from(mContext).inflate(R.layout.activity_search_item, parent, false);
         }
+        return new SearchBookResultAdapterViewHolder(view,viewType);
     }
 
     @Override
@@ -51,24 +51,7 @@ public class SearchBookResultAdapter  extends RecyclerView.Adapter<SearchBookRes
                 ImageUtil.loadImage(book.getBookImgUrl(),mContext,holder.bookImg);
 
                 if(itemOnClickListener!=null){
-                    holder.bookName.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            itemOnClickListener.onItemClick(holder.getAdapterPosition());
-                        }
-                    });
-                    holder.bookName.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            itemOnClickListener.onItemClick(holder.getAdapterPosition());
-                        }
-                    });
-                    holder.bookImg.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            itemOnClickListener.onItemClick(holder.getAdapterPosition());
-                        }
-                    });
+                    holder.itemView.setOnClickListener(view -> itemOnClickListener.onItemClick(holder.getAdapterPosition()));
                 }
             }
 
@@ -95,7 +78,7 @@ public class SearchBookResultAdapter  extends RecyclerView.Adapter<SearchBookRes
     }
 
     public interface ItemOnClickListener{
-        public void onItemClick(int position);
+        void onItemClick(int position);
     }
 
     public void setItemOnClickListener(SearchBookResultAdapter.ItemOnClickListener listener) {

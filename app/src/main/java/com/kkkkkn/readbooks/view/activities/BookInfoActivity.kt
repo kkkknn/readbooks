@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.databinding.ActivityBookInfoBinding
 import com.kkkkkn.readbooks.model.adapter.BookChaptersAdapter
@@ -50,6 +51,7 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
     private fun initView() {
         //绑定控件
         chaptersAdapter = BookChaptersAdapter(chapterList, applicationContext)
+        mViewBinding.bookInfoChaptersListView.layoutManager= LinearLayoutManager(this)
         mViewBinding.bookInfoChaptersListView.adapter = chaptersAdapter
         //章节点击跳转
         chaptersAdapter!!.setItemOnClickListener {

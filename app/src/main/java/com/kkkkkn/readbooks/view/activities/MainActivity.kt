@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.PersistableBundle
 import android.provider.Settings
 import android.util.Log
 import android.view.*
@@ -16,13 +15,9 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.databinding.ActivityMainBinding
 import com.kkkkkn.readbooks.model.adapter.BookShelfAdapter
@@ -43,7 +38,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
     private val arrayList: ArrayList<BookInfo> = ArrayList()
     private var presenter_main: Presenter_Main? = null
     private var mAdapter: BookShelfAdapter? = null
-    private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var updateDialog: UpdateDialog? = null
     private var loginActivityResultLauncher: ActivityResultLauncher<Intent>? = null
     private var tv_userName: AppCompatTextView? = null
@@ -204,7 +198,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
                 arrayList.clear()
                 arrayList.addAll(list)
                 mAdapter!!.notifyDataSetChanged()
-                swipeRefreshLayout!!.isRefreshing = false
+                mViewBinding.mainSwipeRefreshLayout.isRefreshing = false
             }
         }
     }

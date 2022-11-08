@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:padding="10dp"
     android:orientation="horizontal"
     android:id="@+id/book_item">
@@ -9,6 +12,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/fragment_search_item_book_img"
         android:scaleType="matrix"
+        android:layout_gravity="center_vertical"
         android:layout_width="80dp"
         android:layout_height="100dp"/>
 
@@ -16,8 +20,9 @@
         android:orientation="vertical"
         android:paddingHorizontal="10dp"
         android:paddingVertical="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/fragment_search_item_book_name"
             android:layout_width="match_parent"

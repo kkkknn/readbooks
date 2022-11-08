@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
     <androidx.appcompat.widget.AppCompatTextView
-        android:gravity="center"
         android:text="@string/nothing_tip"
-        android:padding="10dp"
-        android:textColor="@color/text_content"
+        android:padding="5dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/text_tips"
         android:textSize="12sp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

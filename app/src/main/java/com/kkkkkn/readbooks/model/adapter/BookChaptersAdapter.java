@@ -45,7 +45,7 @@ public class BookChaptersAdapter extends RecyclerView.Adapter<BookChaptersAdapte
                 holder.chapterName.setText(chapterInfo.getChapter_name());
 
                 if(onItemClickListener!=null){
-                    holder.chapterName.setOnClickListener(new View.OnClickListener() {
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             onItemClickListener.onItemClick(holder.getAdapterPosition());
@@ -77,7 +77,7 @@ public class BookChaptersAdapter extends RecyclerView.Adapter<BookChaptersAdapte
     }
 
     public interface ItemOnClickListener{
-        public void onItemClick(int position);
+        void onItemClick(int position);
     }
 
     public void setItemOnClickListener(ItemOnClickListener listener) {
