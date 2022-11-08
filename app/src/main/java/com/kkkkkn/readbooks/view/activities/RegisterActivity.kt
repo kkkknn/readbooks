@@ -1,6 +1,9 @@
 package com.kkkkkn.readbooks.view.activities
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.widget.Toast
@@ -63,6 +66,72 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(), RegisterActivi
         mViewBinding.editRegName.onFocusChangeListener = onFocusChangeListener
         mViewBinding.editRegPassword.onFocusChangeListener = onFocusChangeListener
         mViewBinding.editRegPasswordCheck.onFocusChangeListener = onFocusChangeListener
+
+        mViewBinding.editRegPassword.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if(p0.isNullOrEmpty()){
+                    mViewBinding.ivAccountPasswordShow.visibility=View.GONE
+                    mViewBinding.editRegPassword.inputType= InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
+                    mViewBinding.ivAccountPasswordShow.setImageResource(R.drawable.ic_eye_show_24)
+                }else{
+                    mViewBinding.ivAccountPasswordShow.visibility=View.VISIBLE
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+
+        mViewBinding.ivAccountPasswordShow.setOnClickListener {
+            if (mViewBinding.editRegPassword.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT) {
+                mViewBinding.ivAccountPasswordShow.setImageResource(R.drawable.ic_eye_hide_24)
+                mViewBinding.editRegPassword.inputType =
+                    InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                mViewBinding.editRegPassword.setSelection(mViewBinding.editRegPassword.text!!.length)
+            } else {
+                mViewBinding.ivAccountPasswordShow.setImageResource(R.drawable.ic_eye_show_24)
+                mViewBinding.editRegPassword.inputType =
+                    InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
+                mViewBinding.editRegPassword.setSelection(mViewBinding.editRegPassword.text!!.length)
+            }
+        }
+
+        mViewBinding.editRegPasswordCheck.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if(p0.isNullOrEmpty()){
+                    mViewBinding.ivAccountPasswordCheckShow.visibility=View.GONE
+                    mViewBinding.editRegPasswordCheck.inputType= InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
+                    mViewBinding.ivAccountPasswordCheckShow.setImageResource(R.drawable.ic_eye_show_24)
+                }else{
+                    mViewBinding.ivAccountPasswordCheckShow.visibility=View.VISIBLE
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+
+        mViewBinding.ivAccountPasswordCheckShow.setOnClickListener {
+            if (mViewBinding.editRegPasswordCheck.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT) {
+                mViewBinding.ivAccountPasswordCheckShow.setImageResource(R.drawable.ic_eye_hide_24)
+                mViewBinding.editRegPasswordCheck.inputType =
+                    InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                mViewBinding.editRegPasswordCheck.setSelection(mViewBinding.editRegPasswordCheck.text!!.length)
+            } else {
+                mViewBinding.ivAccountPasswordCheckShow.setImageResource(R.drawable.ic_eye_show_24)
+                mViewBinding.editRegPasswordCheck.inputType =
+                    InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
+                mViewBinding.editRegPasswordCheck.setSelection(mViewBinding.editRegPasswordCheck.text!!.length)
+            }
+        }
     }
 
     override fun showMsgDialog(type: Int, msg: String) {

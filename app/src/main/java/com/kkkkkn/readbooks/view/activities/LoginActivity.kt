@@ -2,10 +2,16 @@ package com.kkkkkn.readbooks.view.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.KeyEvent
+import android.view.View
+import android.view.View.OnClickListener
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.databinding.ActivityLoginBinding
 import com.kkkkkn.readbooks.presenter.Presenter_Login
 import com.kkkkkn.readbooks.view.view.LoginActivityView
@@ -47,6 +53,39 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginActivityView {
             presenterLogin?.login(name, password)
         }
         mViewBinding.jumpToRsg.setOnClickListener { toRegisterActivity() }
+
+        mViewBinding.editAccountPassword.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if(p0.isNullOrEmpty()){
+                    mViewBinding.ivAccountPasswordShow.visibility=View.GONE
+                    mViewBinding.editAccountPassword.inputType= InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
+                    mViewBinding.ivAccountPasswordShow.setImageResource(R.drawable.ic_eye_show_24)
+                }else{
+                    mViewBinding.ivAccountPasswordShow.visibility=View.VISIBLE
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+
+        mViewBinding.ivAccountPasswordShow.setOnClickListener(object :OnClickListener{
+            override fun onClick(p0: View?) {
+                if(mViewBinding.editAccountPassword.inputType==InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT){
+                    mViewBinding.ivAccountPasswordShow.setImageResource(R.drawable.ic_eye_hide_24)
+                    mViewBinding.editAccountPassword.inputType=InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                    mViewBinding.editAccountPassword.setSelection(mViewBinding.editAccountPassword.text!!.length)
+                }else{
+                    mViewBinding.ivAccountPasswordShow.setImageResource(R.drawable.ic_eye_show_24)
+                    mViewBinding.editAccountPassword.inputType= InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
+                    mViewBinding.editAccountPassword.setSelection(mViewBinding.editAccountPassword.text!!.length)
+                }
+            }
+        })
     }
 
     override fun onStart() {

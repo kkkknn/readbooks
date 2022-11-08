@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:background="@color/toolbar"
     tools:context=".view.activities.RegisterActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -13,7 +14,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,6 +34,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingVertical="40dp"
+        android:layout_marginHorizontal="5dp"
+        android:paddingHorizontal="20dp"
+        android:background="@drawable/bg_login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
@@ -58,8 +62,8 @@
                     android:id="@+id/edit_reg_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_edittext"
-                    android:textColor="@color/text_tips"
+                    android:textColor="@color/text_content"
+                    android:textColorHint="@color/text_tips"
                     android:paddingHorizontal="10dp"
                     android:hint="@string/name_tip"
                     android:textSize="12sp"
@@ -74,7 +78,7 @@
                     android:paddingHorizontal="10dp"
                     android:textColor="@color/text_error"
                     android:textSize="10sp"
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     tools:ignore="SmallSp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -95,15 +99,16 @@
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:orientation="vertical"
-                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/edit_reg_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_edittext"
-                    android:textColor="@color/text_tips"
+                    android:textColor="@color/text_content"
+                    android:textColorHint="@color/text_tips"
                     android:hint="@string/password_tip"
                     android:paddingHorizontal="10dp"
                     android:textSize="12sp"
@@ -118,9 +123,20 @@
                     android:paddingHorizontal="10dp"
                     android:textColor="@color/text_error"
                     android:textSize="10sp"
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     tools:ignore="SmallSp" />
+
+
             </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_account_password_show"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:visibility="gone"
+                android:src="@drawable/ic_eye_show_24" />
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -138,14 +154,15 @@
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:orientation="vertical"
-                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/edit_reg_password_check"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_edittext"
-                    android:textColor="@color/text_tips"
+                    android:textColor="@color/text_content"
+                    android:textColorHint="@color/text_tips"
                     android:hint="@string/password_check_tip"
                     android:paddingHorizontal="10dp"
                     android:textSize="12sp"
@@ -160,9 +177,18 @@
                     android:paddingHorizontal="10dp"
                     android:textColor="@color/text_error"
                     android:textSize="10sp"
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     tools:ignore="SmallSp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_account_passwordCheck_show"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:src="@drawable/ic_eye_show_24" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -173,7 +199,7 @@
             android:textColor="@color/white"
             android:textSize="14sp"
             android:paddingHorizontal="80dp"
-            android:layout_marginVertical="20dp"
+            android:layout_marginVertical="5dp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
