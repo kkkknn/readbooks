@@ -9,16 +9,15 @@ import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.SettingNotFoundException
 import android.util.Log
-import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
-import com.kkkkkn.readbooks.R
+import com.gyf.immersionbar.ImmersionBar
 import com.kkkkkn.readbooks.databinding.ActivityBookBrowsingBinding
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf
 import com.kkkkkn.readbooks.model.entity.BookInfo
 import com.kkkkkn.readbooks.model.entity.ChapterInfo
 import com.kkkkkn.readbooks.presenter.Presenter_Browsing
-import com.kkkkkn.readbooks.view.customView.BrowsingVIew.FlushType
+import com.kkkkkn.readbooks.view.customView.BrowsingView.FlushType
 import com.kkkkkn.readbooks.view.customView.LoadingDialog
 import com.kkkkkn.readbooks.view.customView.SettingDialog
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView
@@ -72,12 +71,14 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
                 val chapterInfo = chapterList[chapterCount]
                 val count = chapterInfo.chapter_num
                 if (count == bookInfo!!.chapterSum) {
-                    Toast.makeText(applicationContext, "已无更多章节", Toast.LENGTH_SHORT).show()
+                    Toasty.warning(applicationContext, "已无更多章节", Toast.LENGTH_SHORT, true).show()
                 } else {
                     flushType = FlushType.NEXT_PAGE
                     if (chapterCount < chapterList.size - 1) {
-                        val next_chapter_info = chapterList[++chapterCount]
-                        presenterBrowsing!!.getChapterContent(next_chapter_info.chapter_path)
+                        val nextChapterInfo = chapterList[++chapterCount]
+                        presenterBrowsing!!.getChapterContent(nextChapterInfo.chapter_path)
+                        Log.i(TAG, "jump2nextChapter: 获取下一章节了1"+chapterInfo.chapter_name)
+                        Log.i(TAG, "jump2nextChapter: 获取下一章节了2"+nextChapterInfo.chapter_name)
                     } else {
                         presenterBrowsing!!.getChapterList(bookInfo!!.bookId, count + 1)
                     }
@@ -90,7 +91,7 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
                     val chapterInfo = chapterList[chapterCount]
                     val count = chapterInfo.chapter_num
                     if (count == 0) {
-                        Toast.makeText(applicationContext, "已是第一章节", Toast.LENGTH_SHORT).show()
+                        Toasty.warning(applicationContext, "已是第一章节", Toast.LENGTH_SHORT, true).show()
                     } else {
                         flushType = FlushType.LAST_PAGE
                         presenterBrowsing!!.getChapterList(bookInfo!!.bookId, count - 1)
@@ -117,25 +118,14 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
         loadingDialog = LoadingDialog(this)
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
-            val decorView = this.window.decorView
-            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_book_browsing)
-
         //setStatusBarColor(this,getResources().getDrawable(R.drawable.browsingview));
         initView()
+
+
+
         presenterBrowsing = Presenter_Browsing(applicationContext, this)
         presenterBrowsing!!.init()
 
@@ -158,14 +148,21 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
             finish()
             return
         }
-        flushChapterContent(chapterInfo)
 
+        flushChapterContent(chapterInfo)
 
         /*//注册静态广播
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(broadcastReceiver, filter);*/
+    }
+
+    override fun editStatusBar(){
+        ImmersionBar.with(this)
+            .statusBarDarkFont(true)
+            .navigationBarDarkIcon(true)
+            .init()
     }
 
     //刷新当前章节内容
@@ -204,7 +201,7 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
         //刷新章节列表
         chapterList.addAll(list)
         //修改后的章节列表 根据章节ID进行从新排序，并更新chapterCount的值
-        Collections.sort(chapterList)
+        chapterList.sort()
         if (info != null) {
             chapterCount = when (flushType) {
                 FlushType.LAST_PAGE -> chapterList.indexOf(info) - 1
@@ -221,10 +218,9 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
     }
 
     override fun syncReadView(jsonArray: JSONArray) {
-        Log.i(TAG, "syncReadView: 刷新章节内容")
         //设置view的字符串，并且刷新并重新绘制
-        val len = jsonArray.length()
-        val ares = Array<String>(len){""}
+        val len=jsonArray.length()
+        val ares= Array<String>(len){""}
         for (i in 0 until len) {
             try {
                 ares[i] = jsonArray.getString(i)
@@ -232,6 +228,7 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
                 e.printStackTrace()
             }
         }
+
 
         mViewBinding.browView.setTextContent(ares, flushType)
     }

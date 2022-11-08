@@ -3,6 +3,7 @@ package com.kkkkkn.readbooks.view.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,6 +59,7 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
             val bundle = Bundle()
             bundle.putSerializable("chapterInfo", chapterList[it])
             bundle.putSerializable("bookInfo", bookInfo)
+            Log.i(tag, "initView: 开始跳转 chapterInfo "+chapterList[it].chapter_path+" bookInfo "+bookInfo.toString())
             toBrowsingActivity(bundle)
         }
         //跳转到浏览界面，从第一章开始阅读

@@ -61,14 +61,6 @@ public class StringUtil {
         return "";
     }
 
-    //章节链接转换为文件名
-    public static String Url2fileName(String chapterUrl) {
-        if(chapterUrl==null||chapterUrl.isEmpty()){
-            return null;
-        }
-        String[] path_arr=chapterUrl.split("/");
-        return path_arr[4]+path_arr[5]+path_arr[7];
-    }
 
     public static String Text2Indent(String s) {
         if(s==null){
@@ -76,5 +68,21 @@ public class StringUtil {
         }else {
             return s.substring(2);
         }
+    }
+
+    public static String Url2bookName(String chapterUrl) {
+        if(chapterUrl==null||chapterUrl.isEmpty()){
+            return null;
+        }
+        String[] path_arr=chapterUrl.split("/");
+        return path_arr[7];
+    }
+
+    public static String Url2chapterName(String chapterUrl) {
+        if(chapterUrl==null||chapterUrl.isEmpty()){
+            return null;
+        }
+        String[] path_arr=chapterUrl.split("/");
+        return path_arr[9].replace(" ","").replace(".txt","").split("_")[1];
     }
 }

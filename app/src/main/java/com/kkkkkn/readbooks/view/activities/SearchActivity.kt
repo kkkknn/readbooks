@@ -2,6 +2,7 @@ package com.kkkkkn.readbooks.view.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AbsListView
@@ -14,10 +15,10 @@ import com.kkkkkn.readbooks.databinding.ActivitySearchBinding
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter
 import com.kkkkkn.readbooks.model.entity.BookInfo
 import com.kkkkkn.readbooks.presenter.Presenter_Search
-import com.kkkkkn.readbooks.view.customView.CustomSearchView.SearchViewListener
 import com.kkkkkn.readbooks.view.customView.SoftKeyBoardListener
 import com.kkkkkn.readbooks.view.customView.SoftKeyBoardListener.OnSoftKeyBoardChangeListener
 import com.kkkkkn.readbooks.view.view.SearchActivityView
+import com.mancj.materialsearchbar.MaterialSearchBar
 import es.dmoral.toasty.Toasty
 
 class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView {
@@ -41,12 +42,12 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
         softKeyBoardListener!!.setListener(object : OnSoftKeyBoardChangeListener {
             override fun keyBoardShow(height: Int) {
                 //软键盘已经显示，做逻辑
-                mViewBinding.searchView.onKeyBoardState(true)
+                //mViewBinding.searchView.onKeyBoardState(true)
             }
 
             override fun keyBoardHide(height: Int) {
                 //软键盘已经隐藏,做逻辑
-                mViewBinding.searchView.onKeyBoardState(false)
+                //mViewBinding.searchView.onKeyBoardState(false)
             }
         })
     }
@@ -63,26 +64,37 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
             }
         })
 
-        mViewBinding.searchView.requestEdit()
-        mViewBinding.searchView.setSearchViewListener(object : SearchViewListener {
-            override fun onRefreshAutoComplete(text: String) {}
-            override fun onSearch(text: String) {
-                //请求字符串不为空，开始进行网络请求
-                if (text.isNotEmpty()) {
-                    isEnd = false
+        //mViewBinding.searchView.requestEdit()
+        mViewBinding.searchView.setOnSearchActionListener(object :
+            MaterialSearchBar.OnSearchActionListener {
+            override fun onSearchStateChanged(enabled: Boolean) {
+                if(!enabled){
                     //清空当前列表
                     arrayList.clear()
                     mViewBinding.searchListView.adapter?.notifyDataSetChanged()
-                    //请求搜索
-                    searchStr = text
-                    presenterSearch!!.searchBook(arrayList.size, searchStr)
-                    /*//防止抬起落下都触发此事件
-                    searchView.setIconified(true);*/
                 }
             }
 
-            override fun onScancode() {}
-            override fun onEditViewClick() {}
+            override fun onSearchConfirmed(text: CharSequence?) {
+                //请求字符串不为空，开始进行网络请求
+                if (text != null) {
+                    if (text.isNotEmpty()) {
+                        isEnd = false
+                        //清空当前列表
+                        arrayList.clear()
+                        mViewBinding.searchListView.adapter?.notifyDataSetChanged()
+                        //请求搜索
+                        searchStr = text.toString()
+                        presenterSearch!!.searchBook(arrayList.size, searchStr)
+                        /*//防止抬起落下都触发此事件
+                                searchView.setIconified(true);*/
+                    }
+                }
+            }
+
+            override fun onButtonClicked(buttonCode: Int) {
+                Log.i("TAG", "onButtonClicked: 点击了按钮")
+            }
         })
     }
 

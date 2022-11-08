@@ -79,9 +79,11 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
         browsingActivityView.setLoading(true);
         //读取判断是否有缓存
         String[] arr=null;
-        String fileName=null;
-        fileName= StringUtil.Url2fileName(chapterUrl);
-        arr=ChapterUtil.readCacheChapter(getContext().getFilesDir().getAbsolutePath(),fileName);
+        String filePath=null;
+        String chapterName=null;
+        filePath= StringUtil.Url2bookName(chapterUrl);
+        chapterName= StringUtil.Url2chapterName(chapterUrl);
+        arr=ChapterUtil.readCacheChapter(getContext().getFilesDir().getAbsolutePath(),filePath,chapterName);
         if(arr==null){
             //请求网络获取文章内容
             EventBus.getDefault().post(
@@ -146,8 +148,9 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
                 try {
                     chapterUrl=jsonObject.getString("url");
                     jsonArray = jsonObject.getJSONArray("data");
-                    String fileName= StringUtil.Url2fileName(chapterUrl);
-                    if(!ChapterUtil.cacheChapter(jsonArray,getContext().getFilesDir().getAbsolutePath(),fileName)){
+                    String bookName= StringUtil.Url2bookName(chapterUrl);
+                    String chapterName= StringUtil.Url2chapterName(chapterUrl);
+                    if(!ChapterUtil.cacheChapter(jsonArray,getContext().getFilesDir().getAbsolutePath(),bookName,chapterName)){
                         Log.e(TAG, "onSuccess:  缓存章节失败");
                     }else {
                         Log.i(TAG, "onSuccess: 缓存章节成功");

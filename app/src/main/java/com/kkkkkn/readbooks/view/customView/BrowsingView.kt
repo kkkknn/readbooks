@@ -9,8 +9,9 @@ import android.view.View
 import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.view.activities.BookBrowsingActivity.BookCallback
 import java.util.*
+import kotlin.math.ceil
 
-class BrowsingVIew : View {
+class BrowsingView : View {
     //行距
     private val rowSpace = 1.5f
     fun setBackgroundStyle(style: Int) {
@@ -37,7 +38,7 @@ class BrowsingVIew : View {
     private val marginHorizontal = 20
 
     //当前章节字符串
-    private var contentArr: Array<String>? = null
+    private var contentArr: ArrayList<String> =ArrayList<String>()
 
     //文字大小
     private var textSize = 40f
@@ -57,7 +58,7 @@ class BrowsingVIew : View {
     private var mPaint: Paint? = null
     private val parchmentBitmap = BitmapFactory.decodeResource(resources, R.drawable.browsingview)
         .copy(Bitmap.Config.ARGB_8888, true)
-    private val bitmapLinkedList: LinkedList<Bitmap?>? = LinkedList()
+    private var bitmapLinkedList: LinkedList<Bitmap?> = LinkedList()
     private var bitmap_flag = 0
 
     constructor(context: Context) : super(context) {
@@ -85,8 +86,8 @@ class BrowsingVIew : View {
         mPaint!!.color = textColor
         mPaint!!.isAntiAlias = true
         mPaint!!.textSize = textSize
-        post {
 
+        post{
             //获取view宽高，然后绘制
             mViewWidth = measuredWidth
             mViewHeight = measuredHeight
@@ -95,11 +96,12 @@ class BrowsingVIew : View {
 
             //计算偏移量及行数，每行字数
             linePageSum =
-                Math.ceil((mViewHeight - marginVertical * 2) / textSize.toDouble() / rowSpace)
+                ceil((mViewHeight - marginVertical *2 ) / textSize.toDouble() / rowSpace)
                     .toInt()
-            if (contentArr != null && bitmapLinkedList!!.size == 0) {
+            if(contentArr.isNotEmpty()&&bitmapLinkedList.isEmpty()){
                 text2bitmap(FlushType.THIS_PAGE)
             }
+
         }
     }
 
@@ -108,14 +110,14 @@ class BrowsingVIew : View {
         this.textSize = textSize
         if (mViewWidth > 0 && mViewHeight > 0) {
             linePageSum =
-                Math.ceil((mViewHeight - marginVertical * 2) / textSize.toDouble() / rowSpace)
+                ceil((mViewHeight - marginVertical *2) / textSize.toDouble() / rowSpace)
                     .toInt()
             text2bitmap(FlushType.FLUSH_PAGE)
         }
     }
 
     private fun text2bitmap(type: FlushType) {
-        if (contentArr == null || contentArr!!.size == 0) {
+        if (contentArr.isEmpty()) {
             return
         }
         val canvas = Canvas()
@@ -144,7 +146,7 @@ class BrowsingVIew : View {
         bitmapClear(bitmapLinkedList)
         var line_count = 0
         var bitmap = drawBackground(canvas, backgroundStyle)
-        val height = (marginVertical + (textSize.toInt() shr 1)).toFloat()
+        val height = marginVertical + textSize
         for (i in line_list.indices) {
             val str = line_list[i]
             canvas.drawText(
@@ -159,19 +161,21 @@ class BrowsingVIew : View {
             if (line_count == linePageSum) {
                 line_count = 0
                 //绘制当前页所有文字，并添加到list中
-                bitmapLinkedList!!.add(bitmap)
+                bitmapLinkedList.add(bitmap)
                 bitmap = drawBackground(canvas, backgroundStyle)
             }
         }
         if (line_count > 0) {
-            bitmapLinkedList!!.add(bitmap)
+            bitmapLinkedList.add(bitmap)
         }
         when (type) {
-            FlushType.LAST_PAGE -> bitmap_flag = bitmapLinkedList!!.size - 1
+            FlushType.LAST_PAGE -> bitmap_flag = bitmapLinkedList.size - 1
             FlushType.THIS_PAGE, FlushType.NEXT_PAGE -> bitmap_flag = 0
             FlushType.FLUSH_PAGE -> {}
             else -> {}
         }
+
+        Log.i(TAG, "text2bitmap: 不为空了 大小"+bitmapLinkedList.size)
         post { this.invalidate() }
     }
 
@@ -219,8 +223,11 @@ class BrowsingVIew : View {
         this.textColor = textColor
     }
 
-    fun setTextContent(content: Array<String>?, type: FlushType) {
-        contentArr = content
+    fun setTextContent(content: Array<String>, type: FlushType) {
+        Log.i(TAG, "setTextContent: 11  "+contentArr.toList().toString())
+        Log.i(TAG, "setTextContent: 22  "+content.toList().toString())
+        contentArr.clear()
+        contentArr.addAll(content)
         //根据章节重新设置3个页面的进度
         mClipX = -1f
         offsetX = 0f
@@ -232,9 +239,6 @@ class BrowsingVIew : View {
         }
     }
 
-    override fun performClick(): Boolean {
-        return super.performClick()
-    }
 
     //手势判断
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -271,7 +275,7 @@ class BrowsingVIew : View {
                         return true;*/
                     } else {
                         //落点在中央，显示阅读设置view
-                        bookCallback!!.showSetting()
+                        bookCallback?.showSetting()
                     }
                 }
                 mClipX = -1f
@@ -325,10 +329,10 @@ class BrowsingVIew : View {
     //绘制阅读界面 2个页面  1，当前页面  2，根据当前手势判断绘制上一页/下一页
     private fun drawBitmap(canvas: Canvas) {
         //判断是否需要绘制
-        if (contentArr == null || bitmapLinkedList!!.size == 0) {
+        if (bitmapLinkedList.isEmpty()) {
             Log.i(
                 TAG,
-                "drawBitmap: 超出长度或没有文字内容，忽略绘制" + (contentArr == null) + "||" + bitmapLinkedList!!.size
+                "drawBitmap: 超出长度或没有文字内容，忽略绘制" + (contentArr == null) + "||" + bitmapLinkedList.size
             )
             return
         }
@@ -365,9 +369,9 @@ class BrowsingVIew : View {
                         mPaint
                     )
                 } else {
-                    canvas.drawBitmap(bitmapLinkedList!![bitmap_flag]!!, 0f, 0f, mPaint)
+                    canvas.drawBitmap(bitmapLinkedList[bitmap_flag]!!, 0f, 0f, mPaint)
                 }
-            else -> if (bitmapLinkedList != null && bitmapLinkedList.size > 0) {
+            else -> if (bitmapLinkedList.size > 0 && bitmapLinkedList.size > bitmap_flag) {
                 //绘制当前页面
                 canvas.drawBitmap(bitmapLinkedList[bitmap_flag]!!, 0f, 0f, mPaint)
             }
@@ -387,12 +391,12 @@ class BrowsingVIew : View {
     }
 
     private fun getStatusBarHeight(context: Context): Int {
-        val resources = context.resources
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        return resources.getDimensionPixelSize(resourceId)
+        val statusBarHeight = Math.ceil((25 * context.resources.displayMetrics.density).toDouble())
+
+        return statusBarHeight.toInt()
     }
 
-    fun setListener(callback: BookCallback?) {
+    fun setListener(callback: BookCallback) {
         bookCallback = callback
     }
 

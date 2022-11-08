@@ -10,24 +10,29 @@ import com.kkkkkn.readbooks.R
 
 abstract class BaseActivity<T:ViewBinding>: AppCompatActivity() {
     lateinit var mViewBinding: T
+    lateinit var tag:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mViewBinding=getViewBinding()
         setContentView(mViewBinding.root)
-
+        //设置tag名字
+        tag=this.localClassName
         //将当前activity加入栈
         val stackManager = StackManager.getInstance()
         stackManager.addActivity(this)
 
         //沉浸式状态栏
+        editStatusBar()
+    }
+
+    open fun editStatusBar(){
         ImmersionBar.with(this)
             .statusBarDarkFont(true)
             .navigationBarDarkIcon(true)
             .barColor(R.color.toolbar)
             .init()
     }
-
 
     abstract fun getViewBinding():T
 
