@@ -69,16 +69,16 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
             override fun jump2nextChapter() {
                 Log.i(TAG, "jump2nextChapter: 跳转到下一章节")
                 val chapterInfo = chapterList[chapterCount]
-                val count = chapterInfo.chapter_num
+                val count = chapterInfo.chapterNum
                 if (count == bookInfo!!.chapterSum) {
                     Toasty.warning(applicationContext, "已无更多章节", Toast.LENGTH_SHORT, true).show()
                 } else {
                     flushType = FlushType.NEXT_PAGE
                     if (chapterCount < chapterList.size - 1) {
                         val nextChapterInfo = chapterList[++chapterCount]
-                        presenterBrowsing!!.getChapterContent(nextChapterInfo.chapter_path)
-                        Log.i(TAG, "jump2nextChapter: 获取下一章节了1"+chapterInfo.chapter_name)
-                        Log.i(TAG, "jump2nextChapter: 获取下一章节了2"+nextChapterInfo.chapter_name)
+                        presenterBrowsing!!.getChapterContent(nextChapterInfo.chapterPath)
+                        Log.i(TAG, "jump2nextChapter: 获取下一章节了1"+chapterInfo.chapterName)
+                        Log.i(TAG, "jump2nextChapter: 获取下一章节了2"+nextChapterInfo.chapterName)
                     } else {
                         presenterBrowsing!!.getChapterList(bookInfo!!.bookId, count + 1)
                     }
@@ -89,7 +89,7 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
                 Log.i(TAG, "jump2nextChapter: 跳转到上一章节")
                 if (chapterCount == 0) {
                     val chapterInfo = chapterList[chapterCount]
-                    val count = chapterInfo.chapter_num
+                    val count = chapterInfo.chapterNum
                     if (count == 0) {
                         Toasty.warning(applicationContext, "已是第一章节", Toast.LENGTH_SHORT, true).show()
                     } else {
@@ -99,7 +99,7 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
                 } else {
                     flushType = FlushType.LAST_PAGE
                     val last_chapter_info = chapterList[--chapterCount]
-                    presenterBrowsing!!.getChapterContent(last_chapter_info.chapter_path)
+                    presenterBrowsing!!.getChapterContent(last_chapter_info.chapterPath)
                 }
             }
 
@@ -143,6 +143,9 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
         //序列化处理，防止转换警告
         bookInfo = bundle.getSerializable("bookInfo") as BookInfo?
         val chapterInfo = bundle.getSerializable("chapterInfo") as ChapterInfo?
+
+        Log.i(TAG, "onCreate: "+ chapterInfo!!.chapterName)
+
         if (bookInfo == null) {
             //无图书信息，直接退出
             finish()
@@ -170,9 +173,13 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
         //请求并获取章节内容
         if (chapterInfo != null) {
             if (chapterList.size > 0) {
-                presenterBrowsing!!.getChapterContent(chapterInfo.chapter_path)
+                presenterBrowsing!!.getChapterContent(chapterInfo.chapterPath)
+                Log.i(TAG, "flushChapterContent: 哈哈11")
             } else {
-                presenterBrowsing!!.getChapterList(bookInfo!!.bookId, chapterInfo.chapter_num)
+                Log.i(TAG, "flushChapterContent: 获取章节表")
+                //取余数
+                chapterCount = presenterBrowsing!!.chapterCount2listCount(chapterInfo.chapterNum)
+                presenterBrowsing!!.getChapterList(bookInfo!!.bookId, chapterInfo.chapterNum)
             }
         } else {
             //获取缓存内是否有浏览章节进度
@@ -210,7 +217,7 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
                 else -> chapterList.indexOf(info)
             }
         }
-        presenterBrowsing!!.getChapterContent(chapterList[chapterCount].chapter_path)
+        presenterBrowsing!!.getChapterContent(chapterList[chapterCount].chapterPath)
     }
 
     override fun toLoginActivity() {
@@ -259,7 +266,7 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
         if (chapterList.size > 0) {
             //写入当前浏览记录到数据库
             val info = chapterList[chapterCount]
-            presenterBrowsing!!.setBookProgress(bookInfo!!.bookId, info.chapter_num)
+            presenterBrowsing!!.setBookProgress(bookInfo!!.bookId, info.chapterNum)
         }
         if (presenterBrowsing != null) {
             presenterBrowsing!!.release()

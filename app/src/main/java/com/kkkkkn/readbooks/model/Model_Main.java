@@ -34,17 +34,17 @@ public class Model_Main extends BaseModel {
 
     @Subscribe
     public void syncProgress(MainEvent event) {
-        switch (event.message){
+        switch (event.getMessage()){
             case GET_VERSION:
                 //获取版本号
-                getVersion(event.accountId,event.token);
+                getVersion(event.getAccountId(), event.getToken());
                 break;
             case DOWNLOAD_APK:
-                downloadAPK(event.name,event.path,event.url,event.accountId,event.token);
+                downloadAPK(event.getName(), event.getPath(), event.getUrl(), event.getAccountId(), event.getToken());
                 break;
             case GET_BOOKSHELF:
                 //获取书架
-                getBookShelf(event.accountId,event.token);
+                getBookShelf(event.getAccountId(), event.getToken());
                 break;
         }
     }
@@ -94,7 +94,7 @@ public class Model_Main extends BaseModel {
 
 
     private void downloadAPK(final String name,final String path,String url,int id,String token) {
-        if(StringUtil.isEmpty(name)||StringUtil.isEmpty(path)||StringUtil.isEmpty(url)){
+        if(StringUtil.INSTANCE.isEmpty(name)||StringUtil.INSTANCE.isEmpty(path)||StringUtil.INSTANCE.isEmpty(url)){
             Log.i(TAG, "downloadAPK: 参数错误");
             return;
         }
@@ -104,7 +104,7 @@ public class Model_Main extends BaseModel {
                 .url(ServerConfig.IP+ServerConfig.downloadAPK+"?urlPath="+url)
                 .get()
                 .build();
-        HttpUtil.getInstance().get(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).get(request, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 getCallBack().onError(-3001,"下载失败");
@@ -171,7 +171,7 @@ public class Model_Main extends BaseModel {
                 .url(ServerConfig.IP+ServerConfig.getVersionInfo)
                 .get()
                 .build();
-        HttpUtil.getInstance().post(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).post(request, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 getCallBack().onError(-2001,"访问出错");
@@ -181,7 +181,7 @@ public class Model_Main extends BaseModel {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 //解析返回值
                 String ret_str=response.body().string();
-                if(!StringUtil.isEmpty(ret_str)){
+                if(!StringUtil.INSTANCE.isEmpty(ret_str)){
                     try {
                         JSONObject jsonObject = new JSONObject(ret_str);
                         String code_str = jsonObject.getString("code");
@@ -213,7 +213,7 @@ public class Model_Main extends BaseModel {
                 .url(ServerConfig.IP+ServerConfig.getFavoriteBook)
                 .post(formBody.build())//传递请求体
                 .build();
-        HttpUtil.getInstance().post(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).post(request, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 getCallBack().onError(-1001,"访问出错");
@@ -223,7 +223,7 @@ public class Model_Main extends BaseModel {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 //解析返回值
                 String ret_str=response.body().string();
-                if(!StringUtil.isEmpty(ret_str)){
+                if(!StringUtil.INSTANCE.isEmpty(ret_str)){
                     try {
                         JSONObject jsonObject=new JSONObject(ret_str);
                         String code_str=jsonObject.getString("code");
@@ -233,7 +233,7 @@ public class Model_Main extends BaseModel {
                             ArrayList<BookInfo> book_shelf=new ArrayList<>();
                             for (int j = 0; j < jsonArray.length(); j++) {
                                 JSONObject object=(JSONObject) jsonArray.get(j);
-                                BookInfo bookInfo=BookInfo.changeObject(object);
+                                BookInfo bookInfo=BookInfo.Companion.changeObject(object);
                                 if(!bookInfo.isEmpty()){
                                     book_shelf.add(bookInfo);
                                     Log.i("TAG", "onResponse: "+bookInfo.getBookName());
@@ -246,7 +246,7 @@ public class Model_Main extends BaseModel {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        getCallBack().onError(-1001,"解析失败");
+                        getCallBack().onError(-1001,"请求网络书架解析失败");
                     }
                 }
 

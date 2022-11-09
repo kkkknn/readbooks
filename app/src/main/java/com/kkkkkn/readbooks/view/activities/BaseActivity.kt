@@ -1,8 +1,6 @@
 package com.kkkkkn.readbooks.view.activities
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.gyf.immersionbar.ImmersionBar
@@ -14,13 +12,12 @@ abstract class BaseActivity<T:ViewBinding>: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewBinding=getViewBinding()
+        mViewBinding = getViewBinding()
         setContentView(mViewBinding.root)
         //设置tag名字
-        tag=this.localClassName
+        tag = this.localClassName
         //将当前activity加入栈
-        val stackManager = StackManager.getInstance()
-        stackManager.addActivity(this)
+        StackManager.instance?.addActivity(this)
 
         //沉浸式状态栏
         editStatusBar()
@@ -37,13 +34,11 @@ abstract class BaseActivity<T:ViewBinding>: AppCompatActivity() {
     abstract fun getViewBinding():T
 
     fun exitAll(){
-        val stackManager = StackManager.getInstance()
-        stackManager.exitAllActivity()
+        StackManager.instance?.exitAllActivity()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        val stackManager = StackManager.getInstance()
-        stackManager.removeActivity(this)
+        StackManager.instance?.removeActivity(this)
     }
 }

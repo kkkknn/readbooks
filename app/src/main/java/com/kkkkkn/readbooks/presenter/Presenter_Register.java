@@ -29,15 +29,15 @@ public class Presenter_Register extends BasePresenter implements BaseModel.CallB
      * @return  成功失败 boolean类型
      */
     public void register(final String name, final String password,final String passwordCheck){
-        if(!StringUtil.equals(password,passwordCheck)){
+        if(!StringUtil.INSTANCE.equals(password,passwordCheck)){
             registerActivityView.showTip(-1,"两次输入密码不一致");
             registerActivityView.clearAccountCache();
             return;
-        }else if(!StringUtil.checkAccountName(name)){
+        }else if(!StringUtil.INSTANCE.checkAccountName(name)){
             registerActivityView.showTip(-2,"用户名仅支持英文、数字、下划线,长度3-10之间");
             registerActivityView.clearAccountCache();
             return;
-        }else if (!StringUtil.checkAccountPassword(password)){
+        }else if (!StringUtil.INSTANCE.checkAccountPassword(password)){
             registerActivityView.showTip(-3,"密码必须包含大小写字母和数字的组合，可以使用特殊字符，长度在8-10之间");
             registerActivityView.clearAccountCache();
             return;

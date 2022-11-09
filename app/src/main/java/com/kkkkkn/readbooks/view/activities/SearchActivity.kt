@@ -15,8 +15,6 @@ import com.kkkkkn.readbooks.databinding.ActivitySearchBinding
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter
 import com.kkkkkn.readbooks.model.entity.BookInfo
 import com.kkkkkn.readbooks.presenter.Presenter_Search
-import com.kkkkkn.readbooks.view.customView.SoftKeyBoardListener
-import com.kkkkkn.readbooks.view.customView.SoftKeyBoardListener.OnSoftKeyBoardChangeListener
 import com.kkkkkn.readbooks.view.view.SearchActivityView
 import com.mancj.materialsearchbar.MaterialSearchBar
 import es.dmoral.toasty.Toasty
@@ -26,31 +24,14 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
     private var presenterSearch: Presenter_Search? = null
     private var searchStr: String? = null
     private var isEnd = false
-    private var softKeyBoardListener: SoftKeyBoardListener? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initView()
-        setSoftKeyBoardListener()
         presenterSearch = Presenter_Search(applicationContext, this)
         presenterSearch!!.init()
     }
 
-    private fun setSoftKeyBoardListener() {
-        softKeyBoardListener = SoftKeyBoardListener(this@SearchActivity)
-        //软键盘状态监听
-        softKeyBoardListener!!.setListener(object : OnSoftKeyBoardChangeListener {
-            override fun keyBoardShow(height: Int) {
-                //软键盘已经显示，做逻辑
-                //mViewBinding.searchView.onKeyBoardState(true)
-            }
-
-            override fun keyBoardHide(height: Int) {
-                //软键盘已经隐藏,做逻辑
-                //mViewBinding.searchView.onKeyBoardState(false)
-            }
-        })
-    }
 
     private fun initView() {
         //listview相关初始化
@@ -58,10 +39,13 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
 
         mViewBinding.searchListView.layoutManager=LinearLayoutManager(this)
         mViewBinding.searchListView.adapter=(searchBookResultAdapter)
-        searchBookResultAdapter.setItemOnClickListener(SearchBookResultAdapter.ItemOnClickListener {
-            if (it < arrayList.size) {
-                toBrowsingActivity(arrayList[it])
+        searchBookResultAdapter.setItemOnClickListener(object :SearchBookResultAdapter.ItemOnClickListener {
+            override fun onItemClick(position: Int) {
+                if (position < arrayList.size) {
+                    toBrowsingActivity(arrayList[position])
+                }
             }
+
         })
 
         //mViewBinding.searchView.requestEdit()
@@ -70,25 +54,24 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
             override fun onSearchStateChanged(enabled: Boolean) {
                 if(!enabled){
                     //清空当前列表
+                    mViewBinding.searchListView.adapter?.notifyItemRangeRemoved(0,arrayList.size)
                     arrayList.clear()
-                    mViewBinding.searchListView.adapter?.notifyDataSetChanged()
                 }
             }
 
             override fun onSearchConfirmed(text: CharSequence?) {
                 //请求字符串不为空，开始进行网络请求
                 if (text != null) {
-                    if (text.isNotEmpty()) {
-                        isEnd = false
+                    if (text.isNotEmpty()&& arrayList.isNotEmpty()) {
                         //清空当前列表
+                        mViewBinding.searchListView.adapter?.notifyItemRangeRemoved(0,arrayList.size)
                         arrayList.clear()
-                        mViewBinding.searchListView.adapter?.notifyDataSetChanged()
-                        //请求搜索
-                        searchStr = text.toString()
-                        presenterSearch!!.searchBook(arrayList.size, searchStr)
                         /*//防止抬起落下都触发此事件
                                 searchView.setIconified(true);*/
                     }
+                    //请求搜索
+                    searchStr = text.toString()
+                    presenterSearch!!.searchBook(arrayList.size, searchStr)
                 }
             }
 
@@ -113,15 +96,18 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
 
     override fun syncBookList(list: ArrayList<BookInfo>) {
         runOnUiThread {
-            if (list.size < presenterSearch!!.pageSize) {
+            /*if (list.size < presenterSearch!!.pageSize) {
                 isEnd = true
-            }
+            }*/
             if (mViewBinding.searchListView.visibility == View.INVISIBLE || mViewBinding.searchListView.visibility == View.GONE) {
                 mViewBinding.searchListView.visibility = View.VISIBLE
             }
-            mViewBinding.loadingView.visibility = View.GONE
+            //增量更新
+            val start=arrayList.size
             arrayList.addAll(list)
-            mViewBinding.searchListView.adapter?.notifyDataSetChanged()
+            mViewBinding.searchListView.adapter?.notifyItemRangeInserted(start,list.size)
+            //回到顶部
+            mViewBinding.searchListView.scrollToPosition(0)
         }
     }
 

@@ -48,13 +48,16 @@
                     android:background="@null"/>
             </androidx.appcompat.widget.Toolbar>
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            <com.scwang.smart.refresh.layout.SmartRefreshLayout
                 android:id="@+id/main_SwipeRefreshLayout"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
+                <com.scwang.smart.refresh.header.ClassicsHeader
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
                 <GridView
                     android:clipChildren="false"
                     android:clipToPadding="false"
@@ -65,7 +68,8 @@
                     android:textAlignment="center"
                     android:numColumns="4"
                     android:scrollbars="none" />
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

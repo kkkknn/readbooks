@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -25,7 +26,7 @@ public class Model_Register extends BaseModel  {
 
     private void register(final String name,final String password){
         //Md5加密
-        final String password_val= StringUtil.password2md5(password);
+        final String password_val= StringUtil.INSTANCE.password2md5(password);
 
         FormBody.Builder formBody = new FormBody.Builder();
         formBody.add("accountName", name);
@@ -34,7 +35,7 @@ public class Model_Register extends BaseModel  {
                 .url(ServerConfig.IP +ServerConfig.register)
                 .post(formBody.build())//传递请求体
                 .build();
-        HttpUtil.getInstance().post(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).post(request, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 getCallBack().onError(-1,"网络请求失败");
@@ -73,8 +74,8 @@ public class Model_Register extends BaseModel  {
 
     @Subscribe
     public void syncProgress(RegisterEvent event) {
-        if (event.message == EventMessage.REGISTER) {
-            register(event.name, event.password);
+        if (event.getMessage() == EventMessage.REGISTER) {
+            register(event.getName(), event.getPassword());
         }
     }
 

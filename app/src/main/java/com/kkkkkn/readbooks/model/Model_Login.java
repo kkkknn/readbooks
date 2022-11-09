@@ -1,7 +1,5 @@
 package com.kkkkkn.readbooks.model;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.kkkkkn.readbooks.util.ServerConfig;
@@ -16,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,15 +27,16 @@ public class Model_Login extends BaseModel  {
 
     private void login(final String name,final String password){
         //Md5加密
-        final String password_val= StringUtil.password2md5(password);
+        final String password_val= StringUtil.INSTANCE.password2md5(password);
         FormBody.Builder formBody = new FormBody.Builder();
         formBody.add("accountName", name);
+        assert password_val != null;
         formBody.add("accountPassword",password_val);
         Request request = new Request.Builder()
                 .url(ServerConfig.IP+ServerConfig.login)
                 .post(formBody.build())//传递请求体
                 .build();
-        HttpUtil.getInstance().post(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).post(request, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 getCallBack().onError(-1,"访问出错");
@@ -60,8 +60,8 @@ public class Model_Login extends BaseModel  {
                             token=jsonObject1.getString("token");
                             id=jsonObject1.getInt("accountId");
                             AccountInfo info=new AccountInfo();
-                            info.setAccount_id(id);
-                            info.setAccount_token(token);
+                            info.setAccountId(id);
+                            info.setAccountToken(token);
                             getCallBack().onSuccess(1,info);
                             break;
                         case "error":
@@ -79,8 +79,8 @@ public class Model_Login extends BaseModel  {
 
     @Subscribe
     public void syncProgress(LoginEvent event) {
-        if (event.message == EventMessage.LOGIN) {
-            login(event.name, event.password);
+        if (event.getMessage() == EventMessage.LOGIN) {
+            login(event.getName(), event.getPassword());
         }
     }
 

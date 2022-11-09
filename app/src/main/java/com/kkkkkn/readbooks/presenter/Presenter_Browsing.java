@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.kkkkkn.readbooks.model.BaseModel;
-import com.kkkkkn.readbooks.model.Model_BookInfo;
 import com.kkkkkn.readbooks.model.Model_Browsing;
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
@@ -13,7 +12,6 @@ import com.kkkkkn.readbooks.util.ChapterUtil;
 import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.events.BrowsingEvent;
-import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -22,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Presenter_Browsing extends BasePresenter implements BaseModel.CallBack {
     private BrowsingActivityView browsingActivityView;
@@ -61,8 +60,8 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
         EventBus.getDefault().post(
                 new BrowsingEvent(
                         EventMessage.GET_BOOK_CHAPTER_LIST,
-                        accountInfo.getAccount_token(),
-                        accountInfo.getAccount_id(),
+                        accountInfo.getAccountToken(),
+                        accountInfo.getAccountId(),
                         book_id,
                         PAGE_SIZE,
                         (chapter_count/PAGE_SIZE)+1));
@@ -81,18 +80,19 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
         String[] arr=null;
         String filePath=null;
         String chapterName=null;
-        filePath= StringUtil.Url2bookName(chapterUrl);
-        chapterName= StringUtil.Url2chapterName(chapterUrl);
-        arr=ChapterUtil.readCacheChapter(getContext().getFilesDir().getAbsolutePath(),filePath,chapterName);
+        filePath= StringUtil.INSTANCE.url2bookName(chapterUrl);
+        chapterName= StringUtil.INSTANCE.url2chapterName(chapterUrl);
+        arr=ChapterUtil.INSTANCE.readCacheChapter(getContext().getFilesDir().getAbsolutePath(),filePath, chapterName);
         if(arr==null){
             //请求网络获取文章内容
             EventBus.getDefault().post(
                     new BrowsingEvent(
                             EventMessage.GET_CHAPTER_CONTENT,
-                            accountInfo.getAccount_token(),
-                            accountInfo.getAccount_id(),
+                            accountInfo.getAccountToken(),
+                            accountInfo.getAccountId(),
                             chapterUrl));
         }else {
+            Log.i(TAG, "getChapterContent: 读取的缓存内容");
             JSONArray jsonArray=new JSONArray();
             for (String str:arr) {
                 jsonArray.put(str);
@@ -148,9 +148,9 @@ public class Presenter_Browsing extends BasePresenter implements BaseModel.CallB
                 try {
                     chapterUrl=jsonObject.getString("url");
                     jsonArray = jsonObject.getJSONArray("data");
-                    String bookName= StringUtil.Url2bookName(chapterUrl);
-                    String chapterName= StringUtil.Url2chapterName(chapterUrl);
-                    if(!ChapterUtil.cacheChapter(jsonArray,getContext().getFilesDir().getAbsolutePath(),bookName,chapterName)){
+                    String bookName= StringUtil.INSTANCE.url2bookName(chapterUrl);
+                    String chapterName= StringUtil.INSTANCE.url2chapterName(chapterUrl);
+                    if(!ChapterUtil.INSTANCE.cacheChapter(jsonArray,getContext().getFilesDir().getAbsolutePath(),bookName,chapterName)){
                         Log.e(TAG, "onSuccess:  缓存章节失败");
                     }else {
                         Log.i(TAG, "onSuccess: 缓存章节成功");

@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -26,12 +27,12 @@ public class Model_BookInfo extends BaseModel {
 
     @Subscribe
     public void syncProgress(BookInfoEvent event) {
-        switch (event.message){
+        switch (event.getMessage()){
             case GET_BOOK_CHAPTER_LIST:
-                getChapterList(event.accountId,event.bookId,event.token,event.pageSize,event.pageCount);
+                getChapterList(event.getAccountId(), event.getBookId(), event.getToken(), event.getPageSize(), event.getPageCount());
                 break;
             case ADD_BOOK:
-                addEnjoyBook(event.accountId,event.bookId,event.token);
+                addEnjoyBook(event.getAccountId(), event.getBookId(), event.getToken());
                 break;
         }
     }
@@ -48,7 +49,7 @@ public class Model_BookInfo extends BaseModel {
                 .addHeader("token",token)
                 .post(formBody.build())//传递请求体
                 .build();
-        HttpUtil.getInstance().post(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).post(request, new Callback() {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String ret_str=response.body().string();
@@ -89,10 +90,10 @@ public class Model_BookInfo extends BaseModel {
                 .post(formBody.build())//传递请求体
                 .build();
 
-        HttpUtil.getInstance().post(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).post(request, new Callback() {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String ret_str=response.body().string();
+                String ret_str= Objects.requireNonNull(response.body()).string();
                 try {
                     JSONObject ret_json=new JSONObject(ret_str);
                     String ret_code=ret_json.getString("code");

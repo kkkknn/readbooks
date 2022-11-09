@@ -13,14 +13,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="20dp"
-        android:paddingHorizontal="30dp"
-        android:background="@drawable/bg_card"
+        android:paddingHorizontal="10dp"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bookInfo_bookImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="20dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:maxWidth="110dp"
@@ -78,18 +78,26 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/bookInfo_chapters_listView"
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/info_chapterRefresh"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@null"/>
+        android:layout_height="wrap_content">
 
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/loading_view"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bookInfo_chapters_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"/>
+
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/linearLayoutOption"

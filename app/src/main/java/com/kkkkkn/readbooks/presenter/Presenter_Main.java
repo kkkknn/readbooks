@@ -54,8 +54,8 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
         EventBus.getDefault().post(
                 new MainEvent(
                         EventMessage.GET_BOOKSHELF,
-                        accountInfo.getAccount_id(),
-                        accountInfo.getAccount_token()));
+                        accountInfo.getAccountId(),
+                        accountInfo.getAccountToken()));
     }
 
     public boolean updateBookShelf(ArrayList<BookInfo> arrayList){
@@ -98,8 +98,8 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
         EventBus.getDefault().post(
                 new MainEvent(
                         EventMessage.GET_VERSION,
-                        accountInfo.getAccount_id(),
-                        accountInfo.getAccount_token()));
+                        accountInfo.getAccountId(),
+                        accountInfo.getAccountToken()));
 
     }
 
@@ -120,8 +120,8 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
                         name,
                         path,
                         url,
-                        accountInfo.getAccount_id(),
-                        accountInfo.getAccount_token()));
+                        accountInfo.getAccountId(),
+                        accountInfo.getAccountToken()));
 
 
     }
@@ -148,7 +148,9 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    mainActivityView.showUpdateDialog(verStr,url,code);
+                    if(verStr != null){
+                        mainActivityView.showUpdateDialog(verStr,url,code);
+                    }
                 }
                 break;
             case 3001:
@@ -165,6 +167,8 @@ public class Presenter_Main extends BasePresenter implements BaseModel.CallBack 
     public void onError(int type, Object object) {
         switch (type){
             case -1001:
+                mainActivityView.syncBookShelfError((String) object);
+                break;
             case -2001:
             case -2002:
             case -3001:

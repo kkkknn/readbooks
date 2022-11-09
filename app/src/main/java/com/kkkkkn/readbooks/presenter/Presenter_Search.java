@@ -2,7 +2,6 @@ package com.kkkkkn.readbooks.presenter;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.SearchView;
 
 import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_Search;
@@ -15,7 +14,6 @@ import com.kkkkkn.readbooks.view.view.SearchActivityView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Presenter_Search extends BasePresenter implements BaseModel.CallBack {
@@ -33,7 +31,7 @@ public class Presenter_Search extends BasePresenter implements BaseModel.CallBac
 
     //根据关键字/作者搜索图书，添加到list中并展示  eventbus 发送
     public void searchBook(int size,String str){
-        if (StringUtil.isEmpty(str)){
+        if (StringUtil.INSTANCE.isEmpty(str)){
             Log.e("TAG", "searchBook:  搜索关键词为空");
             return;
         }
@@ -45,8 +43,8 @@ public class Presenter_Search extends BasePresenter implements BaseModel.CallBac
         EventBus.getDefault().post(
                 new SearchEvent(
                         EventMessage.SEARCH_BOOK,
-                        accountInfo.getAccount_id(),
-                        accountInfo.getAccount_token(),
+                        accountInfo.getAccountId(),
+                        accountInfo.getAccountToken(),
                         str,
                         (size/PAGE_SIZE)+1,
                         PAGE_SIZE));

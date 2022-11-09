@@ -34,18 +34,18 @@ public class BasePresenter {
     public AccountInfo getAccountCache(){
         SharedPreferences sharedPreferences=this.context.getSharedPreferences("AccountInfo",Context.MODE_PRIVATE);
         AccountInfo accountInfo=new AccountInfo();
-        accountInfo.setAccount_id(sharedPreferences.getInt("account_id",-1));
-        accountInfo.setAccount_token(sharedPreferences.getString("account_token",""));
-        accountInfo.setAccount_name(sharedPreferences.getString("account_name",""));
-        accountInfo.setAccount_password(sharedPreferences.getString("account_password",""));
+        accountInfo.setAccountId(sharedPreferences.getInt("account_id",-1));
+        accountInfo.setAccountToken(sharedPreferences.getString("accountToken",""));
+        accountInfo.setAccountName(sharedPreferences.getString("accountName",""));
+        accountInfo.setAccountPassword(sharedPreferences.getString("accountPassword",""));
         return accountInfo;
     }
 
     public void setAccountCache(String name,String password){
         if(name==null||password==null||name.isEmpty()||password.isEmpty())return;
         SharedPreferences.Editor editor=this.context.getSharedPreferences("AccountInfo",Context.MODE_PRIVATE).edit();
-        editor.putString("account_name",name);
-        editor.putString("account_password",password);
+        editor.putString("accountName",name);
+        editor.putString("accountPassword",password);
         editor.apply();
 
     }
@@ -54,7 +54,7 @@ public class BasePresenter {
         if(id<=0||token==null||token.isEmpty())return;
         SharedPreferences.Editor editor=this.context.getSharedPreferences("AccountInfo",Context.MODE_PRIVATE).edit();
         editor.putInt("account_id",id);
-        editor.putString("account_token",token);
+        editor.putString("accountToken",token);
         editor.apply();
     }
 }

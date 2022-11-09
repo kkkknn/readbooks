@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -41,18 +42,18 @@ public class Model_Browsing extends BaseModel{
     private static final String TAG="Model_Browsing";
     @Subscribe
     public void syncProgress(BrowsingEvent event) {
-        switch (event.message){
+        switch (event.getMessage()){
             case GET_BOOK_CHAPTER_LIST:
-                getChapterList(event.bookId,
-                        event.pageCount,
-                        event.pageSize,
-                        event.accountId,
-                        event.token);
+                getChapterList(event.getBookId(),
+                        event.getPageCount(),
+                        event.getPageSize(),
+                        event.getAccountId(),
+                        event.getToken());
                 break;
             case GET_CHAPTER_CONTENT:
-                getChapterContent(event.accountId,
-                        event.token,
-                        event.path);
+                getChapterContent(event.getAccountId(),
+                        event.getToken(),
+                        event.getPath());
                 break;
         }
     }
@@ -74,7 +75,7 @@ public class Model_Browsing extends BaseModel{
                 .post(formBody.build())//传递请求体
                 .build();
 
-        HttpUtil.getInstance().post(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).post(request, new Callback() {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String ret_str=response.body().string();
@@ -122,7 +123,7 @@ public class Model_Browsing extends BaseModel{
                 .post(formBody.build())//传递请求体
                 .build();
 
-        HttpUtil.getInstance().post(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).post(request, new Callback() {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String ret_str=response.body().string();
@@ -161,7 +162,7 @@ public class Model_Browsing extends BaseModel{
         String path=getCachePath(context);
         String str=getProgressString(path);
         //未找到进度就返回0
-        if(StringUtil.isEmpty(str)) {
+        if(StringUtil.INSTANCE.isEmpty(str)) {
             return 0;
         }
         JSONObject jsonObject= null;
@@ -180,7 +181,7 @@ public class Model_Browsing extends BaseModel{
         String str=getProgressString(path);
         JSONObject jsonObject= null;
         try {
-            if(StringUtil.isEmpty(str)){
+            if(StringUtil.INSTANCE.isEmpty(str)){
                 jsonObject = new JSONObject();
             }else {
                 jsonObject = new JSONObject(str);
@@ -202,7 +203,7 @@ public class Model_Browsing extends BaseModel{
         String str=sharedPreferences.getString("SettingConf",null);
         //采用序列化的方式，将SettingConf 对象写入到SharedPreferences 中
         SettingConf settingConf=null;
-        if(!StringUtil.isEmpty(str)){
+        if(!StringUtil.INSTANCE.isEmpty(str)){
             ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(Base64.decode(str,Base64.DEFAULT));
             try {
                 ObjectInputStream objectInputStream=new ObjectInputStream(byteArrayInputStream);

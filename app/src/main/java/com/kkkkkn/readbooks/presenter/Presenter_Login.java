@@ -32,7 +32,7 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
      * @return 成功失败 boolean 类型
      */
     public void login(String name,String password){
-        if(!StringUtil.checkAccountName(name)||!StringUtil.checkAccountPassword(password)){
+        if(!StringUtil.INSTANCE.checkAccountName(name)||!StringUtil.INSTANCE.checkAccountPassword(password)){
             loginActivityView.showMsgDialog(-1,"用户名或密码错误，请重新输入");
             return;
         }
@@ -49,7 +49,7 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
             case 1:
                 //存储ID和token
                 AccountInfo info=(AccountInfo)object;
-                setTokenCache(info.getAccount_id(),info.getAccount_token());
+                setTokenCache(info.getAccountId(),info.getAccountToken());
                 setAccountCache(this.name,this.password);
                 loginActivityView.showMsgDialog(1,"登录成功");
                 loginActivityView.toMainActivity();
@@ -68,7 +68,7 @@ public class Presenter_Login extends BasePresenter implements BaseModel.CallBack
     @Override
     public void onError(int type, Object object) {
         this.name=this.password=null;
-        loginActivityView.showMsgDialog(-1,"登录失败");
+        loginActivityView.showMsgDialog(-1,(String)object );
     }
 
 }

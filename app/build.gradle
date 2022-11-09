@@ -11,7 +11,7 @@ android {
         applicationId "com.kkkkkn.readbooks"
         minSdkVersion 25
         targetSdkVersion 32
-        versionCode 8
+        versionCode 9
         versionName '1.0.2.220215'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,11 +35,12 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.6.1'
 
-    //MaterialSearchBar
+    //MaterialSearchBar 搜索框
     implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
 
     //reflush
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation  'io.github.scwang90:refresh-layout-kernel:2.0.5'      //核心必须依赖
+    implementation  'io.github.scwang90:refresh-header-classics:2.0.5'    //经典刷新头
 
     //OKHttp
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
@@ -52,6 +53,8 @@ dependencies {
 
     //内存泄漏检测工具
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
+    debugImplementation 'androidx.work:work-runtime-ktx:2.7.1'
+    debugImplementation 'androidx.work:work-multiprocess:2.7.1'
 
     //PermissionsDispatcher 权限
     implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.1"
@@ -59,9 +62,6 @@ dependencies {
 
     //toast 框架 Toasty
     implementation 'com.github.GrenderG:Toasty:1.5.2'
-
-    // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
     //ImmersionBar 沉浸式状态栏 基础依赖包，必须要依赖
     implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'

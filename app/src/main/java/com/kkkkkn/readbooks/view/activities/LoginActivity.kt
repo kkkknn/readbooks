@@ -47,9 +47,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginActivityView {
     private fun initView() {
         mViewBinding.loginBtn.setOnClickListener {
             val name: String =
-                Objects.requireNonNull(mViewBinding.editAccountName.text).toString()
+                mViewBinding.editAccountName.text.toString()
             val password: String =
-                Objects.requireNonNull(mViewBinding.editAccountPassword.text).toString()
+                mViewBinding.editAccountPassword.text.toString()
             presenterLogin?.login(name, password)
         }
         mViewBinding.jumpToRsg.setOnClickListener { toRegisterActivity() }
@@ -117,8 +117,8 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginActivityView {
     override fun flushEditView() {
         if (presenterLogin != null) {
             val info = presenterLogin!!.accountCache
-            mViewBinding.editAccountName.setText(info.account_name)
-            mViewBinding.editAccountPassword.setText(info.account_password)
+            mViewBinding.editAccountName.setText(info.accountName)
+            mViewBinding.editAccountPassword.setText(info.accountPassword)
         }
     }
 

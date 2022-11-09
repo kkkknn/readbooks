@@ -9,7 +9,7 @@
     <com.mancj.materialsearchbar.MaterialSearchBar
         style="@style/MaterialSearchBarLight"
         app:mt_hint="请输入图书名字"
-        app:mt_placeholder="请输入图书名字"
+        app:mt_placeholder="点击开始搜索图书"
         app:mt_maxSuggestionsCount="5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,10 +25,5 @@
         android:divider="@null"
         android:visibility="invisible"/>
 
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/loading_view"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

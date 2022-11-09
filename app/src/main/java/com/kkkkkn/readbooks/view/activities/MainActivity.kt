@@ -16,7 +16,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.FileProvider
 import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.databinding.ActivityMainBinding
@@ -28,6 +27,7 @@ import com.kkkkkn.readbooks.util.StringUtil
 import com.kkkkkn.readbooks.view.customView.UpdateDialog
 import com.kkkkkn.readbooks.view.customView.UpdateDialog.OnClickBottomListener
 import com.kkkkkn.readbooks.view.view.MainActivityView
+import es.dmoral.toasty.Toasty
 import java.io.File
 
 /**
@@ -61,28 +61,30 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
         //申请权限
         //checkPermission();
         val info = presenter_main!!.token
-        if (info.account_token.isEmpty() || info.account_id == 0) {
+        if (info.accountToken!!.isEmpty() || info.accountId == 0) {
             toLoginActivity()
         } else {
-            tv_userName!!.text = info.account_name
+            tv_userName!!.text = info.accountName
             presenter_main!!.getBookShelfList()
             presenter_main!!.checkUpdate()
         }
     }
 
     private fun initView() {
-        val layout = LayoutInflater.from(this@MainActivity)
-            .inflate(R.layout.option_nav_header, null) as LinearLayoutCompat
-        tv_userName = layout.findViewById(R.id.nav_user_name)
+        //绑定用户控件
+        tv_userName=mViewBinding.navigationEbook.getHeaderView(0).findViewById<AppCompatTextView>(R.id.nav_user_name)
+
         mViewBinding.toolbar.setNavigationOnClickListener {
             if (!mViewBinding.drawerMain.isOpen) {
                 mViewBinding.drawerMain.open()
             }
         }
         mViewBinding.mainSearchButton.setOnClickListener { toSearchActivity() }
+
         mViewBinding.mainSwipeRefreshLayout.setOnRefreshListener { presenter_main!!.getBookShelfList() }
+
         if (mViewBinding.mainBooksGridView.adapter == null) {
-            mAdapter = BookShelfAdapter(arrayList, applicationContext)
+            mAdapter = BookShelfAdapter(arrayList, this)
         }
         mViewBinding.mainBooksGridView.adapter = mAdapter
         mViewBinding.mainBooksGridView.onItemClickListener =
@@ -194,12 +196,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
             presenter_main!!.updateBookShelf(list)
         }
         runOnUiThread {
-            if (arrayList != null) {
-                arrayList.clear()
-                arrayList.addAll(list)
-                mAdapter!!.notifyDataSetChanged()
-                mViewBinding.mainSwipeRefreshLayout.isRefreshing = false
-            }
+            arrayList.clear()
+            arrayList.addAll(list)
+            mAdapter!!.notifyDataSetChanged()
+            mViewBinding.mainSwipeRefreshLayout.finishRefresh(true)
+        }
+    }
+
+    override fun syncBookShelfError(str: String?) {
+        if(mViewBinding.mainSwipeRefreshLayout.isRefreshing){
+            mViewBinding.mainSwipeRefreshLayout.finishRefresh(false)
+        }
+        if (str != null) {
+            Toasty.error(applicationContext, str,Toast.LENGTH_SHORT,true).show()
         }
     }
 
@@ -287,7 +296,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
 
     override fun onDestroy() {
         super.onDestroy()
-        arrayList!!.clear()
+        arrayList.clear()
         presenter_main!!.release()
     }
 

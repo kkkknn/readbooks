@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -26,14 +27,14 @@ public class Model_Search extends BaseModel  {
 
     @Subscribe
     public void syncProgress(SearchEvent event) {
-        switch (event.message){
+        switch (event.getMessage()){
             case SEARCH_BOOK:
                 //搜索图书
-                searchBook(event.keyWord,
-                        event.pageCount,
-                        event.pageSize,
-                        event.accountId,
-                        event.token);
+                searchBook(event.getKeyWord(),
+                        event.getPageCount(),
+                        event.getPageSize(),
+                        event.getAccountId(),
+                        event.getToken());
                 break;
         }
 
@@ -51,7 +52,7 @@ public class Model_Search extends BaseModel  {
                 .addHeader("accountId",Integer.toString(account_id))
                 .addHeader("token",token)
                 .build();
-        HttpUtil.getInstance().post(request, new Callback() {
+        Objects.requireNonNull(HttpUtil.Companion.getInstance()).post(request, new Callback() {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
@@ -60,7 +61,7 @@ public class Model_Search extends BaseModel  {
                     JSONObject jsonObject=new JSONObject(response.body().string());
                     String code=jsonObject.getString("code");
                     String data=jsonObject.getString("data");
-                    if(StringUtil.isEmpty(code)){
+                    if(StringUtil.INSTANCE.isEmpty(code)){
                         getCallBack().onError(-1,"网络请求错误");
                         return;
                     }

@@ -4,23 +4,15 @@ import android.content.Context;
 
 import com.kkkkkn.readbooks.model.BaseModel;
 import com.kkkkkn.readbooks.model.Model_BookInfo;
-import com.kkkkkn.readbooks.model.Model_Login;
-import com.kkkkkn.readbooks.model.Model_Main;
 import com.kkkkkn.readbooks.model.entity.AccountInfo;
-import com.kkkkkn.readbooks.model.entity.BookInfo;
 import com.kkkkkn.readbooks.model.entity.ChapterInfo;
-import com.kkkkkn.readbooks.util.StringUtil;
 import com.kkkkkn.readbooks.util.eventBus.EventMessage;
 import com.kkkkkn.readbooks.util.eventBus.events.BookInfoEvent;
 import com.kkkkkn.readbooks.view.view.BookInfoActivityView;
-import com.kkkkkn.readbooks.view.view.LoginActivityView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Presenter_Info extends BasePresenter implements BaseModel.CallBack {
     private BookInfoActivityView bookInfoActivityView;
@@ -44,8 +36,8 @@ public class Presenter_Info extends BasePresenter implements BaseModel.CallBack 
         EventBus.getDefault().post(
                 new BookInfoEvent(
                         EventMessage.ADD_BOOK,
-                        accountInfo.getAccount_token(),
-                        accountInfo.getAccount_id(),
+                        accountInfo.getAccountToken(),
+                        accountInfo.getAccountId(),
                         book_id));
     }
 
@@ -65,8 +57,8 @@ public class Presenter_Info extends BasePresenter implements BaseModel.CallBack 
         EventBus.getDefault().post(
                 new BookInfoEvent(
                         EventMessage.GET_BOOK_CHAPTER_LIST,
-                        accountInfo.getAccount_token(),
-                        accountInfo.getAccount_id(),
+                        accountInfo.getAccountToken(),
+                        accountInfo.getAccountId(),
                         bookid,
                         PAGE_SIZE,
                         (size/PAGE_SIZE)+1));

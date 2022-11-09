@@ -1,13 +1,11 @@
 package com.kkkkkn.readbooks.view.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kkkkkn.readbooks.R
+import com.gyf.immersionbar.ImmersionBar
 import com.kkkkkn.readbooks.databinding.ActivityBookInfoBinding
 import com.kkkkkn.readbooks.model.adapter.BookChaptersAdapter
 import com.kkkkkn.readbooks.model.entity.BookInfo
@@ -15,13 +13,14 @@ import com.kkkkkn.readbooks.model.entity.ChapterInfo
 import com.kkkkkn.readbooks.presenter.Presenter_Info
 import com.kkkkkn.readbooks.util.ImageUtil
 import com.kkkkkn.readbooks.view.view.BookInfoActivityView
+import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener
 import es.dmoral.toasty.Toasty
 
 class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivityView {
     private var bookInfo: BookInfo? = null
     private val chapterList: ArrayList<ChapterInfo> = ArrayList()
     private var chaptersAdapter: BookChaptersAdapter? = null
-    private var isEnd = false
     private var presenterInfo: Presenter_Info? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,28 +39,43 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
         mViewBinding.bookInfoAuthorName.text = bookInfo!!.authorName
         mViewBinding.bookInfoBookName.text = bookInfo!!.bookName
         mViewBinding.bookInfoBookAbout.text = bookInfo!!.bookAbout
-        ImageUtil.loadImage(
-            bookInfo!!.bookImgUrl,
-            applicationContext, mViewBinding.bookInfoBookImg
-        )
+        bookInfo!!.bookImgUrl?.let {
+            ImageUtil.loadImage(
+                it,
+                applicationContext, mViewBinding.bookInfoBookImg
+            )
+        }
         //发送获取图书章节列表
         presenterInfo!!.getBookChapters(chapterList.size, bookInfo!!.bookId)
     }
 
     //初始化绑定控件
     private fun initView() {
+        mViewBinding.infoChapterRefresh.setOnLoadMoreListener(object :OnLoadMoreListener{
+
+            override fun onLoadMore(refreshLayout: RefreshLayout) {
+                //发送获取图书章节列表
+                presenterInfo!!.getBookChapters(chapterList.size, bookInfo!!.bookId)
+            }
+
+        })
+        
         //绑定控件
-        chaptersAdapter = BookChaptersAdapter(chapterList, applicationContext)
+        chaptersAdapter = BookChaptersAdapter(chapterList, this)
         mViewBinding.bookInfoChaptersListView.layoutManager= LinearLayoutManager(this)
         mViewBinding.bookInfoChaptersListView.adapter = chaptersAdapter
         //章节点击跳转
-        chaptersAdapter!!.setItemOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable("chapterInfo", chapterList[it])
-            bundle.putSerializable("bookInfo", bookInfo)
-            Log.i(tag, "initView: 开始跳转 chapterInfo "+chapterList[it].chapter_path+" bookInfo "+bookInfo.toString())
-            toBrowsingActivity(bundle)
-        }
+        chaptersAdapter!!.setItemOnClickListener(object :BookChaptersAdapter.ItemOnClickListener{
+            override fun onItemClick(position: Int) {
+                val bundle = Bundle()
+                bundle.putSerializable("chapterInfo", chapterList[position])
+                bundle.putSerializable("bookInfo", bookInfo)
+                Log.i(tag, "initView: 开始跳转 chapterInfo "+chapterList[position].chapterPath+" bookInfo "+bookInfo.toString())
+                toBrowsingActivity(bundle)
+            }
+
+        })
+
         //跳转到浏览界面，从第一章开始阅读
         mViewBinding.btnStartRead.setOnClickListener {
             val bundle = Bundle()
@@ -80,13 +94,17 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
 
     override fun syncChapterList(arrayList: ArrayList<ChapterInfo>) {
         runOnUiThread {
-            if (arrayList.size < presenterInfo!!.pageSize) {
-                isEnd = true
+            if(mViewBinding.infoChapterRefresh.isLoading){
+                //判断已无更多数据加载
+                if (arrayList.size < presenterInfo!!.pageSize) {
+                    mViewBinding.infoChapterRefresh.finishLoadMoreWithNoMoreData()
+                }else{
+                    mViewBinding.infoChapterRefresh.finishLoadMore(true)
+                }
             }
-            mViewBinding.loadingView.visibility = View.GONE
+            val start=chapterList.size
             chapterList.addAll(arrayList)
-
-            mViewBinding.bookInfoChaptersListView.adapter?.notifyDataSetChanged()
+            mViewBinding.bookInfoChaptersListView.adapter?.notifyItemRangeChanged(start,chapterList.size)
         }
     }
 
@@ -122,4 +140,10 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
         return ActivityBookInfoBinding.inflate(layoutInflater)
     }
 
+    override fun editStatusBar(){
+        ImmersionBar.with(this)
+            .statusBarDarkFont(true)
+            .navigationBarDarkIcon(true)
+            .init()
+    }
 }
