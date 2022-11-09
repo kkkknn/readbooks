@@ -16,7 +16,7 @@ import com.kkkkkn.readbooks.databinding.ActivityBookBrowsingBinding
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf
 import com.kkkkkn.readbooks.model.entity.BookInfo
 import com.kkkkkn.readbooks.model.entity.ChapterInfo
-import com.kkkkkn.readbooks.presenter.Presenter_Browsing
+import com.kkkkkn.readbooks.presenter.PresenterBrowsing
 import com.kkkkkn.readbooks.view.customView.BrowsingView.FlushType
 import com.kkkkkn.readbooks.view.customView.LoadingDialog
 import com.kkkkkn.readbooks.view.customView.SettingDialog
@@ -32,7 +32,7 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
     private var progressDialog: ProgressDialog? = null
     private var loadingDialog: LoadingDialog? = null
     private var bookInfo: BookInfo? = null
-    private var presenterBrowsing: Presenter_Browsing? = null
+    private var presenterBrowsing: PresenterBrowsing? = null
     private var flushType = FlushType.FLUSH_PAGE
     private var settingConf: SettingConf? = null
 
@@ -126,7 +126,7 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
 
 
 
-        presenterBrowsing = Presenter_Browsing(applicationContext, this)
+        presenterBrowsing = PresenterBrowsing(applicationContext, this)
         presenterBrowsing!!.init()
 
         //读取默认配置信息
@@ -144,7 +144,6 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
         bookInfo = bundle.getSerializable("bookInfo") as BookInfo?
         val chapterInfo = bundle.getSerializable("chapterInfo") as ChapterInfo?
 
-        Log.i(TAG, "onCreate: "+ chapterInfo!!.chapterName)
 
         if (bookInfo == null) {
             //无图书信息，直接退出

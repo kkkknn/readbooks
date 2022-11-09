@@ -10,7 +10,7 @@ import com.kkkkkn.readbooks.databinding.ActivityBookInfoBinding
 import com.kkkkkn.readbooks.model.adapter.BookChaptersAdapter
 import com.kkkkkn.readbooks.model.entity.BookInfo
 import com.kkkkkn.readbooks.model.entity.ChapterInfo
-import com.kkkkkn.readbooks.presenter.Presenter_Info
+import com.kkkkkn.readbooks.presenter.PresenterInfo
 import com.kkkkkn.readbooks.util.ImageUtil
 import com.kkkkkn.readbooks.view.view.BookInfoActivityView
 import com.scwang.smart.refresh.layout.api.RefreshLayout
@@ -21,12 +21,12 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
     private var bookInfo: BookInfo? = null
     private val chapterList: ArrayList<ChapterInfo> = ArrayList()
     private var chaptersAdapter: BookChaptersAdapter? = null
-    private var presenterInfo: Presenter_Info? = null
+    private var presenterInfo: PresenterInfo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
-        presenterInfo = Presenter_Info(applicationContext, this)
+        presenterInfo = PresenterInfo(applicationContext, this)
         presenterInfo!!.init()
 
         //查找图书信息是否存在
@@ -51,6 +51,8 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
 
     //初始化绑定控件
     private fun initView() {
+        //关闭下拉刷新
+        mViewBinding.infoChapterRefresh.setEnableRefresh(false)
         mViewBinding.infoChapterRefresh.setOnLoadMoreListener(object :OnLoadMoreListener{
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -92,18 +94,18 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
 
     }
 
-    override fun syncChapterList(arrayList: ArrayList<ChapterInfo>) {
+    override fun syncChapterList(linkedList: ArrayList<ChapterInfo>) {
         runOnUiThread {
             if(mViewBinding.infoChapterRefresh.isLoading){
                 //判断已无更多数据加载
-                if (arrayList.size < presenterInfo!!.pageSize) {
+                if (linkedList.size < presenterInfo!!.pageSize) {
                     mViewBinding.infoChapterRefresh.finishLoadMoreWithNoMoreData()
                 }else{
                     mViewBinding.infoChapterRefresh.finishLoadMore(true)
                 }
             }
             val start=chapterList.size
-            chapterList.addAll(arrayList)
+            chapterList.addAll(linkedList)
             mViewBinding.bookInfoChaptersListView.adapter?.notifyItemRangeChanged(start,chapterList.size)
         }
     }

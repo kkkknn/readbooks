@@ -3,32 +3,27 @@ package com.kkkkkn.readbooks.view.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.AbsListView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.HeaderViewListAdapter
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.databinding.ActivitySearchBinding
 import com.kkkkkn.readbooks.model.adapter.SearchBookResultAdapter
 import com.kkkkkn.readbooks.model.entity.BookInfo
-import com.kkkkkn.readbooks.presenter.Presenter_Search
+import com.kkkkkn.readbooks.presenter.PresenterSearch
 import com.kkkkkn.readbooks.view.view.SearchActivityView
 import com.mancj.materialsearchbar.MaterialSearchBar
 import es.dmoral.toasty.Toasty
 
 class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView {
     private val arrayList: ArrayList<BookInfo> = ArrayList()
-    private var presenterSearch: Presenter_Search? = null
+    private var presenterSearch: PresenterSearch? = null
     private var searchStr: String? = null
     private var isEnd = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initView()
-        presenterSearch = Presenter_Search(applicationContext, this)
+        presenterSearch = PresenterSearch(applicationContext, this)
         presenterSearch!!.init()
     }
 

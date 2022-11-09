@@ -7,16 +7,15 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
 import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.databinding.ActivityRegisterBinding
-import com.kkkkkn.readbooks.presenter.Presenter_Register
+import com.kkkkkn.readbooks.presenter.PresenterRegister
 import com.kkkkkn.readbooks.view.view.RegisterActivityView
 import es.dmoral.toasty.Toasty
 import java.util.*
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>(), RegisterActivityView {
-    private var presenterRegister: Presenter_Register? = null
+    private var presenterRegister: PresenterRegister? = null
     private var cacheAccount: String? = null
     private var cachePassword: String? = null
     private val onFocusChangeListener =
@@ -44,7 +43,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(), RegisterActivi
         super.onCreate(savedInstanceState)
 
         initView()
-        presenterRegister = Presenter_Register(applicationContext, this)
+        presenterRegister = PresenterRegister(applicationContext, this)
         presenterRegister!!.init()
     }
 

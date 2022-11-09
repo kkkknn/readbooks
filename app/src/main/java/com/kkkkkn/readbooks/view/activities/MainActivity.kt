@@ -22,7 +22,7 @@ import com.kkkkkn.readbooks.databinding.ActivityMainBinding
 import com.kkkkkn.readbooks.model.adapter.BookShelfAdapter
 import com.kkkkkn.readbooks.model.entity.AnimationConfig
 import com.kkkkkn.readbooks.model.entity.BookInfo
-import com.kkkkkn.readbooks.presenter.Presenter_Main
+import com.kkkkkn.readbooks.presenter.PresenterMain
 import com.kkkkkn.readbooks.util.StringUtil
 import com.kkkkkn.readbooks.view.customView.UpdateDialog
 import com.kkkkkn.readbooks.view.customView.UpdateDialog.OnClickBottomListener
@@ -36,7 +36,7 @@ import java.io.File
 class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
     private var lastBackClick: Long = 0
     private val arrayList: ArrayList<BookInfo> = ArrayList()
-    private var presenter_main: Presenter_Main? = null
+    private var presenter_main: PresenterMain? = null
     private var mAdapter: BookShelfAdapter? = null
     private var updateDialog: UpdateDialog? = null
     private var loginActivityResultLauncher: ActivityResultLauncher<Intent>? = null
@@ -51,21 +51,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
         ) { result ->
             val resultCode = result.resultCode
             if (resultCode == RESULT_OK) {
-                presenter_main!!.getBookShelfList()
+                presenter_main!!.bookShelfList
                 presenter_main!!.checkUpdate()
             }
         }
-        presenter_main = Presenter_Main(applicationContext, this)
+        presenter_main = PresenterMain(applicationContext, this)
         presenter_main!!.init()
 
         //申请权限
         //checkPermission();
-        val info = presenter_main!!.token
+        val info = presenter_main!!.accountInfo
         if (info.accountToken!!.isEmpty() || info.accountId == 0) {
             toLoginActivity()
         } else {
             tv_userName!!.text = info.accountName
-            presenter_main!!.getBookShelfList()
+            presenter_main!!.bookShelfList
             presenter_main!!.checkUpdate()
         }
     }
@@ -80,8 +80,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
             }
         }
         mViewBinding.mainSearchButton.setOnClickListener { toSearchActivity() }
-
-        mViewBinding.mainSwipeRefreshLayout.setOnRefreshListener { presenter_main!!.getBookShelfList() }
+        //禁止加载更多
+        mViewBinding.mainSwipeRefreshLayout.setEnableLoadMore(false)
+        mViewBinding.mainSwipeRefreshLayout.setOnRefreshListener { presenter_main!!.bookShelfList }
 
         if (mViewBinding.mainBooksGridView.adapter == null) {
             mAdapter = BookShelfAdapter(arrayList, this)

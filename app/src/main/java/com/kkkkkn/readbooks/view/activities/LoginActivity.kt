@@ -13,14 +13,14 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.databinding.ActivityLoginBinding
-import com.kkkkkn.readbooks.presenter.Presenter_Login
+import com.kkkkkn.readbooks.presenter.PresenterLogin
 import com.kkkkkn.readbooks.view.view.LoginActivityView
 import es.dmoral.toasty.Toasty
 import java.util.*
 
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginActivityView {
-    private var presenterLogin: Presenter_Login? = null
+    private var presenterLogin: PresenterLogin? = null
     private var lastBackClick: Long = 0
     private var regActivityResultLauncher: ActivityResultLauncher<Intent>? = null
 
@@ -40,7 +40,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginActivityView {
                 mViewBinding.editAccountPassword.setText(password)
             }
         }
-        presenterLogin = Presenter_Login(applicationContext, this)
+        presenterLogin = PresenterLogin(applicationContext, this)
         presenterLogin!!.init()
     }
 
@@ -116,7 +116,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginActivityView {
 
     override fun flushEditView() {
         if (presenterLogin != null) {
-            val info = presenterLogin!!.accountCache
+            val info = presenterLogin!!.accountInfo
             mViewBinding.editAccountName.setText(info.accountName)
             mViewBinding.editAccountPassword.setText(info.accountPassword)
         }

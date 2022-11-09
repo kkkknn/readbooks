@@ -54,7 +54,7 @@ object ChapterUtil {
     }
 
     //读取缓存的章节文字
-    fun readCacheChapter(path: String, fileName: String?, chapterName: String?): Array<String>? {
+    fun readCacheChapter(path: String, fileName: String?, chapterName: String?): Array<String?>? {
         if (fileName==null||fileName.isEmpty()||chapterName==null||chapterName.isEmpty()) {
             Log.e(TAG, "cacheChapter: 入参为空")
             return null
