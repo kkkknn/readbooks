@@ -43,7 +43,11 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
 
         })
 
-        //mViewBinding.searchView.requestEdit()
+        mViewBinding.toolbar.setNavigationOnClickListener {
+            //返回上级页面
+            finish()
+        }
+
         mViewBinding.searchView.setOnSearchActionListener(object :
             MaterialSearchBar.OnSearchActionListener {
             override fun onSearchStateChanged(enabled: Boolean) {
@@ -89,7 +93,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
         startActivity(intent)
     }
 
-    override fun syncBookList(list: ArrayList<BookInfo>) {
+    override fun syncBookList(arrayList: ArrayList<BookInfo>) {
         runOnUiThread {
             /*if (list.size < presenterSearch!!.pageSize) {
                 isEnd = true
@@ -98,9 +102,10 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
                 mViewBinding.searchListView.visibility = View.VISIBLE
             }
             //增量更新
-            val start=arrayList.size
-            arrayList.addAll(list)
-            mViewBinding.searchListView.adapter?.notifyItemRangeInserted(start,list.size)
+            for(i in 0 until arrayList.size){
+                this.arrayList.add(arrayList[i])
+                mViewBinding.searchListView.adapter?.notifyItemInserted(arrayList.size)
+            }
             //回到顶部
             mViewBinding.searchListView.scrollToPosition(0)
         }

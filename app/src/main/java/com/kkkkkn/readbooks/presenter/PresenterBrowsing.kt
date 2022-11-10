@@ -139,8 +139,8 @@ class PresenterBrowsing(
             1002 -> {
                 //写入读取到的章节缓存
                 val jsonObject = `object` as JSONObject
-                var jsonArray: JSONArray? = null
-                var chapterUrl: String? = null
+                val jsonArray: JSONArray?
+                val chapterUrl: String?
                 try {
                     chapterUrl = jsonObject.getString("url")
                     jsonArray = jsonObject.getJSONArray("data")

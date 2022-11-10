@@ -66,6 +66,9 @@ dependencies {
     //ImmersionBar 沉浸式状态栏 基础依赖包，必须要依赖
     implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
 
+    //CircleImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
     //jetpack 相关
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"

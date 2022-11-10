@@ -3,13 +3,13 @@
     <item android:state_pressed="true">
         <shape>
             <solid android:color="#9CB3BA" />   <!--边框内容背景颜色-->
-            <corners android:bottomRightRadius="8dp"/>
+            <corners android:topRightRadius="20dp" android:bottomRightRadius="20dp"/>
         </shape>
     </item>
     <item android:state_pressed="false">
         <shape>
-            <solid android:color="#CCE8EB38" />   <!--边框内容背景颜色-->
-            <corners android:bottomRightRadius="8dp"/>
+            <solid android:color="#CCFFCC" />   <!--边框内容背景颜色-->
+            <corners android:topRightRadius="20dp"  android:bottomRightRadius="20dp"/>
         </shape>
     </item>
 </selector>

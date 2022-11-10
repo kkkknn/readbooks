@@ -7,6 +7,7 @@
     android:orientation="vertical"
     tools:context=".view.activities.BookInfoActivity">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayoutInfo"
         android:layout_width="match_parent"
@@ -20,36 +21,38 @@
             android:id="@+id/bookInfo_bookImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:maxWidth="110dp"
             android:maxHeight="330dp"
             android:minWidth="100dp"
             android:minHeight="150dp"
-            app:layout_constraintStart_toStartOf="@id/linearLayoutInfo"
-            app:layout_constraintTop_toTopOf="@+id/linearLayoutInfo" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/bookInfo_bookName"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:padding="10dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:padding="5dp"
             android:text="图书名字"
             android:textAlignment="textStart"
             android:textColor="@color/text_content"
             android:textSize="16sp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/linearLayoutInfo"
-            app:layout_constraintStart_toEndOf="@+id/bookInfo_bookImg"
-            tools:layout_editor_absoluteY="19dp" />
+            app:layout_constraintStart_toEndOf="@+id/bookInfo_bookImg"/>
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/bookInfo_authorName"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:padding="5dp"
             android:text="作者名字"
             android:textAlignment="textStart"
             android:textSize="14sp"
@@ -74,29 +77,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bookInfo_bookImg" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/info_chapterRefresh"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/bookInfo_chapters_listView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"/>
-
-        <com.scwang.smart.refresh.footer.ClassicsFooter
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -129,5 +111,35 @@
             android:textSize="12sp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_marginVertical="5dp"
+        android:padding="5dp"
+        android:text="章节目录"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/info_chapterRefresh"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bookInfo_chapters_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"/>
+
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+
 
 </androidx.appcompat.widget.LinearLayoutCompat>

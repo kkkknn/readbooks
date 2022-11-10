@@ -150,11 +150,11 @@ class ModelBrowsing : BaseModel() {
         val path = getCachePath(context!!)
         val str = getProgressString(path) ?: return 0
         //未找到进度就返回0
-        var jsonObject: JSONObject? = null
+        val jsonObject: JSONObject?
         var flag = 1
         try {
             jsonObject = JSONObject(str)
-            flag = jsonObject.getInt(Integer.toString(book_id))
+            flag = jsonObject.getInt(book_id.toString())
         } catch (e: JSONException) {
             e.printStackTrace()
         }

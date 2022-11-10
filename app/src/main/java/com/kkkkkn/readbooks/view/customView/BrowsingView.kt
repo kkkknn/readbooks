@@ -10,6 +10,7 @@ import com.kkkkkn.readbooks.R
 import com.kkkkkn.readbooks.view.activities.BookBrowsingActivity.BookCallback
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.floor
 
 class BrowsingView : View {
     //行距
@@ -34,8 +35,8 @@ class BrowsingView : View {
     private var mViewWidth = 0
 
     //控件距离
-    private var marginVertical = 0
-    private val marginHorizontal = 20
+    private var marginVertical:Float = 0f
+    private var marginHorizontal:Float = 20f
 
     //当前章节字符串
     private var contentArr: ArrayList<String> =ArrayList<String>()
@@ -92,7 +93,7 @@ class BrowsingView : View {
             mViewWidth = measuredWidth
             mViewHeight = measuredHeight
             marginVertical = getStatusBarHeight(context)
-            //textSize=(float) mViewWidth/12;
+            marginHorizontal= floor((mViewWidth%textSize.toDouble())/2).toFloat()
 
             //计算偏移量及行数，每行字数
             linePageSum =
@@ -109,6 +110,7 @@ class BrowsingView : View {
         mPaint!!.textSize = textSize
         this.textSize = textSize
         if (mViewWidth > 0 && mViewHeight > 0) {
+            marginHorizontal= floor((mViewWidth%textSize.toDouble())/2).toFloat()
             linePageSum =
                 ceil((mViewHeight - marginVertical *2) / textSize.toDouble() / rowSpace)
                     .toInt()
@@ -390,10 +392,10 @@ class BrowsingView : View {
         drawBitmap(canvas)
     }
 
-    private fun getStatusBarHeight(context: Context): Int {
-        val statusBarHeight = Math.ceil((25 * context.resources.displayMetrics.density).toDouble())
+    private fun getStatusBarHeight(context: Context): Float {
+        val statusBarHeight = ceil((25 * context.resources.displayMetrics.density).toDouble())
 
-        return statusBarHeight.toInt()
+        return statusBarHeight.toFloat()
     }
 
     fun setListener(callback: BookCallback) {

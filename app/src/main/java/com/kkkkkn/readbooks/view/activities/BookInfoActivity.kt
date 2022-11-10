@@ -1,8 +1,11 @@
 package com.kkkkkn.readbooks.view.activities
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gyf.immersionbar.ImmersionBar
@@ -39,12 +42,16 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
         mViewBinding.bookInfoAuthorName.text = bookInfo!!.authorName
         mViewBinding.bookInfoBookName.text = bookInfo!!.bookName
         mViewBinding.bookInfoBookAbout.text = bookInfo!!.bookAbout
-        bookInfo!!.bookImgUrl?.let {
-            ImageUtil.loadImage(
-                it,
-                applicationContext, mViewBinding.bookInfoBookImg
-            )
-        }
+
+        ImageUtil.loadImage(
+            bookInfo!!.bookImgUrl,
+            applicationContext, mViewBinding.bookInfoBookImg
+        )
+/*
+        ImageUtil.loadTransformImage(
+            bookInfo!!.bookImgUrl,
+            applicationContext, mViewBinding.linearLayoutInfo)*/
+
         //发送获取图书章节列表
         presenterInfo!!.getBookChapters(chapterList.size, bookInfo!!.bookId)
     }
@@ -61,7 +68,7 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
             }
 
         })
-        
+
         //绑定控件
         chaptersAdapter = BookChaptersAdapter(chapterList, this)
         mViewBinding.bookInfoChaptersListView.layoutManager= LinearLayoutManager(this)
@@ -104,9 +111,10 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
                     mViewBinding.infoChapterRefresh.finishLoadMore(true)
                 }
             }
-            val start=chapterList.size
-            chapterList.addAll(linkedList)
-            mViewBinding.bookInfoChaptersListView.adapter?.notifyItemRangeChanged(start,chapterList.size)
+            for (i in 0 until linkedList.size){
+                chapterList.add(linkedList[i])
+                mViewBinding.bookInfoChaptersListView.adapter?.notifyItemInserted(chapterList.size)
+            }
         }
     }
 
