@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.kkkkkn.readbooks.R
+import com.kkkkkn.readbooks.databinding.ActivitySearchItemBinding
 import com.kkkkkn.readbooks.model.entity.BookInfo
 import com.kkkkkn.readbooks.util.ImageUtil.loadImage
 import com.kkkkkn.readbooks.view.viewHolder.SearchBookResultAdapterViewHolder
@@ -21,9 +22,13 @@ class SearchBookResultAdapter(
         parent: ViewGroup,
         viewType: Int
     ): SearchBookResultAdapterViewHolder {
-        val view: View =
-            LayoutInflater.from(mContext).inflate(R.layout.activity_search_item, parent, false)
-        return SearchBookResultAdapterViewHolder(view, viewType)
+        val viewBinding = ActivitySearchItemBinding.inflate(LayoutInflater.from(parent.context))
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        viewBinding.root.layoutParams = layoutParams
+        return SearchBookResultAdapterViewHolder(viewBinding.root,viewType)
     }
 
     override fun onBindViewHolder(holder: SearchBookResultAdapterViewHolder, position: Int) {

@@ -93,7 +93,7 @@ class BrowsingView : View {
             mViewWidth = measuredWidth
             mViewHeight = measuredHeight
             marginVertical = getStatusBarHeight(context)
-            marginHorizontal= floor((mViewWidth%textSize.toDouble())/2).toFloat()
+            marginHorizontal= floor(((mViewWidth-(marginVertical*2))%textSize.toDouble())/2).toFloat()
 
             //计算偏移量及行数，每行字数
             linePageSum =
@@ -110,7 +110,7 @@ class BrowsingView : View {
         mPaint!!.textSize = textSize
         this.textSize = textSize
         if (mViewWidth > 0 && mViewHeight > 0) {
-            marginHorizontal= floor((mViewWidth%textSize.toDouble())/2).toFloat()
+            marginHorizontal=floor((mViewWidth-(marginVertical*2)%textSize.toDouble())/2).toFloat()
             linePageSum =
                 ceil((mViewHeight - marginVertical *2) / textSize.toDouble() / rowSpace)
                     .toInt()

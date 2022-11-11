@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.kkkkkn.readbooks.R
+import com.kkkkkn.readbooks.databinding.ActivityBookInfoChapterItemBinding
+import com.kkkkkn.readbooks.databinding.ActivitySearchItemBinding
 import com.kkkkkn.readbooks.model.entity.ChapterInfo
 import com.kkkkkn.readbooks.view.viewHolder.BookChaptersAdapterViewHolder
+import com.kkkkkn.readbooks.view.viewHolder.SearchBookResultAdapterViewHolder
 
 class BookChaptersAdapter(
     private val chapterList: ArrayList<ChapterInfo>,
@@ -18,9 +21,14 @@ class BookChaptersAdapter(
         parent: ViewGroup,
         viewType: Int
     ): BookChaptersAdapterViewHolder {
-        val view = LayoutInflater.from(mContext)
-            .inflate(R.layout.activity_book_info_chapter_item, parent, false)
-        return BookChaptersAdapterViewHolder(view, viewType)
+
+        val viewBinding = ActivityBookInfoChapterItemBinding.inflate(LayoutInflater.from(parent.context))
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        viewBinding.root.layoutParams = layoutParams
+        return BookChaptersAdapterViewHolder(viewBinding.root,viewType)
     }
 
     override fun onBindViewHolder(holder: BookChaptersAdapterViewHolder, position: Int) {
