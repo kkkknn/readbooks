@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.*
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.Toast
+import android.widget.Toast.makeText
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -56,7 +57,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
             }
         }
         presenter_main = PresenterMain(applicationContext, this)
-        presenter_main!!.init()
 
         //申请权限
         //checkPermission();
@@ -110,7 +110,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
             } else {
                 //500ms以上，弹窗不处理
                 lastBackClick = nowBackClick
-                Toast.makeText(applicationContext, "请再按一次以退出程序", Toast.LENGTH_SHORT).show()
+                Toasty.warning(applicationContext,"请再按一次以退出程序", Toast.LENGTH_SHORT,false).show()
             }
             return false
         }
@@ -298,7 +298,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), MainActivityView {
     override fun onDestroy() {
         super.onDestroy()
         arrayList.clear()
-        presenter_main!!.release()
     }
 
     override fun showMsgDialog(type: Int, msg: String) {}

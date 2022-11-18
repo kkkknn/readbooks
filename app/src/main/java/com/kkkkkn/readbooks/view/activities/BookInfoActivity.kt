@@ -30,7 +30,6 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
         super.onCreate(savedInstanceState)
         initView()
         presenterInfo = PresenterInfo(applicationContext, this)
-        presenterInfo!!.init()
 
         //查找图书信息是否存在
         bookInfo = intent.getSerializableExtra("bookInfo") as BookInfo?
@@ -141,9 +140,6 @@ class BookInfoActivity : BaseActivity<ActivityBookInfoBinding>(), BookInfoActivi
     override fun onDestroy() {
         super.onDestroy()
         chapterList.clear()
-        if (presenterInfo != null) {
-            presenterInfo!!.release()
-        }
     }
 
     override fun getViewBinding(): ActivityBookInfoBinding {

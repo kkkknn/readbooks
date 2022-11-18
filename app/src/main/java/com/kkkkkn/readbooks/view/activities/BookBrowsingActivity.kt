@@ -17,7 +17,7 @@ import com.kkkkkn.readbooks.model.clientsetting.SettingConf
 import com.kkkkkn.readbooks.model.entity.BookInfo
 import com.kkkkkn.readbooks.model.entity.ChapterInfo
 import com.kkkkkn.readbooks.presenter.PresenterBrowsing
-import com.kkkkkn.readbooks.view.customView.BrowsingView.FlushType
+import com.kkkkkn.readbooks.view.customView.flipping.BrowsingView.FlushType
 import com.kkkkkn.readbooks.view.customView.LoadingDialog
 import com.kkkkkn.readbooks.view.customView.SettingDialog
 import com.kkkkkn.readbooks.view.view.BrowsingActivityView
@@ -127,7 +127,6 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
 
 
         presenterBrowsing = PresenterBrowsing(applicationContext, this)
-        presenterBrowsing!!.init()
 
         //读取默认配置信息
         settingConf = presenterBrowsing!!.loadConfig()
@@ -266,9 +265,6 @@ class BookBrowsingActivity : BaseActivity<ActivityBookBrowsingBinding>(), Browsi
             //写入当前浏览记录到数据库
             val info = chapterList[chapterCount]
             presenterBrowsing!!.setBookProgress(bookInfo!!.bookId, info.chapterNum)
-        }
-        if (presenterBrowsing != null) {
-            presenterBrowsing!!.release()
         }
         //取消注册静态广播
         //unregisterReceiver(broadcastReceiver);

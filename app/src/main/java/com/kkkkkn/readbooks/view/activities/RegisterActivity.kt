@@ -44,7 +44,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(), RegisterActivi
 
         initView()
         presenterRegister = PresenterRegister(applicationContext, this)
-        presenterRegister!!.init()
     }
 
     private fun initView() {
@@ -176,10 +175,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(), RegisterActivi
         cachePassword = null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenterRegister!!.release()
-    }
 
     override fun getViewBinding(): ActivityRegisterBinding {
         return ActivityRegisterBinding.inflate(layoutInflater)

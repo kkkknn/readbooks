@@ -5,13 +5,8 @@ import android.util.Base64
 import android.util.Log
 import com.kkkkkn.readbooks.model.clientsetting.SettingConf
 import com.kkkkkn.readbooks.model.entity.ChapterInfo
-import com.kkkkkn.readbooks.util.ServerConfig
 import com.kkkkkn.readbooks.util.StringUtil.isEmpty
-import com.kkkkkn.readbooks.util.eventBus.EventMessage
-import com.kkkkkn.readbooks.util.eventBus.events.BrowsingEvent
-import com.kkkkkn.readbooks.util.network.HttpUtil.Companion.instance
-import okhttp3.*
-import org.greenrobot.eventbus.Subscribe
+import com.kkkkkn.readbooks.util.network.retrofit.RetrofitUtil
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -19,24 +14,6 @@ import java.io.*
 import java.util.*
 
 class ModelBrowsing : BaseModel() {
-    @Subscribe
-    fun syncProgress(event: BrowsingEvent) {
-        when (event.message) {
-            EventMessage.GET_BOOK_CHAPTER_LIST -> getChapterList(
-                event.bookId,
-                event.pageCount,
-                event.pageSize,
-                event.accountId,
-                event.token
-            )
-            EventMessage.GET_CHAPTER_CONTENT -> getChapterContent(
-                event.accountId,
-                event.token,
-                event.path
-            )
-            else -> {}
-        }
-    }
 
     /**
      * 获取指定章节内容
@@ -44,44 +21,43 @@ class ModelBrowsing : BaseModel() {
      * @param token 用户token
      * @param path  章节存储路径
      */
-    private fun getChapterContent(accountId: Int, token: String, path: String?) {
-        val formBody = FormBody.Builder()
-        if (path != null) {
-            formBody.add("chapter_path", path)
+    fun getChapterContent(accountId: Int, token: String, path: String?): JSONObject {
+        val retJsonObject: JSONObject = JSONObject()
+
+        if (path == null) {
+            retJsonObject.put("status", false)
+            retJsonObject.put("data", "目录为空，请求错误")
+            return retJsonObject
         }
-        val request: Request = Request.Builder()
-            .url(ServerConfig.IP + ServerConfig.getChapterContent)
-            .addHeader("accountId", accountId.toString())
-            .addHeader("token", token)
-            .post(formBody.build()) //传递请求体
-            .build()
-        instance?.post(request, object : Callback {
-            @Throws(IOException::class)
-            override fun onResponse(call: Call, response: Response) {
-                val retStr = response.body!!.string()
-                try {
-                    val retJson = JSONObject(retStr)
-                    when (retJson.getString("code")) {
-                        "success" -> {
-                            retJson.put("url", path)
-                            callBack!!.onSuccess(1002, retJson)
-                        }
-                        "error" -> {
-                            callBack!!.onError(-1002, retJson["data"] as String)
-                        }
-                        else -> {
-                            callBack!!.onError(-1, "请求失败")
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
+
+        val response = RetrofitUtil.instance.service.getChapterContent(
+            accountId.toString(),
+            token,
+            path.toString()
+        ).execute()
+
+        if (response.isSuccessful) {
+            val retJson = JSONObject(response.body()!!.string())
+            when (retJson.getString("code")) {
+                "success" -> {
+                    retJsonObject.put("status", true)
+                    retJsonObject.put("data", retJson.getString("data"))
+                    retJsonObject.put("url", path)
+                }
+                "error" -> {
+                    retJsonObject.put("status", false)
+                    retJsonObject.put("data", retJson.getString("data"))
+                }
+                else -> {
+                    retJsonObject.put("status", false)
+                    retJsonObject.put("data", "解析错误")
                 }
             }
-
-            override fun onFailure(call: Call, e: IOException) {
-                callBack!!.onError(-1, "请求失败")
-            }
-        })
+        } else {
+            retJsonObject.put("status", false)
+            retJsonObject.put("data", "网络请求失败")
+        }
+        return retJsonObject
     }
 
     /**
@@ -92,58 +68,51 @@ class ModelBrowsing : BaseModel() {
      * @param account_id    用户ID
      * @param token     用户token
      */
-    private fun getChapterList(
+    fun getChapterList(
         book_id: Int,
         page_count: Int,
         page_size: Int,
         account_id: Int,
         token: String
-    ) {
-        val formBody = FormBody.Builder()
-        formBody.add("bookId", book_id.toString())
-        formBody.add("pageCount", page_count.toString())
-        formBody.add("pageSize", page_size.toString())
-        val request: Request = Request.Builder()
-            .url(ServerConfig.IP + ServerConfig.getChapterList)
-            .addHeader("accountId", account_id.toString())
-            .addHeader("token", token)
-            .post(formBody.build()) //传递请求体
-            .build()
-        instance?.post(request, object : Callback {
-            @Throws(IOException::class)
-            override fun onResponse(call: Call, response: Response) {
-                val retStr = response.body!!.string()
-                try {
-                    val retJson = JSONObject(retStr)
-                    val retCode = retJson.getString("code")
-                    val retData = retJson.getString("data")
-                    when (retCode) {
-                        "success" -> {
-                            //解析返回值
-                            val jsonArray = JSONArray(retData)
-                            val arrayList = ArrayList<ChapterInfo>()
-                            for (i in 0 until jsonArray.length()) {
-                                val chapterInfo = ChapterInfo(jsonArray[i])
-                                arrayList.add(chapterInfo)
-                            }
-                            callBack!!.onSuccess(1001, arrayList)
-                        }
-                        "error" -> {
-                            callBack!!.onError(-1001, retData)
-                        }
-                        else -> {
-                            callBack!!.onError(-1, "请求失败")
-                        }
+    ): JSONObject {
+        val jsonObject: JSONObject = JSONObject()
+
+        val response = RetrofitUtil.instance.service.getChapterList(
+            account_id.toString(),
+            token,
+            book_id.toString(),
+            page_count.toString(),
+            page_size.toString()
+        ).execute()
+
+        if (response.isSuccessful) {
+            val retJson = JSONObject(response.body()!!.string())
+            when (retJson.getString("code")) {
+                "success" -> {
+                    //解析返回值
+                    val jsonArray = JSONArray(retJson.getString("data"))
+                    val arrayList = ArrayList<ChapterInfo>()
+                    for (i in 0 until jsonArray.length()) {
+                        val chapterInfo = ChapterInfo(jsonArray[i])
+                        arrayList.add(chapterInfo)
                     }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
+                    jsonObject.put("status", true)
+                    jsonObject.put("data", arrayList)
+                }
+                "error" -> {
+                    jsonObject.put("status", false)
+                    jsonObject.put("data", retJson.getString("data"))
+                }
+                else -> {
+                    jsonObject.put("status", false)
+                    jsonObject.put("data", "解析错误")
                 }
             }
-
-            override fun onFailure(call: Call, e: IOException) {
-                callBack!!.onError(-1, "请求失败")
-            }
-        })
+        } else {
+            jsonObject.put("status", false)
+            jsonObject.put("data", "网络请求失败")
+        }
+        return jsonObject
     }
 
     fun getReadProgress(book_id: Int, context: Context?): Int {
@@ -166,7 +135,7 @@ class ModelBrowsing : BaseModel() {
         val str = getProgressString(path)
         var jsonObject: JSONObject? = null
         try {
-            jsonObject = if (str==null) {
+            jsonObject = if (str == null) {
                 JSONObject()
             } else {
                 JSONObject(str)

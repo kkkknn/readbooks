@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.view.customView
+package com.kkkkkn.readbooks.view.customView.flipping
 
 import android.content.Context
 import android.graphics.*
@@ -125,7 +125,7 @@ class BrowsingView : View {
         val canvas = Canvas()
         //根据行数创建字符串数组 每页
         val line_list = LinkedList<String>()
-        for (s in contentArr!!) {
+        for (s in contentArr) {
             //压缩行首空格 4个为2个
             //s= StringUtil.Text2Indent(s);
             val ss = FloatArray(s.length)

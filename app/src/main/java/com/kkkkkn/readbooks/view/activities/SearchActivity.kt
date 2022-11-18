@@ -18,13 +18,11 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
     private val arrayList: ArrayList<BookInfo> = ArrayList()
     private var presenterSearch: PresenterSearch? = null
     private var searchStr: String? = null
-    private var isEnd = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initView()
         presenterSearch = PresenterSearch(applicationContext, this)
-        presenterSearch!!.init()
     }
 
 
@@ -84,7 +82,6 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(), SearchActivityView
         super.onDestroy()
         mViewBinding.searchView.visibility = View.VISIBLE
         arrayList.clear()
-        presenterSearch!!.release()
     }
 
     private fun toBrowsingActivity(bookInfo: BookInfo) {

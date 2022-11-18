@@ -1,12 +1,11 @@
 package com.kkkkkn.readbooks.util
 
 import android.content.Context
-import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.kkkkkn.readbooks.util.network.ServerConfig
 
 
 object ImageUtil {

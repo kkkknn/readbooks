@@ -6,14 +6,6 @@ import com.kkkkkn.readbooks.model.entity.AccountInfo
 
 open class BasePresenter(val context: Context, val baseModel: BaseModel) {
 
-    fun init() {
-        baseModel.register()
-    }
-
-    fun release() {
-        baseModel.unregister()
-    }
-
     /**
      * 获取当前用户token及用户id
      * @return 用户对象

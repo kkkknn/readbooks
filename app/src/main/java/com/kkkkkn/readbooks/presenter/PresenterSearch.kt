@@ -2,23 +2,17 @@ package com.kkkkkn.readbooks.presenter
 
 import android.content.Context
 import android.util.Log
-import com.kkkkkn.readbooks.model.BaseModel
 import com.kkkkkn.readbooks.model.ModelSearch
 import com.kkkkkn.readbooks.model.entity.AccountInfo
 import com.kkkkkn.readbooks.model.entity.BookInfo
 import com.kkkkkn.readbooks.util.StringUtil.isEmpty
-import com.kkkkkn.readbooks.util.eventBus.EventMessage
-import com.kkkkkn.readbooks.util.eventBus.events.SearchEvent
 import com.kkkkkn.readbooks.view.view.SearchActivityView
-import org.greenrobot.eventbus.EventBus
+import kotlinx.coroutines.*
+import org.json.JSONObject
 
 class PresenterSearch(context: Context?, private val searchActivityView: SearchActivityView) :
-    BasePresenter(context!!, ModelSearch()), BaseModel.CallBack {
+    BasePresenter(context!!, ModelSearch()){
     private val modelSearch: ModelSearch = baseModel as ModelSearch
-
-    init {
-        modelSearch.setCallback(this)
-    }
 
     //根据关键字/作者搜索图书，添加到list中并展示  eventbus 发送
     fun searchBook(size: Int, str: String?) {
@@ -28,40 +22,31 @@ class PresenterSearch(context: Context?, private val searchActivityView: SearchA
         }
         val accountInfo: AccountInfo = super.accountInfo
         if (!accountInfo.isHasToken) {
-            onError(-2, "获取用户信息失败")
+            searchActivityView.toLoginActivity()
             return
         }
-        EventBus.getDefault().post(
-            SearchEvent(
-                EventMessage.SEARCH_BOOK,
-                accountInfo.accountId,
-                accountInfo.accountToken!!,
-                str!!,
-                size / PageSize + 1,
-                PageSize
-            )
-        )
-    }
-
-    override fun onSuccess(type: Int, `object`: Any) {
-        when (type) {
-            1 -> searchActivityView.syncBookList(`object` as ArrayList<BookInfo>)
-            else -> {}
-        }
-    }
-
-    override fun onError(type: Int, `object`: Any) {
-        when (type) {
-            -1 -> Log.i("TAG", "onError: $`object`")
-            -2 -> {
-                val str = `object` as String
-                Log.i("TAG", "onError: $`object`")
-                if (str == "令牌验证失败，请重新尝试") {
-                    searchActivityView.toLoginActivity()
-                }
+        //协程
+        val job = Job()
+        CoroutineScope(job).launch(Dispatchers.Main) {
+            var jsonObject: JSONObject
+            val result = withContext(Dispatchers.IO) {
+                jsonObject = modelSearch.searchBook(
+                    str!!,
+                    size / PageSize + 1,
+                    PageSize,
+                    accountInfo.accountId,
+                    accountInfo.accountToken!!,
+                )
             }
-            else -> {}
+            val code = jsonObject.getBoolean("status")
+            if (code) {
+                searchActivityView.syncBookList(jsonObject.get("data") as ArrayList<BookInfo>)
+            } else {
+                searchActivityView.showMsgDialog(-1,jsonObject.getString("data"))
+            }
+
         }
+
     }
 
     companion object {

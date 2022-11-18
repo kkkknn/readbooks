@@ -41,7 +41,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginActivityView {
             }
         }
         presenterLogin = PresenterLogin(applicationContext, this)
-        presenterLogin!!.init()
     }
 
     private fun initView() {
@@ -122,12 +121,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(), LoginActivityView {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (presenterLogin != null) {
-            presenterLogin!!.release()
-        }
-    }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {

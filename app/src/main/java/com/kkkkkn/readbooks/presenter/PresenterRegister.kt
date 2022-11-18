@@ -1,26 +1,20 @@
 package com.kkkkkn.readbooks.presenter
 
 import android.content.Context
-import com.kkkkkn.readbooks.model.BaseModel
 import com.kkkkkn.readbooks.model.ModelRegister
 import com.kkkkkn.readbooks.util.StringUtil.checkAccountName
 import com.kkkkkn.readbooks.util.StringUtil.checkAccountPassword
 import com.kkkkkn.readbooks.util.StringUtil.equals
-import com.kkkkkn.readbooks.util.eventBus.EventMessage
-import com.kkkkkn.readbooks.util.eventBus.events.RegisterEvent
 import com.kkkkkn.readbooks.view.view.RegisterActivityView
-import org.greenrobot.eventbus.EventBus
+import kotlinx.coroutines.*
+import org.json.JSONObject
 
 class PresenterRegister(
     context: Context?,
     private val registerActivityView: RegisterActivityView
 ) :
-    BasePresenter(context!!, ModelRegister()), BaseModel.CallBack {
+    BasePresenter(context!!, ModelRegister()){
     private val modelRegister: ModelRegister = baseModel as ModelRegister
-
-    init {
-        modelRegister.setCallback(this)
-    }
 
     /**
      * 注册用户
@@ -42,26 +36,27 @@ class PresenterRegister(
             registerActivityView.clearAccountCache()
             return
         }
-        EventBus.getDefault().post(
-            RegisterEvent(
-                EventMessage.REGISTER,
-                name!!, password!!
-            )
-        )
-    }
 
-    override fun onSuccess(type: Int, `object`: Any) {
-        if (type == 1) {
-            registerActivityView.back2Login()
-            registerActivityView.showMsgDialog(1, (`object` as String))
-        } else {
-            registerActivityView.showMsgDialog(-1, "注册失败")
-            registerActivityView.clearAccountCache()
+        val job = Job()
+        CoroutineScope(job).launch(Dispatchers.Main) {
+            var jsonObject: JSONObject? = null
+            val result = withContext(Dispatchers.IO) {
+                jsonObject = modelRegister.register(name!!, password!!)
+            }
+            if (jsonObject != null) {
+                val code = jsonObject!!.getBoolean("status")
+                if (code) {
+                    registerActivityView.showMsgDialog(1, jsonObject!!.getString("data"))
+                    registerActivityView.back2Login()
+                } else {
+                    val data=jsonObject!!.getString("data")
+                    registerActivityView.showTip(-1, data)
+                    registerActivityView.showMsgDialog(-1, data)
+                    registerActivityView.clearAccountCache()
+                }
+            }
+
         }
     }
 
-    override fun onError(type: Int, `object`: Any) {
-        registerActivityView.showTip(-2, "用户名重复")
-        registerActivityView.clearAccountCache()
-    }
 }

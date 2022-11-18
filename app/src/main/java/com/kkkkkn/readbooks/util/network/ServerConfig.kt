@@ -1,4 +1,4 @@
-package com.kkkkkn.readbooks.util
+package com.kkkkkn.readbooks.util.network
 
 object ServerConfig {
     const val IP = "http://www.kkkkknn.com:30485"
